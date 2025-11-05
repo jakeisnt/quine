@@ -5,41 +5,9 @@ import { cli } from "utils/cli";
 import { buildFromPath } from "./build";
 import { singleFileServer, directoryServer } from "./server";
 import { Path } from "utils/path";
-import { URL } from "./utils/url";
+import { loadConfig } from "./config";
 
-const makeConfig = () => {
-  const siteName = "Jake Chvatal";
-  const url = URL.create(`http://localhost:4242`);
-
-  const websocketPath = "/__devsocket";
-  const sourceDir = Path.create("./");
-  const targetDir = sourceDir.join("/docs");
-  const fallbackSourceDir = sourceDir;
-  const resourcesDir = sourceDir.join("/resources");
-  const faviconsDir = sourceDir.join("/favicons");
-
-  // paths to ignore by default from the website we build
-  const ignorePaths = [".git", "node_modules"].map(
-    (p) => sourceDir.toString() + "/" + p
-  );
-
-  return {
-    siteName,
-    sourceDir,
-    targetDir,
-    fallbackSourceDir,
-    fallbackDirPath: fallbackSourceDir,
-
-    url,
-
-    resourcesDir,
-    faviconsDir,
-    ignorePaths,
-    websocketPath,
-  };
-};
-
-const cfg = makeConfig();
+const cfg = loadConfig();
 
 /**
  * Build a website from the incoming paths.
@@ -62,7 +30,7 @@ const deploy = () => {
 
   siteDeploy({
     currentRepo,
-    deploymentBranch: "production",
+    deploymentBranch: cfg.deploymentBranch,
     targetDir: cfg.targetDir.toString(),
   });
 };

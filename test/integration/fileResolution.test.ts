@@ -111,6 +111,7 @@ describe("edge cases", () => {
     } else {
       throw new Error("File not found");
     }
+  });
 
   test("handles path traversal attempts", () => {
     const file = readFile(

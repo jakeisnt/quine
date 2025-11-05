@@ -14,18 +14,13 @@ import type {
 import { isHtmlAttributes } from "./parseDSL";
 import type { PageSettings } from "../types/site";
 
-// SHORTCUT:
-// Cheeky way of having page settings available everywhere in this file.
-// Allows us to properly resolve dependencies and respect the target dir.
-let config: PageSettings;
-
 /**
  * Convert HTML to a string.
  */
-function html(syn: PageSyntax) {
+function html(syn: PageSyntax, config: PageSettings) {
   let buffer: string[] = [];
   let dependencies: Dependency[] = [];
-  build(syn, buffer, dependencies);
+  build(syn, buffer, dependencies, config);
 
   return {
     dependsOn: dependencies,
@@ -38,8 +33,7 @@ function html(syn: PageSyntax) {
  * Include front matter that configures the document as a whole.
  */
 function htmlPage(syn: PageSyntax, cfg: PageSettings) {
-  config = cfg;
-  const { dependsOn, body } = html(syn);
+  const { dependsOn, body } = html(syn, cfg);
 
   return {
     dependsOn,
@@ -86,10 +80,11 @@ function buildComponent(
   name: string,
   args: object,
   buffer: string[],
-  dependencies: Dependency[]
+  dependencies: Dependency[],
+  config: PageSettings
 ) {
   const { dependsOn, body } = component(name, args, config);
-  build(body, buffer, dependencies);
+  build(body, buffer, dependencies, config);
   dependencies.push(...dependsOn);
 }
 
@@ -105,7 +100,8 @@ function buildTag<T extends NativeHtmlTag>(
   buffer: string[],
   dependencies: Dependency[],
   list: HtmlNode,
-  index: number
+  index: number,
+  config: PageSettings
 ) {
   const isComponent = tagName[0] === tagName[0].toUpperCase();
 
@@ -117,7 +113,8 @@ function buildTag<T extends NativeHtmlTag>(
         children: Array.isArray(list) ? list.slice(index) : [list],
       },
       buffer,
-      dependencies
+      dependencies,
+      config
     );
     return;
   }
@@ -126,7 +123,7 @@ function buildTag<T extends NativeHtmlTag>(
   buffer.push(`<${tagName}${buildAttributes(attributes, dependencies)}>`);
 
   // Build the contents of the tag - an arbitrary array of elements.
-  buildRest(list, index, buffer, dependencies);
+  buildRest(list, index, buffer, dependencies, config);
 
   // Close the tag: </ tag >
   buffer.push(`</${tagName}>`);
@@ -136,7 +133,7 @@ function buildTag<T extends NativeHtmlTag>(
  * Build an HTML configuration from the list of nodes,
  * adding the stringified representation to the buffer.
  */
-function build(list: HtmlNode, buffer: string[], dependencies: Dependency[]) {
+function build(list: HtmlNode, buffer: string[], dependencies: Dependency[], config: PageSettings) {
   let index = 0;
 
   let nextElement = Array.isArray(list) ? list[index] : list;
@@ -157,10 +154,10 @@ function build(list: HtmlNode, buffer: string[], dependencies: Dependency[]) {
       index += 1;
     }
 
-    buildTag(tagName, attributesToUse, buffer, dependencies, list, index);
+    buildTag(tagName, attributesToUse, buffer, dependencies, list, index, config);
   } else {
     // if we don't have a tag, we know we have an array of tags. Process those.
-    buildRest(list, index, buffer, dependencies);
+    buildRest(list, index, buffer, dependencies, config);
   }
 }
 
@@ -174,14 +171,15 @@ function buildRest(
   list: HtmlNode,
   index: number,
   buffer: string[],
-  dependencies: Dependency[]
+  dependencies: Dependency[],
+  config: PageSettings
 ) {
   const length = Array.isArray(list) ? list.length : 0;
 
   while (index < length) {
     var item = Array.isArray(list) ? list[index++] : list;
     if (isArray(item)) {
-      build(item, buffer, dependencies);
+      build(item, buffer, dependencies, config);
     } else {
       // NOTE: The information is not encompassed in the type (yet)
       // but it's possible for anything in the tree to be undefined.

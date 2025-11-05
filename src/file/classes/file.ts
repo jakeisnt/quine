@@ -1,8 +1,7 @@
 import { Path } from "../../utils/path";
-import { readFile } from "file";
-import Directory from "../filetype/directory";
 import type { PageSettings } from "../../types/site";
 import type { URL } from "../../utils/url";
+import type Directory from "../filetype/directory";
 
 /**
  * Any file on the system.
@@ -102,17 +101,6 @@ class File {
    */
   text(cfg: PageSettings) {
     return "";
-  }
-
-  /**
-   * Get the parent directory of this file.
-   */
-  directory(cfg?: PageSettings): Directory {
-    // A `parent` file, by definition, is a directory that contains this one.
-    return readFile(
-      this.path.parent,
-      this.cachedConfig
-    ) as unknown as Directory;
   }
 
   /**

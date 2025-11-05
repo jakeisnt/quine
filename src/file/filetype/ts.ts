@@ -1,5 +1,6 @@
 import { SourceFile } from "../classes";
 import type { PageSettings } from "../../types/site";
+import type { Path } from "../../utils/path";
 import type JSFile from "./js";
 import { wrapFile } from "../classes/utils";
 import * as ts from "typescript";

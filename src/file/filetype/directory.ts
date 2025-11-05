@@ -113,9 +113,21 @@ class Directory extends File {
     const fileContents = this.path
       .readDirectory()
       // SHORTCUT: Fixes a bug where the site creates itself infinitely
-      .filter((v) => !v.equals(this.cachedConfig.targetDir))
-      .map((v) => readFile(v, this.cachedConfig))
-      .filter((v): v is File => v !== undefined);
+      .filter((v: Path) => !v.equals(this.cachedConfig.targetDir))
+      .map((v: Path): File | undefined => {
+        try {
+          return readFile(v, this.cachedConfig);
+        } catch (error) {
+          console.warn(`[directory] Failed to read file ${v.toString()}:`, error);
+          return undefined;
+        }
+      })
+      .filter((v: File | undefined): v is File => {
+        if (v === undefined) {
+          return false;
+        }
+        return true;
+      });
 
     this.enumeratedContents = fileContents;
     return fileContents;

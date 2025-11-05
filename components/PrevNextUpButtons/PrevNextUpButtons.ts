@@ -1,5 +1,6 @@
 import type File from "../../src/file/classes/file";
 import { PageSettings } from "../../src/types/site";
+import { getFileDirectory } from "../../src/file/utils";
 
 const findFileIndex = (files: File[], file: File) => {
   return files.findIndex((f) => f.equals(file));
@@ -10,7 +11,7 @@ const prevNextUpHtml = ({
   url,
   sourceDir,
 }: PageSettings & { file: File }) => {
-  const dir = file.directory();
+  const dir = getFileDirectory(file);
   const contents = dir.contents();
 
   const curFileIndex = findFileIndex(contents, file);

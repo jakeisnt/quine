@@ -1,0 +1,12 @@
+{
+  "siteName": "Jake Chvatal",
+  "url": "http://localhost:4242",
+  "port": 4242,
+  "websocketPath": "/__devsocket",
+  "sourceDir": "./",
+  "targetDir": "./docs",
+  "resourcesDir": "./resources",
+  "faviconsDir": "./favicons",
+  "ignorePaths": [".git", "node_modules", "docs"],
+  "deploymentBranch": "production"
+}
