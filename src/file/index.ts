@@ -120,7 +120,8 @@ const readFile = (
     return readFile(path.parent, cfg);
   }
 
-  for (const sourceExtension of compileMap[targetExtension]) {
+  const sourceExtensions = compileMap[targetExtension] || [];
+  for (const sourceExtension of sourceExtensions) {
     const nextPath = path.replaceExtension(sourceExtension);
     console.log(
       `[readFile] Trying ${sourceExtension} file type for path ${nextPath}`

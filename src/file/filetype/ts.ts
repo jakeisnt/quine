@@ -17,7 +17,7 @@ const tsToJs = (tsFile: SourceFile, cfg: PageSettings) => {
 };
 
 class TypeScriptFile extends SourceFile {
-  static filetypes = ["ts", "tsx", "js", "jsx"];
+  static filetypes = ["ts", "tsx"];
 
   static create(filePath: Path, cfg: PageSettings) {
     // If requesting a .js file, try to find the .ts version
