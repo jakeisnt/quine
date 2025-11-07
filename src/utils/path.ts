@@ -215,8 +215,10 @@ class Path {
 
     try {
       // Avoid normalizing the paths by using the originals provided
+      // Use shell: true to allow wildcard expansion
       execSync(`rsync -av --delete ${fromPath} ${toPath}`, {
         cwd: this.toString(),
+        shell: true,
       });
     } catch (e) {
       console.log("error moving directory", e);
