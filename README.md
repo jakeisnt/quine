@@ -26,9 +26,48 @@ Code should run on the client, on the server, at build time, and anywhere in bet
 This infrastructure facilitates that.
 
 ## Running
-Dependencies are managed with Nix. Install `nix` and `direnv`. Open the folder in your system of choice, and all dependencies will install.
 
-The flake has one command: `site`. The CLI will tell you what you can do with it :  )
+Dependencies are managed with Bun. Install [Bun](https://bun.sh) to get started.
+
+```bash
+# Install dependencies
+bun install
+
+# Build the site (outputs to docs/)
+bun run main build
+
+# Serve the site locally
+bun run main serve
+
+# Deploy (commits and pushes docs/ on current branch)
+bun run main deploy
+```
+
+### Build System
+
+The site builds to the `docs/` folder on the current branch. The build process:
+
+1. Reads files from the source directory (current directory)
+2. Processes TypeScript/JavaScript files, compiling TS → JS
+3. Handles various file types (HTML, CSS, Markdown, images, etc.)
+4. Outputs everything to `docs/` directory
+5. Ignores: `.git`, `node_modules`, `docs` (to prevent recursion)
+
+### File Type System
+
+The build system uses a dynamic file type registry (src/file/index.ts):
+- Each file type registers extensions it handles via `static filetypes = [...]`
+- Files can compile to other types via `static targets = [...]`
+- TypeScript files (`.ts`, `.tsx`) compile to JavaScript (`.js`)
+- The system auto-detects file types and applies appropriate transformations
+
+### Deployment
+
+The `deploy` command (src/deploy.ts):
+- Commits all changes in the `docs/` directory
+- Pushes to the current branch
+- No branch switching - builds stay on the working branch
+- Designed for GitHub Pages serving from `docs/` folder
 
 ## Other principles
 [originally here](https://github.com/jakeisnt/site/issues/71)
