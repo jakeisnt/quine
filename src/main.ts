@@ -19,7 +19,7 @@ const makeConfig = () => {
   const faviconsDir = sourceDir.join("/favicons");
 
   // paths to ignore by default from the website we build
-  const ignorePaths = [".git", "node_modules"].map(
+  const ignorePaths = [".git", "node_modules", "docs"].map(
     (p) => sourceDir.toString() + "/" + p
   );
 
@@ -62,7 +62,6 @@ const deploy = () => {
 
   siteDeploy({
     currentRepo,
-    deploymentBranch: "production",
     targetDir: cfg.targetDir.toString(),
   });
 };
