@@ -42,7 +42,8 @@ function commitFolderToBranch({
       repo.runCmd(`rm -rf ${tmpDir}`);
     }
 
-    repo.path.move(folderToCommit, tmpDir);
+    // Add trailing slash to copy folder contents, not the directory itself
+    repo.path.move(`${folderToCommit}/`, tmpDir);
   } catch (error) {
     console.error("[deploy] Failed to move folder to tmp:", error);
     // Try to restore stash before throwing
