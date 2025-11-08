@@ -1,0 +1,121 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"></meta><title>utils.ts / Jake Chvatal</title><meta property="og:title" content="utils.ts"></meta><meta property="og:type" content="website"></meta><meta property="og:url" content="https://jake.isnt.online"></meta><meta property="og:site_name" content="Jake Chvatal"></meta><meta name="keywords" content="jake"></meta><meta name="author" content="Jake Chvatal"></meta><meta name="robots" content="index,follow"></meta><meta name="description" content="hi"></meta><meta name="theme-color" media="(prefers-color-scheme: light)" content="white"></meta><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#111"></meta><link rel="icon" type="image/x-icon" href="/Users/jake/Documents/personal/site/favicons/favicon.ico"></link><link rel="apple-touch-icon" href="/Users/jake/Documents/personal/site/favicons/apple-touch-icon.png"></link><link rel="stylesheet" type="text/css" href="/resources/style.css" id="/resources/style.css"></link><link rel="stylesheet" type="text/css" href="/resources/global.css" id="/resources/global.css"></link><script src="/resources/lib.js" id="/resources/lib.js" type="module"></script><link rel="stylesheet" type="text/css" href="/resources/elementsstyle.css" id="/resources/elementsstyle.css"></link><link rel="manifest" href="/resources/manifest.json"></link><script src="/resources/elements.js" id="/resources/elements.js" type="module" defer="true"></script></head><body><link rel="stylesheet" href="/components/Sidebar/sidebar.css"></link><div class="sidebar"><div class="url-path"><b>jake.</b><span> / </span><a href="https://jake.isnt.online/src/index.html">src</a><span> / </span><a href="https://jake.isnt.online/src/server/index.html">server</a><span> / </span><b>utils.ts</b></div><script src="/components/ToggleDarkMode/toggle-dark-mode.js" type="module"></script><link rel="stylesheet" href="/components/ToggleDarkMode/toggle-dark-mode.css"></link><div class="toggle-dark-mode-container"><button class="toggle-dark-mode"></button></div></div><div class="site-body"><main><article class="wikipage"><h1 class="title-top">utils.ts</h1><link rel="stylesheet" href="/components/SourceBlock/source-block.css"></link><script src="/components/SourceBlock/load-code-blocks.js" type="module"></script><pre><code class="language-ts has-raw-code"><span class="keyword">import</span> <span class="type">File</span> <span class="keyword">from</span> <span class="string">&quot;../file/classes/file&quot;</span><span class="punctuation delimiter">;</span>
+<span class="keyword">import</span> <span class="keyword">type</span> <span class="punctuation bracket">{</span> <span class="type">PageSettings</span> <span class="punctuation bracket">}</span> <span class="keyword">from</span> <span class="string">&quot;../types/site&quot;</span><span class="punctuation delimiter">;</span>
+<span class="keyword">import</span> <span class="punctuation bracket">{</span> <span class="type">Path</span> <span class="punctuation bracket">}</span> <span class="keyword">from</span> <span class="string">&quot;../utils/path&quot;</span><span class="punctuation delimiter">;</span>
+
+<span class="comment">/**</span>
+<span class="comment"> * Format a URL with the URL, port, and path.</span>
+<span class="comment"> */</span>
+<span class="keyword">const</span> <span class="function">formatUrl</span> <span class="operator">=</span> <span class="punctuation bracket">(</span><span class="punctuation bracket">{</span>
+  url<span class="punctuation delimiter">,</span>
+  port<span class="punctuation delimiter">,</span>
+  path<span class="punctuation delimiter">,</span>
+<span class="punctuation bracket">}</span>: <span class="punctuation bracket">{</span>
+  <span class="property">url</span>: <span class="type builtin">string</span><span class="punctuation delimiter">;</span>
+  <span class="property">port</span>: <span class="type builtin">number</span><span class="punctuation delimiter">;</span>
+  <span class="property">path</span>?: <span class="type builtin">string</span><span class="punctuation delimiter">;</span>
+<span class="punctuation bracket">}</span><span class="punctuation bracket">)</span> <span class="operator">=&gt;</span> <span class="string">`<span class="embedded"><span class="punctuation special">${</span><span class="variable">url</span><span class="punctuation special">}</span></span><span class="embedded"><span class="punctuation special">${</span><span class="variable">port</span> ? <span class="string">&quot;:&quot;</span> <span class="operator">+</span> <span class="variable">port</span> : <span class="string">&quot;&quot;</span><span class="punctuation special">}</span></span><span class="embedded"><span class="punctuation special">${</span><span class="variable">path</span> <span class="operator">??</span> <span class="string">&quot;&quot;</span><span class="punctuation special">}</span></span>`</span><span class="punctuation delimiter">;</span>
+
+<span class="comment">/**</span>
+<span class="comment"> * Remove the full path from the URL.</span>
+<span class="comment"> */</span>
+<span class="keyword">const</span> <span class="function">withoutUrl</span> <span class="operator">=</span> <span class="punctuation bracket">(</span><span class="variable parameter">fullPath</span>: <span class="type builtin">string</span><span class="punctuation delimiter">,</span> <span class="variable parameter">url</span>: <span class="type builtin">string</span><span class="punctuation bracket">)</span> <span class="operator">=&gt;</span> <span class="variable parameter">fullPath</span><span class="punctuation delimiter">.</span><span class="function method">replace</span><span class="punctuation bracket">(</span><span class="variable parameter">url</span><span class="punctuation delimiter">,</span> <span class="string">&quot;&quot;</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+
+<span class="comment">/**</span>
+<span class="comment"> * inject a hot reload script into the body iof an html string.</span>
+<span class="comment"> */</span>
+<span class="keyword">const</span> <span class="function">injectHotReload</span> <span class="operator">=</span> <span class="punctuation bracket">(</span><span class="punctuation bracket">{</span>
+  htmlString<span class="punctuation delimiter">,</span>
+  websocketPath<span class="punctuation delimiter">,</span>
+<span class="punctuation bracket">}</span>: <span class="punctuation bracket">{</span>
+  <span class="property">htmlString</span>: <span class="type builtin">string</span><span class="punctuation delimiter">;</span>
+  <span class="property">websocketPath</span>: <span class="type builtin">string</span><span class="punctuation delimiter">;</span>
+<span class="punctuation bracket">}</span><span class="punctuation bracket">)</span> <span class="operator">=&gt;</span> <span class="punctuation bracket">{</span>
+  <span class="keyword">const</span> <span class="variable">script</span> <span class="operator">=</span> <span class="string">`</span>
+<span class="string">    &lt;script&gt;</span>
+<span class="string">      console.log(&#39;hot reload script loaded&#39;);</span>
+<span class="string">      const socket = new WebSocket(&#39;<span class="embedded"><span class="punctuation special">${</span><span class="variable">websocketPath</span><span class="punctuation special">}</span></span>&#39;);</span>
+<span class="string">      socket.addEventListener(&#39;message&#39;, function (event) {</span>
+<span class="string">        console.log(&#39;Received message from server &#39;, event.data);</span>
+<span class="string">        window.location.reload();</span>
+<span class="string">      });</span>
+<span class="string">    &lt;/script&gt;</span>
+<span class="string">  `</span><span class="punctuation delimiter">;</span>
+
+  <span class="keyword">return</span> <span class="variable">htmlString</span><span class="punctuation delimiter">.</span><span class="function method">replace</span><span class="punctuation bracket">(</span><span class="string">&quot;&lt;/body&gt;&quot;</span><span class="punctuation delimiter">,</span> <span class="string">`<span class="embedded"><span class="punctuation special">${</span><span class="variable">script</span><span class="punctuation special">}</span></span>&lt;/body&gt;`</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+<span class="punctuation bracket">}</span><span class="punctuation delimiter">;</span>
+
+<span class="comment">/**</span>
+<span class="comment"> * make a response to a request for a file with the file</span>
+<span class="comment"> */</span>
+<span class="keyword">const</span> <span class="function">makeFileResponse</span> <span class="operator">=</span> <span class="punctuation bracket">(</span>
+  <span class="variable parameter">file</span>: <span class="type">File</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">{</span>
+    siteName<span class="punctuation delimiter">,</span>
+    sourceDir<span class="punctuation delimiter">,</span>
+    rootUrl<span class="punctuation delimiter">,</span>
+    websocketPath<span class="punctuation delimiter">,</span>
+    resourcesDir<span class="punctuation delimiter">,</span>
+    faviconsDir<span class="punctuation delimiter">,</span>
+    targetDir<span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">}</span>: <span class="type">PageSettings</span> <span class="operator">&amp;</span> <span class="punctuation bracket">{</span> <span class="property">websocketPath</span>: <span class="type builtin">string</span> <span class="punctuation bracket">}</span>
+<span class="punctuation bracket">)</span> <span class="operator">=&gt;</span> <span class="punctuation bracket">{</span>
+  <span class="keyword">const</span> <span class="punctuation bracket">{</span> contents<span class="punctuation delimiter">,</span> mimeType <span class="punctuation bracket">}</span> <span class="operator">=</span> <span class="variable parameter">file</span><span class="punctuation delimiter">.</span><span class="function method">serve</span><span class="punctuation bracket">(</span><span class="punctuation bracket">{</span>
+    siteName<span class="punctuation delimiter">,</span>
+    rootUrl<span class="punctuation delimiter">,</span>
+    sourceDir<span class="punctuation delimiter">,</span>
+    targetDir<span class="punctuation delimiter">,</span>
+    resourcesDir<span class="punctuation delimiter">,</span>
+    faviconsDir<span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">}</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+
+  <span class="keyword">let</span> <span class="variable">responseText</span> <span class="operator">=</span>
+    <span class="variable">mimeType</span> <span class="operator">===</span> <span class="string">&quot;text/html&quot;</span>
+      ? <span class="function">injectHotReload</span><span class="punctuation bracket">(</span><span class="punctuation bracket">{</span> <span class="property">htmlString</span>: <span class="variable">contents</span><span class="punctuation delimiter">,</span> websocketPath <span class="punctuation bracket">}</span><span class="punctuation bracket">)</span>
+      : <span class="variable">contents</span><span class="punctuation delimiter">;</span>
+
+  <span class="keyword">return</span> <span class="keyword">new</span> <span class="type">Response</span><span class="punctuation bracket">(</span><span class="variable">responseText</span><span class="punctuation delimiter">,</span> <span class="punctuation bracket">{</span>
+    <span class="property">headers</span>: <span class="punctuation bracket">{</span>
+      <span class="comment">// NEVER cache. this is always a dev server.</span>
+      <span class="string">&quot;Cache-Control&quot;</span>: <span class="string">&quot;no-store, no-cache, must-revalidate, proxy-revalidate&quot;</span><span class="punctuation delimiter">,</span>
+      <span class="property">Pragma</span>: <span class="string">&quot;no-cache&quot;</span><span class="punctuation delimiter">,</span>
+      <span class="property">Expires</span>: <span class="string">&quot;0&quot;</span><span class="punctuation delimiter">,</span>
+      <span class="comment">// content-type (required)</span>
+      <span class="string">&quot;content-type&quot;</span>: <span class="variable">mimeType</span><span class="punctuation delimiter">,</span>
+    <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">}</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+<span class="punctuation bracket">}</span><span class="punctuation delimiter">;</span>
+
+<span class="comment">/**</span>
+<span class="comment"> * Format page settings according to the provided arguments.</span>
+<span class="comment"> */</span>
+<span class="keyword">const</span> <span class="function">getPageSettings</span> <span class="operator">=</span> <span class="punctuation bracket">(</span><span class="punctuation bracket">{</span>
+  url<span class="punctuation delimiter">,</span>
+  port<span class="punctuation delimiter">,</span>
+  siteName<span class="punctuation delimiter">,</span>
+  absolutePathToDirectory<span class="punctuation delimiter">,</span>
+  fallbackDirPath<span class="punctuation delimiter">,</span>
+<span class="punctuation bracket">}</span>: <span class="punctuation bracket">{</span>
+  <span class="property">url</span>: <span class="type builtin">string</span><span class="punctuation delimiter">;</span>
+  <span class="property">port</span>: <span class="type builtin">number</span><span class="punctuation delimiter">;</span>
+  <span class="property">siteName</span>: <span class="type builtin">string</span><span class="punctuation delimiter">;</span>
+  <span class="property">absolutePathToDirectory</span>: <span class="type">Path</span><span class="punctuation delimiter">;</span>
+  <span class="property">fallbackDirPath</span>: <span class="type builtin">string</span><span class="punctuation delimiter">;</span>
+<span class="punctuation bracket">}</span><span class="punctuation bracket">)</span>: <span class="type">PageSettings</span> <span class="operator">=&gt;</span> <span class="punctuation bracket">{</span>
+  <span class="keyword">const</span> <span class="variable">sourceDir</span> <span class="operator">=</span> <span class="variable">absolutePathToDirectory</span><span class="punctuation delimiter">.</span><span class="function method">toString</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="keyword">const</span> <span class="variable">rootUrl</span> <span class="operator">=</span> <span class="function">formatUrl</span><span class="punctuation bracket">(</span><span class="punctuation bracket">{</span> url<span class="punctuation delimiter">,</span> port <span class="punctuation bracket">}</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="keyword">const</span> <span class="variable">resourcesDir</span> <span class="operator">=</span> <span class="string">`<span class="embedded"><span class="punctuation special">${</span><span class="variable">sourceDir</span><span class="punctuation special">}</span></span>/resources`</span><span class="punctuation delimiter">;</span>
+  <span class="keyword">const</span> <span class="variable">faviconsDir</span> <span class="operator">=</span> <span class="string">`<span class="embedded"><span class="punctuation special">${</span><span class="variable">sourceDir</span><span class="punctuation special">}</span></span>/favicons`</span><span class="punctuation delimiter">;</span>
+
+  <span class="keyword">return</span> <span class="punctuation bracket">{</span>
+    siteName<span class="punctuation delimiter">,</span>
+    sourceDir<span class="punctuation delimiter">,</span>
+    <span class="property">fallbackSourceDir</span>: <span class="variable">fallbackDirPath</span><span class="punctuation delimiter">,</span>
+    faviconsDir<span class="punctuation delimiter">,</span>
+    resourcesDir<span class="punctuation delimiter">,</span>
+    rootUrl<span class="punctuation delimiter">,</span>
+    <span class="property">targetDir</span>: <span class="variable">absolutePathToDirectory</span><span class="punctuation delimiter">.</span><span class="function method">toString</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="operator">+</span> <span class="string">&quot;/docs&quot;</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">}</span><span class="punctuation delimiter">;</span>
+<span class="punctuation bracket">}</span><span class="punctuation delimiter">;</span>
+
+<span class="keyword">export</span> <span class="punctuation bracket">{</span> <span class="function">withoutUrl</span><span class="punctuation delimiter">,</span> <span class="function">formatUrl</span><span class="punctuation delimiter">,</span> <span class="function">makeFileResponse</span><span class="punctuation delimiter">,</span> <span class="function">getPageSettings</span> <span class="punctuation bracket">}</span><span class="punctuation delimiter">;</span>
+</code></pre></article></main><div class="article-rhs-container"><div class="article-rhs"><div class="git-history-table-container"><span class="git-history-table-title">Revisions</span><table class="git-history-table"><thead><tr><th>Date</th><th>Hash</th></tr></thead><tbody><tr><td class="commit-date-tr">2024-04-14</td><td class="commit-link-tr">80c18980</td></tr><tr><td class="commit-date-tr">2024-04-14</td><td class="commit-link-tr">ba53cd93</td></tr><tr><td class="commit-date-tr">2024-04-14</td><td class="commit-link-tr">c16a809d</td></tr><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">0c9b2c0e</td></tr><tr><td class="commit-date-tr">2024-04-01</td><td class="commit-link-tr">a3c37e13</td></tr><tr><td class="commit-date-tr">2024-04-01</td><td class="commit-link-tr">3baa0660</td></tr><tr><td class="commit-date-tr">2024-04-01</td><td class="commit-link-tr">110e0165</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">02dca1b8</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">b2bdfc1f</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">a722035c</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">6c7a5c6e</td></tr></tbody></table></div><div class="prev-next-up-buttons-container">Navigation<table class="prev-next-up-buttons"><tr><td>Next</td><td><a class="next-button" href="https://jake.isnt.online/src/server/README.md.html">README.md</a></td></tr><tr><td>Up</td><td><a class="up-button" href="/src/server/index.html">server</a></td></tr></table></div></div></div></div></body></html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html><html lang="en"><link rel="stylesheet" href="/resources/style.css"></link><link rel="stylesheet" href="/resources/global.css"></link><link rel="stylesheet" href="/resources/elementsstyle.css"></link><script type="module" src="/resources/lib.js"></script><script type="module" defer="true" src="/resources/elements.js"></script><head><meta charset="utf-8"></meta><meta name="viewport" content="width=device-width, initial-scale=1"></meta><title>constants.ts / Jake Chvatal</title><meta property="og:title" content="constants.ts"></meta><meta property="og:type" content="website"></meta><meta property="og:url" content="http://localhost:4242/"></meta><meta property="og:site_name" content="Jake Chvatal"></meta><meta name="keywords" content="jake"></meta><meta name="author" content="Jake Chvatal"></meta><meta name="robots" content="index,follow"></meta><meta name="description" content="hi"></meta><meta name="theme-color" media="(prefers-color-scheme: light)" content="white"></meta><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#111"></meta></head><body><link rel="stylesheet" href="/components/Sidebar/sidebar.css"></link><div class="sidebar"><div class="url-path"><b>jake.</b><span> / </span><a href="http://localhost:4242//src/index.html">src</a><span> / </span><b>constants.ts</b></div><script type="module" src="/components/ToggleDarkMode/toggle-dark-mode.js"></script><link rel="stylesheet" href="/components/ToggleDarkMode/toggle-dark-mode.css"></link><div class="toggle-dark-mode-container"><button class="toggle-dark-mode"></button></div></div><div class="site-body"><main><article class="wikipage"><h1 class="title-top">constants.ts</h1><link rel="stylesheet" href="/components/SourceBlock/source-block.css"></link><script type="module" src="/components/SourceBlock/load-code-blocks.js"></script><pre><code class="language-ts has-raw-code"><span class="comment">// @ts-nocheck</span>
+
+<span class="comment">/**</span>
+<span class="comment"> * Settings that are necessary for the app to run.</span>
+<span class="comment"> * Only &#39;main.js&#39; should import this file.</span>
+<span class="comment"> */</span>
+
+<span class="comment">// declare how the site is configured</span>
+<span class="comment">// const sitePaths = [</span>
+<span class="comment">//   { folder: &quot;resources&quot;, forceRebuild: true },</span>
+<span class="comment">//   { folder: &quot;components&quot; },</span>
+<span class="comment">//   { folder: &quot;src&quot;, forceRebuild: true },</span>
+<span class="comment">//   { folder: &quot;style&quot;, forceRebuild: true },</span>
+<span class="comment">// ];</span>
+
+<span class="comment">// const wikiPaths = [</span>
+<span class="comment">//   {</span>
+<span class="comment">//     folder: &quot;pages&quot;,</span>
+<span class="comment">//     sortBy: (v: File) =&gt; v.lastLog?.commitDate,</span>
+<span class="comment">//   },</span>
+<span class="comment">//   {</span>
+<span class="comment">//     folder: &quot;scripts&quot;,</span>
+<span class="comment">//     sortBy: (v: File) =&gt; v.lastLog?.commitDate,</span>
+<span class="comment">//   },</span>
+<span class="comment">//   {</span>
+<span class="comment">//     folder: &quot;journals&quot;,</span>
+<span class="comment">//     sortBy: &quot;name&quot;,</span>
+<span class="comment">//   },</span>
+<span class="comment">// ];</span>
+
+<span class="comment">// const sources = [</span>
+<span class="comment">//   { dir: sourceDir, paths: sitePaths },</span>
+<span class="comment">//   { dir: &quot;/home/jake/wiki&quot;, paths: wikiPaths },</span>
+<span class="comment">// ];</span>
+
+<span class="comment">// const website = {</span>
+<span class="comment">//   sources,</span>
+<span class="comment">//   target: targetDir,</span>
+<span class="comment">// };</span>
+
+<span class="comment">// @ts-ignore</span>
+<span class="keyword">const</span> <span class="variable">profiles</span> <span class="operator">=</span> <span class="punctuation bracket">[</span>
+  <span class="punctuation bracket">{</span>
+    <span class="property">name</span>: <span class="string">&quot;Are.na&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="property">url</span>: <span class="string">&quot;https://are.na/jake-isnt&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="property">user</span>: <span class="string">&quot;jake-isnt&quot;</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">{</span>
+    <span class="property">name</span>: <span class="string">&quot;Mastodon&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="property">url</span>: <span class="string">&quot;https://merveilles.town/@jakeisnt&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="property">user</span>: <span class="string">&quot;jakeisnt&quot;</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">{</span>
+    <span class="property">name</span>: <span class="string">&quot;Twitter&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="property">url</span>: <span class="string">&quot;https://twitter.com/jakeissnt&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="property">user</span>: <span class="string">&quot;jakeissnt&quot;</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">{</span>
+    <span class="property">name</span>: <span class="string">&quot;GitHub&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="property">url</span>: <span class="string">&quot;https://github.com/jakeisnt&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="property">user</span>: <span class="string">&quot;jakeisnt&quot;</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">{</span>
+    <span class="property">name</span>: <span class="string">&quot;Gitlab&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="property">url</span>: <span class="string">&quot;https://gitlab.com/jakeisnt&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="property">user</span>: <span class="string">&quot;jakeisnt&quot;</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">{</span>
+    <span class="property">name</span>: <span class="string">&quot;sourcehut&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="property">url</span>: <span class="string">&quot;https://sr.ht/~jakeisnt/&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="property">user</span>: <span class="string">&quot;jakeisnt&quot;</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">{</span>
+    <span class="property">name</span>: <span class="string">&quot;YouTube&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="property">url</span>: <span class="string">&quot;https://www.youtube.com/@jakeisnt&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="property">user</span>: <span class="string">&quot;jakeisnt&quot;</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">{</span>
+    <span class="property">name</span>: <span class="string">&quot;Email&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="property">url</span>: <span class="string">&quot;mailto://jake+website@isnt.online&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="property">user</span>: <span class="string">&quot;jake @ ~&quot;</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">{</span>
+    <span class="property">name</span>: <span class="string">&quot;Google Maps&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="property">url</span>: <span class="string">&quot;https://www.google.com/maps/contrib/109731430420919295575/&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="property">user</span>: <span class="string">&quot;Jake Chvatal&quot;</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">{</span>
+    <span class="property">name</span>: <span class="string">&quot;OpenStreetMaps&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="property">url</span>: <span class="string">&quot;https://www.openstreetmap.org/user/jakeisnt&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="property">user</span>: <span class="string">&quot;jakeisnt&quot;</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">{</span>
+    <span class="property">name</span>: <span class="string">&quot;Hacker News&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="property">url</span>: <span class="string">&quot;https://news.ycombinator.com/user?id=jakeisnt&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="property">user</span>: <span class="string">&quot;jakeisnt&quot;</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">{</span>
+    <span class="property">name</span>: <span class="string">&quot;Instagram&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="property">url</span>: <span class="string">&quot;https://instagram.com/jakeisnt&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="property">user</span>: <span class="string">&quot;jakeisnt&quot;</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">{</span>
+    <span class="property">name</span>: <span class="string">&quot;read.cv&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="property">url</span>: <span class="string">&quot;https://read.cv/jakeisnt&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="property">user</span>: <span class="string">&quot;jakeisnt&quot;</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">{</span>
+    <span class="property">name</span>: <span class="string">&quot;LinkedIn&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="property">url</span>: <span class="string">&quot;https://www.linkedin.com/in/jacob-chvatal&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="property">user</span>: <span class="string">&quot;jacob-chvatal&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="property">deprecated</span>: <span class="constant builtin">true</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+<span class="punctuation bracket">]</span><span class="punctuation delimiter">;</span>
+
+<span class="comment">// @ts-ignore</span>
+<span class="keyword">const</span> <span class="variable">personal</span> <span class="operator">=</span> <span class="punctuation bracket">{</span>
+  <span class="property">name</span>: <span class="string">&quot;Jake Chvatal&quot;</span><span class="punctuation delimiter">,</span>
+  <span class="property">location</span>: <span class="string">&quot;Stockholm, SV&quot;</span><span class="punctuation delimiter">,</span>
+  <span class="property">occupation</span>: <span class="string">&quot;Software Engineer&quot;</span><span class="punctuation delimiter">,</span>
+  <span class="property">pronouns</span>: <span class="punctuation bracket">[</span><span class="string">&quot;he&quot;</span><span class="punctuation delimiter">,</span> <span class="string">&quot;him&quot;</span><span class="punctuation delimiter">,</span> <span class="string">&quot;his&quot;</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">,</span>
+  <span class="property">education</span>: <span class="punctuation bracket">{</span>
+    <span class="property">degree</span>: <span class="string">&quot;B.S. Computer Science&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="property">school</span>: <span class="string">&quot;Northeastern University&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="property">url</span>: <span class="string">&quot;https://www.khoury.northeastern.edu/&quot;</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+<span class="punctuation bracket">}</span><span class="punctuation delimiter">;</span>
+
+<span class="keyword">export</span> <span class="punctuation bracket">{</span> <span class="variable">website</span> <span class="punctuation bracket">}</span><span class="punctuation delimiter">;</span>
+</code></pre></article></main><div class="article-rhs-container"><div class="article-rhs"><div class="git-history-table-container"><span class="git-history-table-title">Revisions</span><table class="git-history-table"><thead><tr><th>Date</th><th>Hash</th></tr></thead><tbody><tr><td class="commit-date-tr">2024-04-17</td><td class="commit-link-tr">40ea5682</td></tr><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">0c9b2c0e</td></tr><tr><td class="commit-date-tr">2024-04-01</td><td class="commit-link-tr">a3c37e13</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">02dca1b8</td></tr></tbody></table></div><div class="prev-next-up-buttons-container">Navigation<table class="prev-next-up-buttons"><tr><td>Previous</td><td><a class="prev-button" href="http://localhost:4242/src/html/index.html">html</a></td></tr><tr><td>Next</td><td><a class="next-button" href="http://localhost:4242/src/index.ts.html">index.ts</a></td></tr><tr><td>Up</td><td><a class="up-button" href="http://localhost:4242/src/index.html">src</a></td></tr></table></div></div></div></div></body></html>

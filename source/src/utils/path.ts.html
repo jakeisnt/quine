@@ -1,0 +1,475 @@
+<!DOCTYPE html><html lang="en"><link rel="stylesheet" href="/resources/style.css"></link><link rel="stylesheet" href="/resources/global.css"></link><link rel="stylesheet" href="/resources/elementsstyle.css"></link><script type="module" src="/resources/lib.js"></script><script type="module" defer="true" src="/resources/elements.js"></script><head><meta charset="utf-8"></meta><meta name="viewport" content="width=device-width, initial-scale=1"></meta><title>path.ts / Jake Chvatal</title><meta property="og:title" content="path.ts"></meta><meta property="og:type" content="website"></meta><meta property="og:url" content="http://localhost:4242/"></meta><meta property="og:site_name" content="Jake Chvatal"></meta><meta name="keywords" content="jake"></meta><meta name="author" content="Jake Chvatal"></meta><meta name="robots" content="index,follow"></meta><meta name="description" content="hi"></meta><meta name="theme-color" media="(prefers-color-scheme: light)" content="white"></meta><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#111"></meta></head><body><link rel="stylesheet" href="/components/Sidebar/sidebar.css"></link><div class="sidebar"><div class="url-path"><b>jake.</b><span> / </span><a href="http://localhost:4242//src/index.html">src</a><span> / </span><a href="http://localhost:4242//src/utils/index.html">utils</a><span> / </span><b>path.ts</b></div><script type="module" src="/components/ToggleDarkMode/toggle-dark-mode.js"></script><link rel="stylesheet" href="/components/ToggleDarkMode/toggle-dark-mode.css"></link><div class="toggle-dark-mode-container"><button class="toggle-dark-mode"></button></div></div><div class="site-body"><main><article class="wikipage"><h1 class="title-top">path.ts</h1><link rel="stylesheet" href="/components/SourceBlock/source-block.css"></link><script type="module" src="/components/SourceBlock/load-code-blocks.js"></script><pre><code class="language-ts has-raw-code"><span class="keyword">import</span> <span class="variable">pathLibrary</span> <span class="keyword">from</span> <span class="string">&quot;path&quot;</span><span class="punctuation delimiter">;</span>
+<span class="keyword">import</span> <span class="punctuation bracket">{</span> <span class="variable">execSync</span> <span class="punctuation bracket">}</span> <span class="keyword">from</span> <span class="string">&quot;./cmd&quot;</span><span class="punctuation delimiter">;</span>
+<span class="keyword">import</span> <span class="variable">fs</span> <span class="keyword">from</span> <span class="string">&quot;fs&quot;</span><span class="punctuation delimiter">;</span>
+<span class="keyword">import</span> <span class="variable">mime</span> <span class="keyword">from</span> <span class="string">&quot;mime&quot;</span><span class="punctuation delimiter">;</span>
+<span class="keyword">import</span> <span class="punctuation bracket">{</span> <span class="type">Repo</span> <span class="punctuation bracket">}</span> <span class="keyword">from</span> <span class="string">&quot;./git&quot;</span><span class="punctuation delimiter">;</span>
+
+<span class="comment">/**</span>
+<span class="comment"> * If a path string has a postfixed slash, remove it.</span>
+<span class="comment"> */</span>
+<span class="keyword">const</span> <span class="function">removePostfixedSlash</span> <span class="operator">=</span> <span class="punctuation bracket">(</span><span class="variable parameter">pathString</span>: <span class="type builtin">string</span><span class="punctuation bracket">)</span> <span class="operator">=&gt;</span> <span class="punctuation bracket">{</span>
+  <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="variable parameter">pathString</span><span class="punctuation bracket">[</span><span class="variable parameter">pathString</span><span class="punctuation delimiter">.</span><span class="property">length</span> <span class="operator">-</span> <span class="number">1</span><span class="punctuation bracket">]</span> <span class="operator">===</span> <span class="string">&quot;/&quot;</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">return</span> <span class="variable parameter">pathString</span><span class="punctuation delimiter">.</span><span class="function method">slice</span><span class="punctuation bracket">(</span><span class="number">0</span><span class="punctuation delimiter">,</span> <span class="variable parameter">pathString</span><span class="punctuation delimiter">.</span><span class="property">length</span> <span class="operator">-</span> <span class="number">1</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="keyword">return</span> <span class="variable parameter">pathString</span><span class="punctuation delimiter">;</span>
+<span class="punctuation bracket">}</span><span class="punctuation delimiter">;</span>
+
+<span class="comment">/**</span>
+<span class="comment"> * A Path is the path to a file or directory on a system.</span>
+<span class="comment"> */</span>
+<span class="keyword">class</span> <span class="type">Path</span> <span class="punctuation bracket">{</span>
+  <span class="comment">// These params are immutable, so it&#39;s safe to store both</span>
+  <span class="comment">// and access them directly.</span>
+  <span class="keyword">public</span> <span class="property">pathArray</span>: <span class="type builtin">string</span><span class="punctuation bracket">[</span><span class="punctuation bracket">]</span> <span class="operator">=</span> <span class="punctuation bracket">[</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">;</span>
+  <span class="keyword">public</span> <span class="property">relativePathArray</span>: <span class="type builtin">string</span><span class="punctuation bracket">[</span><span class="punctuation bracket">]</span> <span class="operator">=</span> <span class="punctuation bracket">[</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">;</span>
+
+  <span class="keyword">public</span> <span class="property">relativePathString</span>: <span class="type">String</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span><span class="punctuation delimiter">;</span>
+  <span class="keyword">private</span> <span class="property">pathString</span>: <span class="type builtin">string</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span><span class="punctuation delimiter">;</span>
+
+  <span class="keyword">private</span> <span class="property">doesFileExist</span>?: <span class="type builtin">boolean</span> <span class="operator">=</span> <span class="constant builtin">undefined</span><span class="punctuation delimiter">;</span>
+  <span class="keyword">private</span> <span class="property">lstats</span>?: <span class="variable">fs</span><span class="punctuation delimiter">.</span><span class="type">Stats</span> <span class="operator">=</span> <span class="constant builtin">undefined</span><span class="punctuation delimiter">;</span>
+
+  <span class="comment">/**</span>
+<span class="comment">   * Construct a Path.</span>
+<span class="comment">   * Do not call this directly.</span>
+<span class="comment">   *</span>
+<span class="comment">   * Works for both relative and absolute paths, fixing them into absolute paths as needed.</span>
+<span class="comment">   * this should only be called by the static methods.</span>
+<span class="comment">   */</span>
+  <span class="function method">constructor</span><span class="punctuation bracket">(</span><span class="variable parameter">pathString</span>: <span class="type builtin">string</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">let</span> <span class="variable">normalizedPath</span> <span class="operator">=</span> <span class="variable">pathLibrary</span><span class="punctuation delimiter">.</span><span class="function method">normalize</span><span class="punctuation bracket">(</span><span class="variable parameter">pathString</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+
+    <span class="keyword">let</span> <span class="variable">absolutePath</span> <span class="operator">=</span> <span class="variable">normalizedPath</span><span class="punctuation delimiter">;</span>
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="operator">!</span><span class="variable">pathLibrary</span><span class="punctuation delimiter">.</span><span class="function method">isAbsolute</span><span class="punctuation bracket">(</span><span class="variable">normalizedPath</span><span class="punctuation bracket">)</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="variable">absolutePath</span> <span class="operator">=</span> <span class="variable">pathLibrary</span><span class="punctuation delimiter">.</span><span class="function method">resolve</span><span class="punctuation bracket">(</span><span class="variable">process</span><span class="punctuation delimiter">.</span><span class="function method">cwd</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">,</span> <span class="variable">normalizedPath</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+
+    <span class="variable">normalizedPath</span> <span class="operator">=</span> <span class="function">removePostfixedSlash</span><span class="punctuation bracket">(</span><span class="variable">normalizedPath</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="variable">absolutePath</span> <span class="operator">=</span> <span class="function">removePostfixedSlash</span><span class="punctuation bracket">(</span><span class="variable">absolutePath</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+
+    <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">relativePathString</span> <span class="operator">=</span> <span class="variable">normalizedPath</span><span class="punctuation delimiter">;</span>
+    <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">relativePathArray</span> <span class="operator">=</span> <span class="variable">normalizedPath</span>
+      <span class="punctuation delimiter">.</span><span class="function method">split</span><span class="punctuation bracket">(</span><span class="string">&quot;/&quot;</span><span class="punctuation bracket">)</span>
+      <span class="punctuation delimiter">.</span><span class="function method">slice</span><span class="punctuation bracket">(</span><span class="number">1</span><span class="punctuation bracket">)</span>
+      <span class="punctuation delimiter">.</span><span class="function method">filter</span><span class="punctuation bracket">(</span><span class="punctuation bracket">(</span><span class="variable parameter">p</span><span class="punctuation bracket">)</span> <span class="operator">=&gt;</span> <span class="variable parameter">p</span><span class="punctuation delimiter">.</span><span class="property">length</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+
+    <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">pathString</span> <span class="operator">=</span> <span class="variable">absolutePath</span><span class="punctuation delimiter">;</span>
+    <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">pathArray</span> <span class="operator">=</span> <span class="variable">absolutePath</span>
+      <span class="punctuation delimiter">.</span><span class="function method">split</span><span class="punctuation bracket">(</span><span class="string">&quot;/&quot;</span><span class="punctuation bracket">)</span>
+      <span class="punctuation delimiter">.</span><span class="function method">slice</span><span class="punctuation bracket">(</span><span class="number">1</span><span class="punctuation bracket">)</span>
+      <span class="punctuation delimiter">.</span><span class="function method">filter</span><span class="punctuation bracket">(</span><span class="punctuation bracket">(</span><span class="variable parameter">p</span><span class="punctuation bracket">)</span> <span class="operator">=&gt;</span> <span class="variable parameter">p</span><span class="punctuation delimiter">.</span><span class="property">length</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="comment">/**</span>
+<span class="comment">   * Create a path. Call this to make a path.</span>
+<span class="comment">   * @param maybePathString either an existing Path or a string.</span>
+<span class="comment">   */</span>
+  <span class="keyword">static</span> <span class="function method">create</span><span class="punctuation bracket">(</span><span class="variable parameter">maybePathString</span>: <span class="type">Path</span> <span class="operator">|</span> <span class="type builtin">string</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="keyword">typeof</span> <span class="variable parameter">maybePathString</span> <span class="operator">===</span> <span class="string">&quot;string&quot;</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="keyword">return</span> <span class="keyword">new</span> <span class="type">Path</span><span class="punctuation bracket">(</span><span class="variable parameter">maybePathString</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span> <span class="keyword">else</span> <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="variable parameter">maybePathString</span> <span class="keyword">instanceof</span> <span class="type">Path</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="keyword">return</span> <span class="variable parameter">maybePathString</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+
+    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">Error</span><span class="punctuation bracket">(</span>
+      <span class="string">`Path provided must be a string or Path, given <span class="embedded"><span class="punctuation special">${</span><span class="variable parameter">maybePathString</span><span class="punctuation special">}</span></span>`</span>
+    <span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="comment">/**</span>
+<span class="comment">   * Returns a new Path with the proper full path.</span>
+<span class="comment">   */</span>
+  <span class="keyword">static</span> <span class="function method">fromUrl</span><span class="punctuation bracket">(</span><span class="variable parameter">url</span>: <span class="type builtin">string</span><span class="punctuation delimiter">,</span> <span class="variable parameter">websiteName</span>: <span class="type builtin">string</span><span class="punctuation delimiter">,</span> <span class="variable parameter">sourcePath</span>: <span class="type builtin">string</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">return</span> <span class="keyword">new</span> <span class="type">Path</span><span class="punctuation bracket">(</span><span class="variable parameter">url</span><span class="punctuation delimiter">.</span><span class="function method">replace</span><span class="punctuation bracket">(</span><span class="variable parameter">websiteName</span><span class="punctuation delimiter">,</span> <span class="variable parameter">sourcePath</span><span class="punctuation bracket">)</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="function method">toString</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">return</span> <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">pathString</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="comment">/**</span>
+<span class="comment">   * This path is equal to another path if they have the same pathString.</span>
+<span class="comment">   * If the other path is a string, this is still true..</span>
+<span class="comment">   * @param otherPath The other path to compare this path to.</span>
+<span class="comment">   */</span>
+  <span class="function method">equals</span><span class="punctuation bracket">(</span><span class="variable parameter">otherPath</span>: <span class="type">Path</span> <span class="operator">|</span> <span class="type builtin">string</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">return</span> <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">pathString</span> <span class="operator">===</span> <span class="type">Path</span><span class="punctuation delimiter">.</span><span class="function method">create</span><span class="punctuation bracket">(</span><span class="variable parameter">otherPath</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">.</span><span class="property">pathString</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="comment">/**</span>
+<span class="comment">   * Get the name of this file, including the extension.</span>
+<span class="comment">   */</span>
+  <span class="keyword">get</span> <span class="function method">name</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">return</span> <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">pathArray</span><span class="punctuation bracket">[</span><span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">pathArray</span><span class="punctuation delimiter">.</span><span class="property">length</span> <span class="operator">-</span> <span class="number">1</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="comment">/**</span>
+<span class="comment">   * Get the title of this file, NOT including the extension.</span>
+<span class="comment">   */</span>
+  <span class="keyword">get</span> <span class="function method">title</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">return</span> <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">name</span><span class="punctuation delimiter">.</span><span class="function method">split</span><span class="punctuation bracket">(</span><span class="string">&quot;.&quot;</span><span class="punctuation bracket">)</span><span class="punctuation bracket">[</span><span class="number">0</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+  <span class="comment">/**</span>
+<span class="comment">   * Get the mimeType of this file based on its path string.</span>
+<span class="comment">   */</span>
+  <span class="keyword">get</span> <span class="function method">mimeType</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">return</span> <span class="variable">mime</span><span class="punctuation delimiter">.</span><span class="function method">getType</span><span class="punctuation bracket">(</span><span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">pathString</span><span class="punctuation bracket">)</span> <span class="operator">||</span> <span class="string">&quot;text/plain&quot;</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="comment">/**</span>
+<span class="comment">   * Get this file&#39;s extension.</span>
+<span class="comment">   * If we don&#39;t have an extension provided, we determine it from disk.</span>
+<span class="comment">   */</span>
+  <span class="keyword">get</span> <span class="function method">extension</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span>: <span class="type builtin">string</span> <span class="operator">|</span> <span class="constant builtin">null</span> <span class="punctuation bracket">{</span>
+    <span class="comment">// we always fetch [1], because if the file has multiple extensions</span>
+    <span class="comment">// we ignore the second and only care about the first.</span>
+    <span class="keyword">const</span> <span class="variable">ext</span> <span class="operator">=</span> <span class="variable">pathLibrary</span><span class="punctuation delimiter">.</span><span class="function method">extname</span><span class="punctuation bracket">(</span><span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">pathString</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">.</span><span class="function method">split</span><span class="punctuation bracket">(</span><span class="string">&quot;.&quot;</span><span class="punctuation bracket">)</span><span class="punctuation bracket">[</span><span class="number">1</span><span class="punctuation bracket">]</span> <span class="operator">??</span> <span class="constant builtin">null</span><span class="punctuation delimiter">;</span>
+
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="variable">ext</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="keyword">return</span> <span class="variable">ext</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span> <span class="keyword">else</span> <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="function method">exists</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="operator">&amp;&amp;</span> <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="function method">isDirectory</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="keyword">return</span> <span class="string">&quot;dir&quot;</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+
+    <span class="keyword">return</span> <span class="variable">ext</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="comment">/**</span>
+<span class="comment">   * Get the parent of this path.</span>
+<span class="comment">   */</span>
+  <span class="keyword">get</span> <span class="function method">parent</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">return</span> <span class="type">Path</span><span class="punctuation delimiter">.</span><span class="function method">create</span><span class="punctuation bracket">(</span>
+      <span class="string">&quot;/&quot;</span> <span class="operator">+</span> <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">pathArray</span><span class="punctuation delimiter">.</span><span class="function method">slice</span><span class="punctuation bracket">(</span><span class="number">0</span><span class="punctuation delimiter">,</span> <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">pathArray</span><span class="punctuation delimiter">.</span><span class="property">length</span> <span class="operator">-</span> <span class="number">1</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">.</span><span class="function method">join</span><span class="punctuation bracket">(</span><span class="string">&quot;/&quot;</span><span class="punctuation bracket">)</span>
+    <span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="comment">/**</span>
+<span class="comment">   * Is this path the root path of the directory?</span>
+<span class="comment">   */</span>
+  <span class="function method">isRootPath</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">return</span> <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">pathArray</span><span class="punctuation delimiter">.</span><span class="property">length</span> <span class="operator">===</span> <span class="number">0</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="comment">/**</span>
+<span class="comment">   * Fetch and construct the repo if we don&#39;t have one yet.</span>
+<span class="comment">   * Returns null if we can&#39;t find a repo for the page.</span>
+<span class="comment">   */</span>
+  <span class="keyword">private</span> <span class="function method">__repo</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span>: <span class="type">Repo</span> <span class="operator">|</span> <span class="constant builtin">null</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="function method">isRootPath</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="keyword">return</span> <span class="constant builtin">null</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="operator">!</span><span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="function method">isDirectory</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="keyword">return</span> <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">parent</span><span class="punctuation delimiter">.</span><span class="function method">__repo</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+
+    <span class="keyword">const</span> <span class="variable">gitDir</span> <span class="operator">=</span> <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="function method">join</span><span class="punctuation bracket">(</span><span class="string">&quot;/.git&quot;</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="variable">gitDir</span><span class="punctuation delimiter">.</span><span class="function method">exists</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="keyword">return</span> <span class="type">Repo</span><span class="punctuation delimiter">.</span><span class="function method">create</span><span class="punctuation bracket">(</span><span class="variable builtin">this</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+
+    <span class="keyword">return</span> <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">parent</span><span class="punctuation delimiter">.</span><span class="function method">__repo</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="comment">/**</span>
+<span class="comment">   * Get the git repo that this path is a member of.</span>
+<span class="comment">   */</span>
+  <span class="keyword">get</span> <span class="function method">repo</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="operator">!</span><span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="function method">exists</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="keyword">return</span> <span class="constant builtin">null</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+
+    <span class="keyword">const</span> <span class="variable">rootRepo</span> <span class="operator">=</span> <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="function method">__repo</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="keyword">return</span> <span class="variable">rootRepo</span> <span class="operator">??</span> <span class="constant builtin">undefined</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="comment">/**</span>
+<span class="comment">   * Copy the file or directory at this path to another path.</span>
+<span class="comment">   * If the path is not a subdir of this path, throw an error.</span>
+<span class="comment">   */</span>
+  <span class="function method">copy</span><span class="punctuation bracket">(</span><span class="variable parameter">from</span>: <span class="type">Path</span><span class="punctuation delimiter">,</span> <span class="variable parameter">to</span>: <span class="type">Path</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="comment">// TODO: this would be a good safeguard to add, but it doesn&#39;t work?</span>
+    <span class="comment">// if (!this.contains(from)) {</span>
+    <span class="comment">//   throw new Error(</span>
+    <span class="comment">//     `Cannot copy ${from.toString()} to ${to.toString()} because it is not a subdirectory of ${this.toString()}`</span>
+    <span class="comment">//   );</span>
+    <span class="comment">// }</span>
+
+    <span class="keyword">try</span> <span class="punctuation bracket">{</span>
+      <span class="function">execSync</span><span class="punctuation bracket">(</span><span class="string">`cp -r <span class="embedded"><span class="punctuation special">${</span><span class="variable parameter">from</span><span class="punctuation delimiter">.</span><span class="property">pathString</span><span class="punctuation special">}</span></span> <span class="embedded"><span class="punctuation special">${</span><span class="variable parameter">to</span><span class="punctuation delimiter">.</span><span class="property">pathString</span><span class="punctuation special">}</span></span>`</span><span class="punctuation delimiter">,</span> <span class="punctuation bracket">{</span>
+        <span class="property">cwd</span>: <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="function method">toString</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">,</span>
+      <span class="punctuation bracket">}</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span> <span class="keyword">catch</span> <span class="punctuation bracket">(</span><span class="variable">e</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="variable builtin">console</span><span class="punctuation delimiter">.</span><span class="function method">log</span><span class="punctuation bracket">(</span><span class="string">&quot;error copying directory&quot;</span><span class="punctuation delimiter">,</span> <span class="variable">e</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="comment">/**</span>
+<span class="comment">   * Move the file or directory at this path to another path.</span>
+<span class="comment">   * If the path is not a subdir of this path, throw an error.</span>
+<span class="comment">   */</span>
+  <span class="function method">move</span><span class="punctuation bracket">(</span><span class="variable parameter">fromPath</span>: <span class="type">Path</span> <span class="operator">|</span> <span class="type builtin">string</span><span class="punctuation delimiter">,</span> <span class="variable parameter">toPath</span>: <span class="type">Path</span> <span class="operator">|</span> <span class="type builtin">string</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="variable builtin">console</span><span class="punctuation delimiter">.</span><span class="function method">log</span><span class="punctuation bracket">(</span><span class="string">&quot;moving from &quot;</span><span class="punctuation delimiter">,</span> <span class="punctuation bracket">{</span> <span class="property">from</span>: <span class="variable parameter">fromPath</span><span class="punctuation delimiter">,</span> <span class="property">to</span>: <span class="variable parameter">toPath</span> <span class="punctuation bracket">}</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+
+    <span class="keyword">try</span> <span class="punctuation bracket">{</span>
+      <span class="comment">// Avoid normalizing the paths by using the originals provided</span>
+      <span class="comment">// Use shell: true to allow wildcard expansion</span>
+      <span class="function">execSync</span><span class="punctuation bracket">(</span><span class="string">`rsync -av --delete <span class="embedded"><span class="punctuation special">${</span><span class="variable parameter">fromPath</span><span class="punctuation special">}</span></span> <span class="embedded"><span class="punctuation special">${</span><span class="variable parameter">toPath</span><span class="punctuation special">}</span></span>`</span><span class="punctuation delimiter">,</span> <span class="punctuation bracket">{</span>
+        <span class="property">cwd</span>: <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="function method">toString</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">,</span>
+        <span class="property">shell</span>: <span class="constant builtin">true</span><span class="punctuation delimiter">,</span>
+      <span class="punctuation bracket">}</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span> <span class="keyword">catch</span> <span class="punctuation bracket">(</span><span class="variable">e</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="variable builtin">console</span><span class="punctuation delimiter">.</span><span class="function method">log</span><span class="punctuation bracket">(</span><span class="string">&quot;error moving directory&quot;</span><span class="punctuation delimiter">,</span> <span class="variable">e</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="comment">/**</span>
+<span class="comment">   * get this path&#39;s position relative to another path or string</span>
+<span class="comment">   * ASSUME that the other paths, if defined, are the prefix of this one.</span>
+<span class="comment">   * REMOVE &#39;maybeOtherPath&#39; from this path&#39;s string.</span>
+<span class="comment">   * If &#39;maypeReplaceWithPath&#39; is defined, append it.</span>
+<span class="comment">   */</span>
+  <span class="function method">relativeTo</span><span class="punctuation bracket">(</span>
+    <span class="variable parameter">maybeOtherPath</span>: <span class="type">Path</span> <span class="operator">|</span> <span class="type builtin">string</span><span class="punctuation delimiter">,</span>
+    <span class="variable parameter">maybeReplaceWithPath</span>: <span class="type">Path</span> <span class="operator">|</span> <span class="type builtin">string</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span>
+  <span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">const</span> <span class="variable">otherPath</span> <span class="operator">=</span> <span class="type">Path</span><span class="punctuation delimiter">.</span><span class="function method">create</span><span class="punctuation bracket">(</span><span class="variable parameter">maybeOtherPath</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="operator">!</span><span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">pathString</span><span class="punctuation delimiter">.</span><span class="function method">startsWith</span><span class="punctuation bracket">(</span><span class="variable">otherPath</span><span class="punctuation delimiter">.</span><span class="function method">toString</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation bracket">)</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">Error</span><span class="punctuation bracket">(</span>
+        <span class="string">`Path we are removing is not present on the current path. Was looking for path: <span class="embedded"><span class="punctuation special">${</span><span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">pathString</span><span class="punctuation special">}</span></span> relative to <span class="embedded"><span class="punctuation special">${</span><span class="variable parameter">maybeOtherPath</span><span class="punctuation special">}</span></span>`</span>
+      <span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+
+    <span class="keyword">let</span> <span class="variable">resultingPathString</span> <span class="operator">=</span> <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">pathString</span><span class="punctuation delimiter">;</span>
+
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="variable">otherPath</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="variable">resultingPathString</span> <span class="operator">=</span> <span class="variable">resultingPathString</span><span class="punctuation delimiter">.</span><span class="function method">replace</span><span class="punctuation bracket">(</span>
+        <span class="variable">otherPath</span><span class="punctuation delimiter">.</span><span class="function method">toString</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">,</span>
+        <span class="variable parameter">maybeReplaceWithPath</span><span class="punctuation delimiter">.</span><span class="function method">toString</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span>
+      <span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+    <span class="keyword">return</span> <span class="type">Path</span><span class="punctuation delimiter">.</span><span class="function method">create</span><span class="punctuation bracket">(</span><span class="variable">resultingPathString</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="comment">/**</span>
+<span class="comment">   * Does the file at this path exist?</span>
+<span class="comment">   */</span>
+  <span class="function method">exists</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">doesFileExist</span> <span class="operator">===</span> <span class="constant builtin">undefined</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">doesFileExist</span> <span class="operator">=</span> <span class="variable">fs</span><span class="punctuation delimiter">.</span><span class="function method">existsSync</span><span class="punctuation bracket">(</span><span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">pathString</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+
+    <span class="keyword">return</span> <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">doesFileExist</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="comment">/**</span>
+<span class="comment">   * Accepts the extension WITHOUT a prefixed period</span>
+<span class="comment">   */</span>
+  <span class="function method">addExtension</span><span class="punctuation bracket">(</span><span class="variable parameter">extension</span>: <span class="type builtin">string</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">return</span> <span class="keyword">new</span> <span class="type">Path</span><span class="punctuation bracket">(</span><span class="string">`<span class="embedded"><span class="punctuation special">${</span><span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="function method">toString</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation special">}</span></span>.<span class="embedded"><span class="punctuation special">${</span><span class="variable parameter">extension</span><span class="punctuation special">}</span></span>`</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="comment">/**</span>
+<span class="comment">   * Replace the path&#39;s extension with a new one.</span>
+<span class="comment">   * @argument extension the extension WITHOUT a prefixed period</span>
+<span class="comment">   * if undefined, the extension is dropped</span>
+<span class="comment">   * if the path has multiple extensions, the last one is dropped</span>
+<span class="comment">   */</span>
+  <span class="function method">replaceExtension</span><span class="punctuation bracket">(</span><span class="variable parameter">extension</span>?: <span class="type builtin">string</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">let</span> <span class="variable">newPathWithExtension</span> <span class="operator">=</span> <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">pathString</span><span class="punctuation delimiter">;</span>
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="operator">!</span><span class="variable">newPathWithExtension</span><span class="punctuation delimiter">.</span><span class="function method">includes</span><span class="punctuation bracket">(</span><span class="string">&quot;.&quot;</span><span class="punctuation bracket">)</span> <span class="operator">&amp;&amp;</span> <span class="variable parameter">extension</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="variable">newPathWithExtension</span> <span class="operator">+=</span> <span class="string">`.<span class="embedded"><span class="punctuation special">${</span><span class="variable parameter">extension</span><span class="punctuation special">}</span></span>`</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span> <span class="keyword">else</span> <span class="punctuation bracket">{</span>
+      <span class="variable">newPathWithExtension</span> <span class="operator">=</span> <span class="variable">newPathWithExtension</span><span class="punctuation delimiter">.</span><span class="function method">replace</span><span class="punctuation bracket">(</span>
+        <span class="string special"><span class="operator">/</span><span class="escape">\.</span><span class="punctuation bracket">[</span>a-zA-Z0-9<span class="punctuation bracket">]</span><span class="operator">+</span><span class="escape">$</span><span class="operator">/</span></span><span class="punctuation delimiter">,</span>
+        <span class="variable parameter">extension</span> ? <span class="string">`.<span class="embedded"><span class="punctuation special">${</span><span class="variable parameter">extension</span><span class="punctuation special">}</span></span>`</span> : <span class="string">&quot;&quot;</span>
+      <span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+    <span class="keyword">return</span> <span class="keyword">new</span> <span class="type">Path</span><span class="punctuation bracket">(</span><span class="variable">newPathWithExtension</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="comment">/**</span>
+<span class="comment">   * Is this path a directory?</span>
+<span class="comment">   */</span>
+  <span class="function method">isDirectory</span><span class="punctuation bracket">(</span><span class="punctuation bracket">{</span> noFSOperation <span class="punctuation bracket">}</span> <span class="operator">=</span> <span class="punctuation bracket">{</span> <span class="property">noFSOperation</span>: <span class="constant builtin">false</span> <span class="punctuation bracket">}</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="variable">noFSOperation</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="keyword">const</span> <span class="variable">extension</span> <span class="operator">=</span> <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">pathString</span><span class="punctuation delimiter">.</span><span class="function method">split</span><span class="punctuation bracket">(</span><span class="string">&quot;.&quot;</span><span class="punctuation bracket">)</span><span class="punctuation bracket">[</span><span class="number">1</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">;</span>
+      <span class="keyword">return</span> <span class="operator">!</span><span class="variable">extension</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="operator">!</span><span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="function method">exists</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">Error</span><span class="punctuation bracket">(</span><span class="string">`File <span class="embedded"><span class="punctuation special">${</span><span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="function method">toString</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation special">}</span></span> doesnt exist`</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="operator">!</span><span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">lstats</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">lstats</span> <span class="operator">=</span> <span class="variable">fs</span><span class="punctuation delimiter">.</span><span class="function method">lstatSync</span><span class="punctuation bracket">(</span><span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">pathString</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+
+    <span class="keyword">return</span> <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">lstats</span><span class="punctuation delimiter">?.</span><span class="function method">isDirectory</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="comment">// read this path as a utf8 string</span>
+  <span class="function method">readString</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">return</span> <span class="variable">fs</span><span class="punctuation delimiter">.</span><span class="function method">readFileSync</span><span class="punctuation bracket">(</span><span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">pathString</span><span class="punctuation delimiter">,</span> <span class="string">&quot;utf8&quot;</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="comment">/**</span>
+<span class="comment">   * Write a string to the file at this path,</span>
+<span class="comment">   * creating the file if it doesn&#39;t exist.</span>
+<span class="comment">   */</span>
+  <span class="function method">writeString</span><span class="punctuation bracket">(</span><span class="variable parameter">str</span>: <span class="type builtin">string</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="comment">// if (this.isDirectory({ noFSOperation: true })) {</span>
+    <span class="comment">//   throw new Error(&quot;Cannot write a string to a non-directory file&quot;);</span>
+    <span class="comment">// }</span>
+    <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="function method">make</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="variable">fs</span><span class="punctuation delimiter">.</span><span class="function method">writeFileSync</span><span class="punctuation bracket">(</span><span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">pathString</span><span class="punctuation delimiter">,</span> <span class="variable parameter">str</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="function method">readBinary</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="comment">// const chunks = [];</span>
+    <span class="keyword">let</span> <span class="variable">buffer</span><span class="punctuation delimiter">;</span>
+
+    <span class="comment">// const readStream = fs.createReadStream(this.pathString);</span>
+    <span class="comment">// readStream.on(&#39;data&#39;, (chunk) =&gt; {</span>
+    <span class="comment">//   chunks.push(chunk);</span>
+    <span class="comment">// });</span>
+
+    <span class="comment">// readStream.on(&#39;end&#39;, () =&gt; {</span>
+    <span class="comment">//   buffer = Buffer.concat(chunks);</span>
+    <span class="comment">// });</span>
+
+    <span class="comment">// while (!buffer) {</span>
+    <span class="comment">// }</span>
+    <span class="keyword">return</span> <span class="variable">buffer</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="function method">writeBinary</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="comment">// const outStream = fs.createWriteStream(outPath);</span>
+    <span class="comment">// inStream.pipe(outStream);</span>
+    <span class="comment">// TODO</span>
+    <span class="comment">// await new Promise((resolve) =&gt; {</span>
+    <span class="comment">//   outStream.on(&#39;close&#39;, resolve);</span>
+    <span class="comment">// });</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="comment">/**</span>
+<span class="comment">   * Read an entire directory, returning all of the paths in the directory.</span>
+<span class="comment">   */</span>
+  <span class="function method">readDirectory</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="operator">!</span><span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="function method">isDirectory</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">Error</span><span class="punctuation bracket">(</span>
+        <span class="string">`Cannot read directory &#39;<span class="embedded"><span class="punctuation special">${</span><span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">pathString</span><span class="punctuation special">}</span></span>&#39; because it is not a directory`</span>
+      <span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+
+    <span class="keyword">let</span> <span class="variable">normalizedPathString</span> <span class="operator">=</span> <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">pathString</span><span class="punctuation delimiter">;</span>
+
+    <span class="comment">// if the path doesn&#39;t end in a slash, add one</span>
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="variable">normalizedPathString</span><span class="punctuation bracket">[</span><span class="variable">normalizedPathString</span><span class="punctuation delimiter">.</span><span class="property">length</span> <span class="operator">-</span> <span class="number">1</span><span class="punctuation bracket">]</span> <span class="operator">!==</span> <span class="string">&quot;/&quot;</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="variable">normalizedPathString</span> <span class="operator">+=</span> <span class="string">&quot;/&quot;</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+
+    <span class="keyword">return</span> <span class="variable">fs</span>
+      <span class="punctuation delimiter">.</span><span class="function method">readdirSync</span><span class="punctuation bracket">(</span><span class="variable">normalizedPathString</span><span class="punctuation bracket">)</span>
+      <span class="punctuation delimiter">.</span><span class="function method">map</span><span class="punctuation bracket">(</span><span class="punctuation bracket">(</span><span class="variable parameter">fileName</span><span class="punctuation bracket">)</span> <span class="operator">=&gt;</span> <span class="keyword">new</span> <span class="type">Path</span><span class="punctuation bracket">(</span><span class="string">`<span class="embedded"><span class="punctuation special">${</span><span class="variable">normalizedPathString</span><span class="punctuation special">}</span></span><span class="embedded"><span class="punctuation special">${</span><span class="variable parameter">fileName</span><span class="punctuation special">}</span></span>`</span><span class="punctuation bracket">)</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="comment">/**</span>
+<span class="comment">   * Join the provided next part of the path to this path,</span>
+<span class="comment">   * producing the conjunction of the two.</span>
+<span class="comment">   */</span>
+  <span class="function method">join</span><span class="punctuation bracket">(</span><span class="variable parameter">nextPart</span>: <span class="type">Path</span> <span class="operator">|</span> <span class="type builtin">string</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">return</span> <span class="type">Path</span><span class="punctuation delimiter">.</span><span class="function method">create</span><span class="punctuation bracket">(</span><span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">pathString</span> <span class="operator">+</span> <span class="variable parameter">nextPart</span><span class="punctuation delimiter">.</span><span class="function method">toString</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="comment">/**</span>
+<span class="comment">   * Determines whether this path contains the other.</span>
+<span class="comment">   * This implementation is a bit strange and title might not be accurate.</span>
+<span class="comment">   */</span>
+  <span class="function method">contains</span><span class="punctuation bracket">(</span><span class="variable parameter">maybeOtherPathString</span>: <span class="type">Path</span> <span class="operator">|</span> <span class="type builtin">string</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">const</span> <span class="variable">otherPath</span> <span class="operator">=</span> <span class="type">Path</span><span class="punctuation delimiter">.</span><span class="function method">create</span><span class="punctuation bracket">(</span><span class="variable parameter">maybeOtherPathString</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span>
+      <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">pathArray</span><span class="punctuation delimiter">.</span><span class="property">length</span> <span class="operator">&gt;</span> <span class="variable">otherPath</span><span class="punctuation delimiter">.</span><span class="property">pathArray</span><span class="punctuation delimiter">.</span><span class="property">length</span> <span class="operator">||</span>
+      <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">pathString</span> <span class="operator">===</span> <span class="variable">otherPath</span><span class="punctuation delimiter">.</span><span class="property">pathString</span>
+    <span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="keyword">return</span> <span class="constant builtin">false</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+
+    <span class="keyword">for</span> <span class="punctuation bracket">(</span><span class="keyword">let</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span><span class="punctuation delimiter">;</span> <span class="variable">i</span> <span class="operator">&lt;</span> <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">pathArray</span><span class="punctuation delimiter">.</span><span class="property">length</span><span class="punctuation delimiter">;</span> <span class="variable">i</span><span class="operator">++</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="variable">otherPath</span><span class="punctuation delimiter">.</span><span class="property">pathArray</span><span class="punctuation bracket">[</span><span class="variable">i</span><span class="punctuation bracket">]</span> <span class="operator">!==</span> <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">pathArray</span><span class="punctuation bracket">[</span><span class="variable">i</span><span class="punctuation bracket">]</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+        <span class="keyword">return</span> <span class="constant builtin">false</span><span class="punctuation delimiter">;</span>
+      <span class="punctuation bracket">}</span>
+    <span class="punctuation bracket">}</span>
+
+    <span class="keyword">return</span> <span class="constant builtin">true</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="comment">/**</span>
+<span class="comment">   * Make this path exist, creating any parent directories along the way.</span>
+<span class="comment">   * Assume the path is a file unless provided that it&#39;s a directory.</span>
+<span class="comment">   */</span>
+  <span class="function method">make</span><span class="punctuation bracket">(</span><span class="variable parameter">settings</span>?: <span class="punctuation bracket">{</span> <span class="property">isDirectory</span>?: <span class="type builtin">boolean</span> <span class="punctuation bracket">}</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">const</span> <span class="variable">isDirectory</span> <span class="operator">=</span> <span class="variable parameter">settings</span><span class="punctuation delimiter">?.</span><span class="property">isDirectory</span><span class="punctuation delimiter">;</span>
+
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="function method">exists</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="variable builtin">console</span><span class="punctuation delimiter">.</span><span class="function method">log</span><span class="punctuation bracket">(</span><span class="string">&quot;.make: File already exists at path &quot;</span><span class="punctuation delimiter">,</span> <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">pathString</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+      <span class="keyword">return</span> <span class="variable builtin">this</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+
+    <span class="comment">// If this file is supposed to have a parent, then,</span>
+    <span class="comment">// by definition, its parent must be a directory.</span>
+    <span class="comment">// Make sure the parent directory exists.</span>
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="operator">!</span><span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">parent</span><span class="punctuation delimiter">.</span><span class="function method">exists</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="variable builtin">console</span><span class="punctuation delimiter">.</span><span class="function method">log</span><span class="punctuation bracket">(</span>
+        <span class="string">&quot;The parent of this path&quot;</span><span class="punctuation delimiter">,</span>
+        <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="function method">toString</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">,</span>
+        <span class="string">&quot;does not exist. Making it: &quot;</span><span class="punctuation delimiter">,</span>
+        <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">parent</span><span class="punctuation delimiter">.</span><span class="function method">toString</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span>
+      <span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+
+      <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">parent</span><span class="punctuation delimiter">.</span><span class="function method">make</span><span class="punctuation bracket">(</span><span class="punctuation bracket">{</span> <span class="property">isDirectory</span>: <span class="constant builtin">true</span> <span class="punctuation bracket">}</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="variable">isDirectory</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="variable builtin">console</span><span class="punctuation delimiter">.</span><span class="function method">log</span><span class="punctuation bracket">(</span><span class="string">&quot;Making directory at&quot;</span><span class="punctuation delimiter">,</span> <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">pathString</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+      <span class="variable">fs</span><span class="punctuation delimiter">.</span><span class="function method">mkdirSync</span><span class="punctuation bracket">(</span><span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">pathString</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span> <span class="keyword">else</span> <span class="punctuation bracket">{</span>
+      <span class="variable builtin">console</span><span class="punctuation delimiter">.</span><span class="function method">log</span><span class="punctuation bracket">(</span><span class="string">&quot;Making file at&quot;</span><span class="punctuation delimiter">,</span> <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">pathString</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+      <span class="variable">fs</span><span class="punctuation delimiter">.</span><span class="function method">writeFileSync</span><span class="punctuation bracket">(</span><span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">pathString</span><span class="punctuation delimiter">,</span> <span class="string">&quot;&quot;</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+
+    <span class="keyword">return</span> <span class="variable builtin">this</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="comment">/**</span>
+<span class="comment">   * Watch this file for any action.</span>
+<span class="comment">   * Invoke a callback listener if the file changes.</span>
+<span class="comment">   */</span>
+  <span class="function method">watch</span><span class="punctuation bracket">(</span><span class="variable parameter">callback</span>: <span class="type">Function</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="operator">!</span><span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="function method">exists</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">Error</span><span class="punctuation bracket">(</span>
+        <span class="string">`Cannot watch path &#39;<span class="embedded"><span class="punctuation special">${</span><span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">pathString</span><span class="punctuation special">}</span></span>&#39; because it does not exist`</span>
+      <span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+
+    <span class="keyword">const</span> <span class="variable">watcher</span> <span class="operator">=</span> <span class="variable">fs</span><span class="punctuation delimiter">.</span><span class="function method">watch</span><span class="punctuation bracket">(</span><span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">pathString</span><span class="punctuation delimiter">,</span> <span class="punctuation bracket">(</span><span class="variable parameter">eventType</span><span class="punctuation delimiter">,</span> <span class="variable parameter">filename</span><span class="punctuation bracket">)</span> <span class="operator">=&gt;</span> <span class="punctuation bracket">{</span>
+      <span class="comment">// TODO: filename could be different if the file moves?</span>
+      <span class="variable parameter">callback</span><span class="punctuation bracket">(</span><span class="variable parameter">eventType</span><span class="punctuation delimiter">,</span> <span class="variable builtin">this</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+
+    <span class="keyword">return</span> <span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="operator">=&gt;</span> <span class="variable">watcher</span><span class="punctuation delimiter">.</span><span class="function method">close</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="function method">normalize</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">return</span> <span class="type">Path</span><span class="punctuation delimiter">.</span><span class="function method">create</span><span class="punctuation bracket">(</span>
+      <span class="variable">pathLibrary</span><span class="punctuation delimiter">.</span><span class="function method">normalize</span><span class="punctuation bracket">(</span><span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="function method">toString</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation bracket">)</span>
+    <span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+<span class="punctuation bracket">}</span>
+
+<span class="keyword">export</span> <span class="punctuation bracket">{</span> <span class="type">Path</span> <span class="punctuation bracket">}</span><span class="punctuation delimiter">;</span>
+</code></pre></article></main><div class="article-rhs-container"><div class="article-rhs"><div class="git-history-table-container"><span class="git-history-table-title">Revisions</span><table class="git-history-table"><thead><tr><th>Date</th><th>Hash</th></tr></thead><tbody><tr><td class="commit-date-tr">2025-11-08</td><td class="commit-link-tr">9395de43</td></tr><tr><td class="commit-date-tr">2024-11-17</td><td class="commit-link-tr">64bc9e63</td></tr><tr><td class="commit-date-tr">2024-04-18</td><td class="commit-link-tr">4a3d526d</td></tr><tr><td class="commit-date-tr">2024-04-17</td><td class="commit-link-tr">40ea5682</td></tr><tr><td class="commit-date-tr">2024-04-14</td><td class="commit-link-tr">cec04733</td></tr><tr><td class="commit-date-tr">2024-04-14</td><td class="commit-link-tr">80c18980</td></tr><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">54739125</td></tr><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">3de0cb40</td></tr><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">b23a3674</td></tr><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">6dd5f2db</td></tr><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">5eebe57a</td></tr><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">0c9b2c0e</td></tr><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">b67bc56f</td></tr><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">17ceed04</td></tr><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">c56ed416</td></tr><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">838a868a</td></tr><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">4457e0b9</td></tr><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">a274b4c9</td></tr><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">24027a67</td></tr><tr><td class="commit-date-tr">2024-04-12</td><td class="commit-link-tr">52d9d7fe</td></tr><tr><td class="commit-date-tr">2024-04-01</td><td class="commit-link-tr">a3c37e13</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">6cca7a6a</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">c64fbf31</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">02dca1b8</td></tr></tbody></table></div><div class="prev-next-up-buttons-container">Navigation<table class="prev-next-up-buttons"><tr><td>Next</td><td><a class="next-button" href="http://localhost:4242/src/utils/array.ts.html">array.ts</a></td></tr><tr><td>Up</td><td><a class="up-button" href="http://localhost:4242/src/utils/index.html">utils</a></td></tr></table></div></div></div></div></body></html>

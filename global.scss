@@ -1,0 +1,105 @@
+/* Global settings for color scheme and such. */
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+
+/* https://www.nature.com/articles/nmeth.1618 */
+@mixin colors {
+  --black: rgb(0, 0, 0);
+  --orange: rgb(230, 159, 0);
+  --blue: rgb(86, 180, 233);
+  --green: rgb(0, 158, 115);
+  --yellow: rgb(240, 228, 66);
+  --darkblue: rgb(0, 114, 178);
+  --red: rgb(219, 94, 0);
+  --purple: rgb(204, 121, 167);
+}
+
+@mixin light-theme {
+  @include colors;
+  --highlight: #eee8d5;
+  --quote-background: lightgrey;
+  --quote-background-border: #ccc;
+  --quote-background-border-highlighted: #bbb;
+
+  --link: #484848;
+  --text-color: black;
+  --highlight-text: #fff;
+  --subtle-text: darkgrey;
+
+  --page-background: white;
+  --window-background: white;
+}
+
+@mixin dark-theme {
+  --highlight: #4C5669;
+  --quote-background: #222;
+  --quote-background-border: #333;
+  --quote-background-border-highlighted: #444;
+
+  --link: #ccc;
+  --text-color: white;
+  --highlight-text: #fff;
+  --subtle-text: grey;
+
+  --page-background: #111;
+  --window-background: #111;
+}
+
+
+:root {
+  /* Inform the browser that color schemes are available. */
+  color-scheme: light dark;
+  @include dark-theme;
+}
+
+.light-theme {
+  @include light-theme;
+}
+
+.dark-theme {
+  @include dark-theme;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    @include light-theme;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    @include dark-theme;
+  }
+}
+
+html {
+  font-size: 16px;
+  line-height: 1.5;
+  font-family: "Inter", sans-serif;
+  /* For jquery-terminal */
+  --font: "Berkeley Mono", monospace;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  word-wrap: break-word;
+  hyphens: auto;
+}
+
+body {
+  margin: 0;
+  color: var(--text-color);
+  background-color: var(--page-background);
+}
+
+main {
+  max-width: 40rem;
+}
+
+@media only screen and (max-width: 500px) {
+  body {
+    max-width: 100%;
+  }
+
+  main {
+    max-width: 100%;
+  }
+}

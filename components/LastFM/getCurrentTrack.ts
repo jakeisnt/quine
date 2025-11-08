@@ -1,4 +1,4 @@
-import { create, create2, get, $ } from "../../resources/lib";
+import { create, create2, get, $ } from "/resources/lib";
 
 /* OLD SCHOOL CURRENT PLAYING STUFF */
 /* source: https://gist.github.com/trisweb/2c0c94273f653c81f34dbe8e85ad30e7 via https://www.trisweb.com/ */
@@ -70,7 +70,7 @@ const lastfm = () => {
     }
 
     nowPlayingNode = create(
-      "a",
+      "div",
       {
         className: "now-playing",
         href: track.url,
@@ -83,8 +83,8 @@ const lastfm = () => {
       "img",
       {
         className: "np-image",
-        width: 128,
-        height: 128,
+        width: "128",
+        height: "128",
         src: track.image.slice(-1)[0]["#text"],
       },
       nowPlayingNode

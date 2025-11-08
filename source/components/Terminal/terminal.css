@@ -1,0 +1,18 @@
+.terminal {
+    height: 40%;
+    position: absolute;
+    right: 1em;
+    top: 1em;
+    max-width: 40em;
+    border: 2px solid var(--highlight);
+    z-index: 10;
+}
+
+@media only screen and (max-width: 500px) {
+  .terminal {
+    position: relative;
+    max-width: 80vw;
+    height: 10%;
+    padding-bottom: 5em;
+  }
+}

@@ -1,0 +1,78 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"></meta><title>flake.lock / Jake Chvatal</title><meta property="og:title" content="flake.lock"></meta><meta property="og:type" content="website"></meta><meta property="og:url" content="https://jake.isnt.online"></meta><meta property="og:site_name" content="Jake Chvatal"></meta><meta name="keywords" content="jake"></meta><meta name="author" content="Jake Chvatal"></meta><meta name="robots" content="index,follow"></meta><meta name="description" content="hi"></meta><meta name="theme-color" media="(prefers-color-scheme: light)" content="white"></meta><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#111"></meta><link rel="icon" type="image/x-icon" href="/Users/jake/Documents/personal/site/favicons/favicon.ico"></link><link rel="apple-touch-icon" href="/Users/jake/Documents/personal/site/favicons/apple-touch-icon.png"></link><link rel="stylesheet" type="text/css" href="/resources/style.css" id="/resources/style.css"></link><link rel="stylesheet" type="text/css" href="/resources/global.css" id="/resources/global.css"></link><script src="/resources/lib.js" id="/resources/lib.js" type="module"></script><link rel="stylesheet" type="text/css" href="/resources/elementsstyle.css" id="/resources/elementsstyle.css"></link><link rel="manifest" href="/resources/manifest.json"></link><script src="/resources/elements.js" id="/resources/elements.js" type="module" defer="true"></script></head><body><link rel="stylesheet" href="/components/Sidebar/sidebar.css"></link><div class="sidebar"><div class="url-path"><b>jake.</b><span> / </span><b>flake.lock</b></div><script src="/components/ToggleDarkMode/toggle-dark-mode.js" type="module"></script><link rel="stylesheet" href="/components/ToggleDarkMode/toggle-dark-mode.css"></link><div class="toggle-dark-mode-container"><button class="toggle-dark-mode"></button></div></div><div class="site-body"><main><article class="wikipage"><h1 class="title-top">flake.lock</h1><link rel="stylesheet" href="/components/SourceBlock/source-block.css"></link><script src="/components/SourceBlock/load-code-blocks.js" type="module"></script><pre><code class="language-lock has-raw-code">{
+  &quot;nodes&quot;: {
+    &quot;flake-compat&quot;: {
+      &quot;flake&quot;: false,
+      &quot;locked&quot;: {
+        &quot;lastModified&quot;: 1696426674,
+        &quot;narHash&quot;: &quot;sha256-kvjfFW7WAETZlt09AgDn1MrtKzP7t90Vf7vypd3OL1U=&quot;,
+        &quot;owner&quot;: &quot;edolstra&quot;,
+        &quot;repo&quot;: &quot;flake-compat&quot;,
+        &quot;rev&quot;: &quot;0f9255e01c2351cc7d116c072cb317785dd33b33&quot;,
+        &quot;type&quot;: &quot;github&quot;
+      },
+      &quot;original&quot;: {
+        &quot;owner&quot;: &quot;edolstra&quot;,
+        &quot;repo&quot;: &quot;flake-compat&quot;,
+        &quot;type&quot;: &quot;github&quot;
+      }
+    },
+    &quot;nixpkgs&quot;: {
+      &quot;locked&quot;: {
+        &quot;lastModified&quot;: 1712791164,
+        &quot;narHash&quot;: &quot;sha256-3sbWO1mbpWsLepZGbWaMovSO7ndZeFqDSdX0hZ9nVyw=&quot;,
+        &quot;owner&quot;: &quot;NixOS&quot;,
+        &quot;repo&quot;: &quot;nixpkgs&quot;,
+        &quot;rev&quot;: &quot;1042fd8b148a9105f3c0aca3a6177fd1d9360ba5&quot;,
+        &quot;type&quot;: &quot;github&quot;
+      },
+      &quot;original&quot;: {
+        &quot;id&quot;: &quot;nixpkgs&quot;,
+        &quot;ref&quot;: &quot;nixos-unstable&quot;,
+        &quot;type&quot;: &quot;indirect&quot;
+      }
+    },
+    &quot;root&quot;: {
+      &quot;inputs&quot;: {
+        &quot;flake-compat&quot;: &quot;flake-compat&quot;,
+        &quot;nixpkgs&quot;: &quot;nixpkgs&quot;,
+        &quot;utils&quot;: &quot;utils&quot;
+      }
+    },
+    &quot;systems&quot;: {
+      &quot;locked&quot;: {
+        &quot;lastModified&quot;: 1681028828,
+        &quot;narHash&quot;: &quot;sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=&quot;,
+        &quot;owner&quot;: &quot;nix-systems&quot;,
+        &quot;repo&quot;: &quot;default&quot;,
+        &quot;rev&quot;: &quot;da67096a3b9bf56a91d16901293e51ba5b49a27e&quot;,
+        &quot;type&quot;: &quot;github&quot;
+      },
+      &quot;original&quot;: {
+        &quot;owner&quot;: &quot;nix-systems&quot;,
+        &quot;repo&quot;: &quot;default&quot;,
+        &quot;type&quot;: &quot;github&quot;
+      }
+    },
+    &quot;utils&quot;: {
+      &quot;inputs&quot;: {
+        &quot;systems&quot;: &quot;systems&quot;
+      },
+      &quot;locked&quot;: {
+        &quot;lastModified&quot;: 1710146030,
+        &quot;narHash&quot;: &quot;sha256-SZ5L6eA7HJ/nmkzGG7/ISclqe6oZdOZTNoesiInkXPQ=&quot;,
+        &quot;owner&quot;: &quot;numtide&quot;,
+        &quot;repo&quot;: &quot;flake-utils&quot;,
+        &quot;rev&quot;: &quot;b1d9ab70662946ef0850d488da1c9019f3a9752a&quot;,
+        &quot;type&quot;: &quot;github&quot;
+      },
+      &quot;original&quot;: {
+        &quot;owner&quot;: &quot;numtide&quot;,
+        &quot;repo&quot;: &quot;flake-utils&quot;,
+        &quot;type&quot;: &quot;github&quot;
+      }
+    }
+  },
+  &quot;root&quot;: &quot;root&quot;,
+  &quot;version&quot;: 7
+}
+</code></pre></article></main><div class="article-rhs-container"><div class="article-rhs"><div class="git-history-table-container"><span class="git-history-table-title">Revisions</span><table class="git-history-table"><thead><tr><th>Date</th><th>Hash</th></tr></thead><tbody><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">4a458381</td></tr><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">c1bd8543</td></tr><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">59a26f56</td></tr><tr><td class="commit-date-tr">2024-04-05</td><td class="commit-link-tr">9c2aacdd</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">02dca1b8</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">373cea83</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">98c7efa5</td></tr><tr><td class="commit-date-tr">2024-03-18</td><td class="commit-link-tr">6eb5ebb9</td></tr><tr><td class="commit-date-tr">2024-01-28</td><td class="commit-link-tr">b5411639</td></tr><tr><td class="commit-date-tr">2024-01-28</td><td class="commit-link-tr">709ef48c</td></tr><tr><td class="commit-date-tr">2023-10-20</td><td class="commit-link-tr">501caab0</td></tr><tr><td class="commit-date-tr">2023-05-31</td><td class="commit-link-tr">a530febb</td></tr><tr><td class="commit-date-tr">2023-04-22</td><td class="commit-link-tr">577a0035</td></tr><tr><td class="commit-date-tr">2023-04-22</td><td class="commit-link-tr">1aee19b3</td></tr><tr><td class="commit-date-tr">2022-12-31</td><td class="commit-link-tr">deb4260b</td></tr><tr><td class="commit-date-tr">2022-09-20</td><td class="commit-link-tr">c673c5eb</td></tr></tbody></table></div><div class="prev-next-up-buttons-container">Navigation<table class="prev-next-up-buttons"><tr><td>Next</td><td><a class="next-button" href="https://jake.isnt.online/LICENSE.html">LICENSE</a></td></tr><tr><td>Up</td><td><a class="up-button" href="/Users/jake/Documents/personal/site/index.html">site</a></td></tr></table></div></div></div></div></body></html>

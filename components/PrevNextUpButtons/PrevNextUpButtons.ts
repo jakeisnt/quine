@@ -1,6 +1,4 @@
 import type File from "../../src/file/classes/file";
-import { PageSettings } from "../../src/types/site";
-import { getFileDirectory } from "../../src/file/utils";
 
 const findFileIndex = (files: File[], file: File) => {
   return files.findIndex((f) => f.equals(file));
@@ -8,10 +6,14 @@ const findFileIndex = (files: File[], file: File) => {
 
 const prevNextUpHtml = ({
   file,
-  url,
+  rootUrl,
   sourceDir,
-}: PageSettings & { file: File }) => {
-  const dir = getFileDirectory(file);
+}: {
+  file: File;
+  rootUrl: string;
+  sourceDir: string;
+}) => {
+  const dir = file.directory();
   const contents = dir.contents();
 
   const curFileIndex = findFileIndex(contents, file);
@@ -38,7 +40,7 @@ const prevNextUpHtml = ({
             "a",
             {
               class: "prev-button",
-              href: prevFile.htmlUrl({ url, sourceDir }),
+              href: prevFile.htmlUrl({ rootUrl, sourceDir }),
             },
             prevFile.name,
           ],
@@ -53,7 +55,7 @@ const prevNextUpHtml = ({
             "a",
             {
               class: "next-button",
-              href: nextFile.htmlUrl({ url, sourceDir }),
+              href: nextFile.htmlUrl({ rootUrl, sourceDir }),
             },
             nextFile.name,
           ],
@@ -66,7 +68,7 @@ const prevNextUpHtml = ({
           "td",
           [
             "a",
-            { class: "up-button", href: dir.htmlUrl({ url, sourceDir }) },
+            { class: "up-button", href: dir.htmlUrl({ sourceDir }) },
             dir.name,
           ],
         ],

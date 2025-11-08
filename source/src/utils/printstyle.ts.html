@@ -1,0 +1,149 @@
+<!DOCTYPE html><html lang="en"><link rel="stylesheet" href="/resources/style.css"></link><link rel="stylesheet" href="/resources/global.css"></link><link rel="stylesheet" href="/resources/elementsstyle.css"></link><script type="module" src="/resources/lib.js"></script><script type="module" defer="true" src="/resources/elements.js"></script><head><meta charset="utf-8"></meta><meta name="viewport" content="width=device-width, initial-scale=1"></meta><title>printstyle.ts / Jake Chvatal</title><meta property="og:title" content="printstyle.ts"></meta><meta property="og:type" content="website"></meta><meta property="og:url" content="http://localhost:4242/"></meta><meta property="og:site_name" content="Jake Chvatal"></meta><meta name="keywords" content="jake"></meta><meta name="author" content="Jake Chvatal"></meta><meta name="robots" content="index,follow"></meta><meta name="description" content="hi"></meta><meta name="theme-color" media="(prefers-color-scheme: light)" content="white"></meta><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#111"></meta></head><body><link rel="stylesheet" href="/components/Sidebar/sidebar.css"></link><div class="sidebar"><div class="url-path"><b>jake.</b><span> / </span><a href="http://localhost:4242//src/index.html">src</a><span> / </span><a href="http://localhost:4242//src/utils/index.html">utils</a><span> / </span><b>printstyle.ts</b></div><script type="module" src="/components/ToggleDarkMode/toggle-dark-mode.js"></script><link rel="stylesheet" href="/components/ToggleDarkMode/toggle-dark-mode.css"></link><div class="toggle-dark-mode-container"><button class="toggle-dark-mode"></button></div></div><div class="site-body"><main><article class="wikipage"><h1 class="title-top">printstyle.ts</h1><link rel="stylesheet" href="/components/SourceBlock/source-block.css"></link><script type="module" src="/components/SourceBlock/load-code-blocks.js"></script><pre><code class="language-ts has-raw-code"><span class="comment">// styles things that print out to the cli</span>
+<span class="keyword">import</span> <span class="punctuation bracket">{</span> <span class="type">TerminalColors</span><span class="punctuation delimiter">,</span> <span class="type">KeyCodes</span> <span class="punctuation bracket">}</span> <span class="keyword">from</span> <span class="string">&quot;../types/ascii&quot;</span><span class="punctuation delimiter">;</span>
+
+<span class="comment">/**</span>
+<span class="comment"> * Generate link text in the terminal.</span>
+<span class="comment"> * @param text the text to show for the link.</span>
+<span class="comment"> * @param url the url that the link should direct the user to.</span>
+<span class="comment"> */</span>
+<span class="keyword">const</span> <span class="function">linkText</span> <span class="operator">=</span> <span class="punctuation bracket">(</span><span class="variable parameter">text</span>: <span class="type builtin">string</span><span class="punctuation delimiter">,</span> <span class="variable parameter">url</span>: <span class="type builtin">string</span><span class="punctuation bracket">)</span> <span class="operator">=&gt;</span>
+  <span class="punctuation bracket">[</span>
+    <span class="type">KeyCodes</span><span class="punctuation delimiter">.</span><span class="property">OSC</span><span class="punctuation delimiter">,</span>
+    <span class="string">&quot;8&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="type">KeyCodes</span><span class="punctuation delimiter">.</span><span class="property">SEP</span><span class="punctuation delimiter">,</span>
+    <span class="type">KeyCodes</span><span class="punctuation delimiter">.</span><span class="property">SEP</span><span class="punctuation delimiter">,</span>
+    <span class="variable parameter">url</span><span class="punctuation delimiter">,</span>
+    <span class="type">KeyCodes</span><span class="punctuation delimiter">.</span><span class="property">BEL</span><span class="punctuation delimiter">,</span>
+    <span class="variable parameter">text</span><span class="punctuation delimiter">,</span>
+    <span class="type">KeyCodes</span><span class="punctuation delimiter">.</span><span class="property">OSC</span><span class="punctuation delimiter">,</span>
+    <span class="string">&quot;8&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="type">KeyCodes</span><span class="punctuation delimiter">.</span><span class="property">SEP</span><span class="punctuation delimiter">,</span>
+    <span class="type">KeyCodes</span><span class="punctuation delimiter">.</span><span class="property">SEP</span><span class="punctuation delimiter">,</span>
+    <span class="type">KeyCodes</span><span class="punctuation delimiter">.</span><span class="property">BEL</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">]</span><span class="punctuation delimiter">.</span><span class="function method">join</span><span class="punctuation bracket">(</span><span class="string">&quot;&quot;</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+
+<span class="keyword">const</span> <span class="function">underlineText</span> <span class="operator">=</span> <span class="punctuation bracket">(</span><span class="variable parameter">text</span>: <span class="type builtin">string</span><span class="punctuation bracket">)</span> <span class="operator">=&gt;</span> <span class="punctuation bracket">{</span>
+  <span class="keyword">return</span> <span class="string">`\u001b[4m<span class="embedded"><span class="punctuation special">${</span><span class="variable parameter">text</span><span class="punctuation special">}</span></span>\u001b[24m`</span><span class="punctuation delimiter">;</span>
+<span class="punctuation bracket">}</span><span class="punctuation delimiter">;</span>
+
+<span class="keyword">function</span> <span class="function">boldText</span><span class="punctuation bracket">(</span><span class="variable parameter">text</span>: <span class="type builtin">string</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+  <span class="keyword">return</span> <span class="string">`\x1b[1m<span class="embedded"><span class="punctuation special">${</span><span class="variable parameter">text</span><span class="punctuation special">}</span></span>\x1b[0m`</span><span class="punctuation delimiter">;</span>
+<span class="punctuation bracket">}</span>
+
+<span class="comment">// change the color of the text when printing it out</span>
+<span class="keyword">function</span> <span class="function">colorText</span><span class="punctuation bracket">(</span><span class="variable parameter">str</span>: <span class="type builtin">string</span><span class="punctuation delimiter">,</span> <span class="variable parameter">color</span>: <span class="type">TerminalColors</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+  <span class="keyword">return</span> <span class="string">&quot;\x1b[&quot;</span> <span class="operator">+</span> <span class="type">TerminalColors</span><span class="punctuation bracket">[</span><span class="variable parameter">color</span><span class="punctuation bracket">]</span> <span class="operator">+</span> <span class="string">&quot;m&quot;</span> <span class="operator">+</span> <span class="variable parameter">str</span> <span class="operator">+</span> <span class="string">&quot;\x1b[0m&quot;</span><span class="punctuation delimiter">;</span>
+<span class="punctuation bracket">}</span>
+
+<span class="comment">/**</span>
+<span class="comment"> * Configure the style of text to print to the console.</span>
+<span class="comment"> */</span>
+<span class="keyword">class</span> <span class="type">PrintStyle</span> <span class="punctuation bracket">{</span>
+  <span class="keyword">private</span> <span class="property">isBold</span> <span class="operator">=</span> <span class="constant builtin">false</span><span class="punctuation delimiter">;</span>
+  <span class="keyword">private</span> <span class="property">isUnderlined</span> <span class="operator">=</span> <span class="constant builtin">false</span><span class="punctuation delimiter">;</span>
+  <span class="keyword">private</span> <span class="property">colorName</span>: <span class="type">TerminalColors</span> <span class="operator">|</span> <span class="constant builtin">undefined</span><span class="punctuation delimiter">;</span>
+  <span class="keyword">private</span> <span class="property">text</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span><span class="punctuation delimiter">;</span>
+  <span class="keyword">private</span> <span class="property">url</span>: <span class="type builtin">string</span> <span class="operator">|</span> <span class="constant builtin">undefined</span><span class="punctuation delimiter">;</span>
+
+  <span class="function method">constructor</span><span class="punctuation bracket">(</span><span class="variable parameter">text</span>: <span class="type builtin">string</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">text</span> <span class="operator">=</span> <span class="variable parameter">text</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="comment">// bold a string when printing it out</span>
+  <span class="function method">bold</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">isBold</span> <span class="operator">=</span> <span class="constant builtin">true</span><span class="punctuation delimiter">;</span>
+    <span class="keyword">return</span> <span class="variable builtin">this</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="comment">/**</span>
+<span class="comment">   * add a link with a url.</span>
+<span class="comment">   * if a url is not provided, assume the text is also the url.</span>
+<span class="comment">   */</span>
+  <span class="function method">link</span><span class="punctuation bracket">(</span><span class="variable parameter">maybeUrl</span>?: <span class="type builtin">string</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="variable parameter">maybeUrl</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">url</span> <span class="operator">=</span> <span class="variable parameter">maybeUrl</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span> <span class="keyword">else</span> <span class="punctuation bracket">{</span>
+      <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">url</span> <span class="operator">=</span> <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">text</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+    <span class="keyword">return</span> <span class="variable builtin">this</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="function method">color</span><span class="punctuation bracket">(</span><span class="variable parameter">colorName</span>: <span class="type builtin">string</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="operator">!</span><span class="punctuation bracket">(</span><span class="variable parameter">colorName</span> <span class="keyword">in</span> <span class="type">TerminalColors</span><span class="punctuation bracket">)</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">Error</span><span class="punctuation bracket">(</span>
+        <span class="string">`Tried to color a terminal value. <span class="embedded"><span class="punctuation special">${</span><span class="variable parameter">colorName</span><span class="punctuation special">}</span></span> is not a valid color`</span>
+      <span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+
+    <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">colorName</span> <span class="operator">=</span> <span class="variable parameter">colorName</span> <span class="keyword">as</span> <span class="type builtin">any</span> <span class="keyword">as</span> <span class="type">TerminalColors</span><span class="punctuation delimiter">;</span>
+    <span class="keyword">return</span> <span class="variable builtin">this</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="function method">underline</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">isUnderlined</span> <span class="operator">=</span> <span class="constant builtin">true</span><span class="punctuation delimiter">;</span>
+    <span class="keyword">return</span> <span class="variable builtin">this</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="comment">/**</span>
+<span class="comment">   * Redefine the default toString behavior to pretty-print.</span>
+<span class="comment">   * @returns</span>
+<span class="comment">   */</span>
+  <span class="function method">toString</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">let</span> <span class="variable">str</span> <span class="operator">=</span> <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">text</span><span class="punctuation delimiter">;</span>
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">url</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="variable">str</span> <span class="operator">=</span> <span class="function">linkText</span><span class="punctuation bracket">(</span><span class="variable">str</span><span class="punctuation delimiter">,</span> <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">url</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">isBold</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="variable">str</span> <span class="operator">=</span> <span class="function">boldText</span><span class="punctuation bracket">(</span><span class="variable">str</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">colorName</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="variable">str</span> <span class="operator">=</span> <span class="function">colorText</span><span class="punctuation bracket">(</span><span class="variable">str</span><span class="punctuation delimiter">,</span> <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">colorName</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">isUnderlined</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="variable">str</span> <span class="operator">=</span> <span class="function">underlineText</span><span class="punctuation bracket">(</span><span class="variable">str</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+
+    <span class="keyword">return</span> <span class="variable">str</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+<span class="punctuation bracket">}</span>
+
+<span class="keyword">function</span> <span class="function">style</span><span class="punctuation bracket">(</span><span class="variable parameter">text</span>: <span class="type builtin">string</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+  <span class="keyword">return</span> <span class="keyword">new</span> <span class="type">PrintStyle</span><span class="punctuation bracket">(</span><span class="variable parameter">text</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+<span class="punctuation bracket">}</span>
+
+<span class="comment">/**</span>
+<span class="comment"> * Make text bold when rendering to the terminal.</span>
+<span class="comment"> * @param text</span>
+<span class="comment"> * @returns</span>
+<span class="comment"> */</span>
+<span class="keyword">function</span> <span class="function">bold</span><span class="punctuation bracket">(</span><span class="variable parameter">text</span>: <span class="type builtin">string</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+  <span class="keyword">return</span> <span class="keyword">new</span> <span class="type">PrintStyle</span><span class="punctuation bracket">(</span><span class="variable parameter">text</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">.</span><span class="function method">bold</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+<span class="punctuation bracket">}</span>
+
+<span class="comment">/**</span>
+<span class="comment"> * Choose a color for text that&#39;s rendered to the terminal.</span>
+<span class="comment"> * @param text the text to color</span>
+<span class="comment"> * @param colorName the color to use for the text.</span>
+<span class="comment"> */</span>
+<span class="keyword">function</span> <span class="function">color</span><span class="punctuation bracket">(</span><span class="variable parameter">text</span>: <span class="type builtin">string</span><span class="punctuation delimiter">,</span> <span class="variable parameter">colorName</span>: <span class="type builtin">string</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+  <span class="keyword">return</span> <span class="keyword">new</span> <span class="type">PrintStyle</span><span class="punctuation bracket">(</span><span class="variable parameter">text</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">.</span><span class="function method">color</span><span class="punctuation bracket">(</span><span class="variable parameter">colorName</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+<span class="punctuation bracket">}</span>
+
+<span class="comment">/**</span>
+<span class="comment"> * Accepts a string and a url. Prints a link.</span>
+<span class="comment"> * If no url is provided, the text is assumed to be the url.</span>
+<span class="comment"> */</span>
+<span class="keyword">function</span> <span class="function">link</span><span class="punctuation bracket">(</span><span class="variable parameter">text</span>: <span class="type builtin">string</span><span class="punctuation delimiter">,</span> <span class="variable parameter">url</span>?: <span class="type builtin">string</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+  <span class="keyword">return</span> <span class="keyword">new</span> <span class="type">PrintStyle</span><span class="punctuation bracket">(</span><span class="variable parameter">text</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">.</span><span class="function method">link</span><span class="punctuation bracket">(</span><span class="variable parameter">url</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+<span class="punctuation bracket">}</span>
+
+<span class="comment">/**</span>
+<span class="comment"> * Prints an underlined version of the text.</span>
+<span class="comment"> */</span>
+<span class="keyword">function</span> <span class="function">underline</span><span class="punctuation bracket">(</span><span class="variable parameter">text</span>: <span class="type builtin">string</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+  <span class="keyword">return</span> <span class="keyword">new</span> <span class="type">PrintStyle</span><span class="punctuation bracket">(</span><span class="variable parameter">text</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">.</span><span class="function method">underline</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+<span class="punctuation bracket">}</span>
+
+<span class="keyword">export</span> <span class="punctuation bracket">{</span> <span class="variable">style</span><span class="punctuation delimiter">,</span> <span class="variable">bold</span><span class="punctuation delimiter">,</span> <span class="variable">color</span><span class="punctuation delimiter">,</span> <span class="variable">link</span><span class="punctuation delimiter">,</span> <span class="variable">underline</span> <span class="punctuation bracket">}</span><span class="punctuation delimiter">;</span>
+</code></pre></article></main><div class="article-rhs-container"><div class="article-rhs"><div class="git-history-table-container"><span class="git-history-table-title">Revisions</span><table class="git-history-table"><thead><tr><th>Date</th><th>Hash</th></tr></thead><tbody><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">0c9b2c0e</td></tr><tr><td class="commit-date-tr">2024-04-01</td><td class="commit-link-tr">a3c37e13</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">c64fbf31</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">02dca1b8</td></tr></tbody></table></div><div class="prev-next-up-buttons-container">Navigation<table class="prev-next-up-buttons"><tr><td>Previous</td><td><a class="prev-button" href="http://localhost:4242/src/utils/cache.ts.html">cache.ts</a></td></tr><tr><td>Next</td><td><a class="next-button" href="http://localhost:4242/src/utils/object.ts.html">object.ts</a></td></tr><tr><td>Up</td><td><a class="up-button" href="http://localhost:4242/src/utils/index.html">utils</a></td></tr></table></div></div></div></div></body></html>

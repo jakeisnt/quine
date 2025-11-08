@@ -1,0 +1,42 @@
+/* -- LastFM live music -- */
+.lastfm-now-playing-box {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  max-width: 20em;
+}
+
+a.now-playing:hover, a.now-playing:focus {
+  background: var(--highlight);
+  color: var(--highlight-text);
+  padding: 0;
+  margin: 0;
+}
+
+.now-playing img {
+  opacity: 0;
+  width: 16em;
+  height: 16em;
+  height: auto;
+}
+
+.now-playing.loaded img {
+  opacity: 1;
+  margin-top: 5px;
+}
+
+.np-metadata {
+  text-align: center;
+  max-width: 20rem;
+  text-align: center;
+  padding-top: 0.125rem;
+}
+
+.now-playing .np-metadata .np-heading {
+  letter-spacing: 0.11em;
+}
+
+.now-playing .np-metadata .np-roon {
+  width: 10px;
+  opacity: 0.5;
+}

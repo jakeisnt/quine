@@ -1,0 +1,207 @@
+<!DOCTYPE html><html lang="en"><link rel="stylesheet" href="/resources/style.css"></link><link rel="stylesheet" href="/resources/global.css"></link><link rel="stylesheet" href="/resources/elementsstyle.css"></link><script type="module" src="/resources/lib.js"></script><script type="module" defer="true" src="/resources/elements.js"></script><head><meta charset="utf-8"></meta><meta name="viewport" content="width=device-width, initial-scale=1"></meta><title>spawnNeko.ts / Jake Chvatal</title><meta property="og:title" content="spawnNeko.ts"></meta><meta property="og:type" content="website"></meta><meta property="og:url" content="http://localhost:4242/"></meta><meta property="og:site_name" content="Jake Chvatal"></meta><meta name="keywords" content="jake"></meta><meta name="author" content="Jake Chvatal"></meta><meta name="robots" content="index,follow"></meta><meta name="description" content="hi"></meta><meta name="theme-color" media="(prefers-color-scheme: light)" content="white"></meta><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#111"></meta></head><body><link rel="stylesheet" href="/components/Sidebar/sidebar.css"></link><div class="sidebar"><div class="url-path"><b>jake.</b><span> / </span><a href="http://localhost:4242//components/index.html">components</a><span> / </span><a href="http://localhost:4242//components/Neko/index.html">Neko</a><span> / </span><b>spawnNeko.ts</b></div><script type="module" src="/components/ToggleDarkMode/toggle-dark-mode.js"></script><link rel="stylesheet" href="/components/ToggleDarkMode/toggle-dark-mode.css"></link><div class="toggle-dark-mode-container"><button class="toggle-dark-mode"></button></div></div><div class="site-body"><main><article class="wikipage"><h1 class="title-top">spawnNeko.ts</h1><link rel="stylesheet" href="/components/SourceBlock/source-block.css"></link><script type="module" src="/components/SourceBlock/load-code-blocks.js"></script><pre><code class="language-ts has-raw-code"><span class="keyword">import</span> <span class="punctuation bracket">{</span> <span class="variable">create</span><span class="punctuation delimiter">,</span> <span class="variable">runOnDesktop</span> <span class="punctuation bracket">}</span> <span class="keyword">from</span> <span class="string">&quot;/resources/lib&quot;</span><span class="punctuation delimiter">;</span>
+
+<span class="comment">// TODO:</span>
+<span class="comment">// Go to a specific place to sleep</span>
+<span class="comment">// Sit next to the left or right of the cursor, whichever is closer</span>
+<span class="comment">// Sit next to/on/around links if they are hovered</span>
+
+<span class="keyword">const</span> <span class="function">neko</span> <span class="operator">=</span> <span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="operator">=&gt;</span> <span class="punctuation bracket">{</span>
+  <span class="keyword">function</span> <span class="function">createNekoImage</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">return</span> <span class="function">create</span><span class="punctuation bracket">(</span><span class="string">&quot;img&quot;</span><span class="punctuation delimiter">,</span> <span class="punctuation bracket">{</span>
+      <span class="property">src</span>: <span class="variable">currentAnimation</span><span class="punctuation bracket">[</span><span class="number">0</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">,</span>
+      <span class="property">width</span>: <span class="string">&quot;32px&quot;</span><span class="punctuation delimiter">,</span>
+      <span class="property">height</span>: <span class="string">&quot;32px&quot;</span><span class="punctuation delimiter">,</span>
+      <span class="property">alt</span>: <span class="string">&quot;🐱&quot;</span><span class="punctuation delimiter">,</span>
+      <span class="property">id</span>: <span class="string">&quot;neko&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="punctuation bracket">}</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="keyword">function</span> <span class="function">timestamp</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">return</span> <span class="keyword">new</span> <span class="type">Date</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">.</span><span class="function method">getTime</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="keyword">const</span> <span class="variable">neko</span>: <span class="type">HTMLElement</span> <span class="operator">=</span> <span class="variable builtin">document</span><span class="punctuation delimiter">.</span><span class="function method">querySelector</span><span class="punctuation bracket">(</span><span class="string">&quot;.neko&quot;</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="keyword">const</span> <span class="variable">nekoBed</span> <span class="operator">=</span> <span class="variable builtin">document</span><span class="punctuation delimiter">.</span><span class="function method">querySelector</span><span class="punctuation bracket">(</span><span class="string">&quot;.neko-bed&quot;</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+
+  <span class="keyword">const</span> <span class="variable">nekoUrl</span> <span class="operator">=</span> <span class="string">&quot;/components/neko/assets/&quot;</span><span class="punctuation delimiter">;</span>
+
+  <span class="keyword">const</span> <span class="type">Neko</span> <span class="operator">=</span> <span class="punctuation bracket">{</span>
+    <span class="property">yawn</span>: <span class="punctuation bracket">[</span><span class="variable">nekoUrl</span> <span class="operator">+</span> <span class="string">&quot;yawn1.png&quot;</span><span class="punctuation delimiter">,</span> <span class="variable">nekoUrl</span> <span class="operator">+</span> <span class="string">&quot;yawn2.png&quot;</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">,</span>
+    <span class="property">wash</span>: <span class="punctuation bracket">[</span><span class="variable">nekoUrl</span> <span class="operator">+</span> <span class="string">&quot;wash1.png&quot;</span><span class="punctuation delimiter">,</span> <span class="variable">nekoUrl</span> <span class="operator">+</span> <span class="string">&quot;wash2.png&quot;</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">,</span>
+    <span class="property">awake</span>: <span class="punctuation bracket">[</span><span class="variable">nekoUrl</span> <span class="operator">+</span> <span class="string">&quot;awake.png&quot;</span><span class="punctuation delimiter">,</span> <span class="variable">nekoUrl</span> <span class="operator">+</span> <span class="string">&quot;awake.png&quot;</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">,</span>
+    <span class="property">sleep</span>: <span class="punctuation bracket">[</span><span class="variable">nekoUrl</span> <span class="operator">+</span> <span class="string">&quot;sleep1.png&quot;</span><span class="punctuation delimiter">,</span> <span class="variable">nekoUrl</span> <span class="operator">+</span> <span class="string">&quot;sleep2.png&quot;</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">,</span>
+    <span class="property">scratch</span>: <span class="punctuation bracket">[</span><span class="variable">nekoUrl</span> <span class="operator">+</span> <span class="string">&quot;scratch1.png&quot;</span><span class="punctuation delimiter">,</span> <span class="variable">nekoUrl</span> <span class="operator">+</span> <span class="string">&quot;scratch2.png&quot;</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">,</span>
+
+    <span class="property">up</span>: <span class="punctuation bracket">[</span><span class="variable">nekoUrl</span> <span class="operator">+</span> <span class="string">&quot;up1.png&quot;</span><span class="punctuation delimiter">,</span> <span class="variable">nekoUrl</span> <span class="operator">+</span> <span class="string">&quot;up2.png&quot;</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">,</span>
+    <span class="property">down</span>: <span class="punctuation bracket">[</span><span class="variable">nekoUrl</span> <span class="operator">+</span> <span class="string">&quot;down1.png&quot;</span><span class="punctuation delimiter">,</span> <span class="variable">nekoUrl</span> <span class="operator">+</span> <span class="string">&quot;down2.png&quot;</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">,</span>
+    <span class="property">left</span>: <span class="punctuation bracket">[</span><span class="variable">nekoUrl</span> <span class="operator">+</span> <span class="string">&quot;left1.png&quot;</span><span class="punctuation delimiter">,</span> <span class="variable">nekoUrl</span> <span class="operator">+</span> <span class="string">&quot;left2.png&quot;</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">,</span>
+    <span class="property">right</span>: <span class="punctuation bracket">[</span><span class="variable">nekoUrl</span> <span class="operator">+</span> <span class="string">&quot;right1.png&quot;</span><span class="punctuation delimiter">,</span> <span class="variable">nekoUrl</span> <span class="operator">+</span> <span class="string">&quot;right2.png&quot;</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">,</span>
+    <span class="property">upLeft</span>: <span class="punctuation bracket">[</span><span class="variable">nekoUrl</span> <span class="operator">+</span> <span class="string">&quot;upleft1.png&quot;</span><span class="punctuation delimiter">,</span> <span class="variable">nekoUrl</span> <span class="operator">+</span> <span class="string">&quot;upleft2.png&quot;</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">,</span>
+    <span class="property">upRight</span>: <span class="punctuation bracket">[</span><span class="variable">nekoUrl</span> <span class="operator">+</span> <span class="string">&quot;upright1.png&quot;</span><span class="punctuation delimiter">,</span> <span class="variable">nekoUrl</span> <span class="operator">+</span> <span class="string">&quot;upright2.png&quot;</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">,</span>
+    <span class="property">downLeft</span>: <span class="punctuation bracket">[</span><span class="variable">nekoUrl</span> <span class="operator">+</span> <span class="string">&quot;downleft1.png&quot;</span><span class="punctuation delimiter">,</span> <span class="variable">nekoUrl</span> <span class="operator">+</span> <span class="string">&quot;downleft2.png&quot;</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">,</span>
+    <span class="property">downRight</span>: <span class="punctuation bracket">[</span><span class="variable">nekoUrl</span> <span class="operator">+</span> <span class="string">&quot;downright1.png&quot;</span><span class="punctuation delimiter">,</span> <span class="variable">nekoUrl</span> <span class="operator">+</span> <span class="string">&quot;downright2.png&quot;</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">}</span><span class="punctuation delimiter">;</span>
+
+  <span class="keyword">const</span> <span class="variable">idleLevelKeys</span> <span class="operator">=</span> <span class="punctuation bracket">[</span>
+    <span class="string">&quot;awake&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="string">&quot;awake&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="string">&quot;awake&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="string">&quot;awake&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="string">&quot;awake&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="string">&quot;yawn&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="string">&quot;awake&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="string">&quot;scratch&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="string">&quot;wash&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="string">&quot;awake&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="string">&quot;yawn&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="string">&quot;sleep&quot;</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">]</span><span class="punctuation delimiter">;</span>
+
+  <span class="keyword">const</span> <span class="type">Direction</span> <span class="operator">=</span> <span class="punctuation bracket">{</span>
+    <span class="property">left</span>: <span class="string">&quot;left&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="property">right</span>: <span class="string">&quot;right&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="property">up</span>: <span class="string">&quot;up&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="property">down</span>: <span class="string">&quot;down&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="property">downLeft</span>: <span class="string">&quot;downLeft&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="property">downRight</span>: <span class="string">&quot;downRight&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="property">upLeft</span>: <span class="string">&quot;upLeft&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="property">upRight</span>: <span class="string">&quot;upRight&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="property">still</span>: <span class="string">&quot;awake&quot;</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">}</span><span class="punctuation delimiter">;</span>
+
+  <span class="keyword">const</span> <span class="variable">mouseTolerance</span> <span class="operator">=</span> <span class="number">5</span><span class="punctuation delimiter">;</span>
+  <span class="keyword">const</span> <span class="variable">nekoStepLength</span> <span class="operator">=</span> <span class="number">16</span><span class="punctuation delimiter">;</span>
+  <span class="keyword">const</span> <span class="variable">animationSpeed</span> <span class="operator">=</span> <span class="number">200</span><span class="punctuation delimiter">;</span>
+  <span class="keyword">var</span> <span class="variable">lastMouseMoved</span><span class="punctuation delimiter">;</span>
+
+  <span class="keyword">let</span> <span class="variable">currentX</span><span class="punctuation delimiter">;</span>
+  <span class="keyword">let</span> <span class="variable">currentY</span><span class="punctuation delimiter">;</span>
+  <span class="keyword">let</span> <span class="variable">mouseX</span><span class="punctuation delimiter">;</span>
+  <span class="keyword">let</span> <span class="variable">mouseY</span><span class="punctuation delimiter">;</span>
+
+  <span class="keyword">const</span> <span class="variable">distanceFromCursorX</span> <span class="operator">=</span> <span class="operator">-</span><span class="number">30</span><span class="punctuation delimiter">;</span>
+  <span class="keyword">const</span> <span class="variable">distanceFromCursorY</span> <span class="operator">=</span> <span class="number">10</span><span class="punctuation delimiter">;</span>
+
+  <span class="keyword">let</span> <span class="variable">currentAnimation</span> <span class="operator">=</span> <span class="type">Neko</span><span class="punctuation delimiter">.</span><span class="property">sleep</span><span class="punctuation delimiter">;</span>
+
+  <span class="keyword">const</span> <span class="variable">nekoImage</span> <span class="operator">=</span> <span class="function">createNekoImage</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+
+  <span class="variable builtin">document</span><span class="punctuation delimiter">.</span><span class="function method">addEventListener</span><span class="punctuation bracket">(</span><span class="string">&quot;mousemove&quot;</span><span class="punctuation delimiter">,</span> <span class="keyword">function</span> <span class="punctuation bracket">(</span><span class="variable parameter">e</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="variable">mouseX</span> <span class="operator">=</span> <span class="variable parameter">e</span><span class="punctuation delimiter">.</span><span class="property">clientX</span><span class="punctuation delimiter">;</span>
+    <span class="variable">mouseY</span> <span class="operator">=</span> <span class="variable parameter">e</span><span class="punctuation delimiter">.</span><span class="property">clientY</span><span class="punctuation delimiter">;</span>
+
+    <span class="variable">lastMouseMoved</span> <span class="operator">=</span> <span class="function">timestamp</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+
+  <span class="keyword">function</span> <span class="function">animate</span><span class="punctuation bracket">(</span><span class="variable parameter">first</span> <span class="operator">=</span> <span class="constant builtin">true</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="variable">currentAnimation</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="variable">nekoImage</span><span class="punctuation delimiter">.</span><span class="function method">setAttribute</span><span class="punctuation bracket">(</span><span class="string">&quot;src&quot;</span><span class="punctuation delimiter">,</span> <span class="variable">currentAnimation</span><span class="punctuation bracket">[</span><span class="variable parameter">first</span> ? <span class="number">0</span> : <span class="number">1</span><span class="punctuation bracket">]</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+
+    <span class="function">setTimeout</span><span class="punctuation bracket">(</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="operator">=&gt;</span> <span class="function">animate</span><span class="punctuation bracket">(</span><span class="operator">!</span><span class="variable parameter">first</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">,</span> <span class="variable">animationSpeed</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="keyword">function</span> <span class="function">setAnimation</span><span class="punctuation bracket">(</span><span class="variable parameter">anim</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="comment">// console.log(&quot;Neko: &quot;, anim);</span>
+    <span class="variable">currentAnimation</span> <span class="operator">=</span> <span class="type">Neko</span><span class="punctuation bracket">[</span><span class="variable parameter">anim</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="keyword">function</span> <span class="function">determineDirection</span><span class="punctuation bracket">(</span><span class="variable parameter">x</span><span class="punctuation delimiter">,</span> <span class="variable parameter">y</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="variable parameter">x</span> <span class="operator">===</span> <span class="number">0</span> <span class="operator">&amp;&amp;</span> <span class="variable parameter">y</span> <span class="operator">===</span> <span class="number">0</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="keyword">return</span> <span class="type">Direction</span><span class="punctuation delimiter">.</span><span class="property">still</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="variable parameter">x</span> <span class="operator">===</span> <span class="number">0</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="keyword">return</span> <span class="variable parameter">y</span> <span class="operator">&gt;</span> <span class="number">0</span> ? <span class="type">Direction</span><span class="punctuation delimiter">.</span><span class="property">down</span> : <span class="type">Direction</span><span class="punctuation delimiter">.</span><span class="property">up</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="variable parameter">y</span> <span class="operator">===</span> <span class="number">0</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="keyword">return</span> <span class="variable parameter">x</span> <span class="operator">&gt;</span> <span class="number">0</span> ? <span class="type">Direction</span><span class="punctuation delimiter">.</span><span class="property">right</span> : <span class="type">Direction</span><span class="punctuation delimiter">.</span><span class="property">left</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="variable parameter">x</span> <span class="operator">&gt;</span> <span class="number">0</span> <span class="operator">&amp;&amp;</span> <span class="variable parameter">y</span> <span class="operator">&gt;</span> <span class="number">0</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="keyword">return</span> <span class="type">Direction</span><span class="punctuation delimiter">.</span><span class="property">downRight</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="variable parameter">x</span> <span class="operator">&gt;</span> <span class="number">0</span> <span class="operator">&amp;&amp;</span> <span class="variable parameter">y</span> <span class="operator">&lt;</span> <span class="number">0</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="keyword">return</span> <span class="type">Direction</span><span class="punctuation delimiter">.</span><span class="property">upRight</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="variable parameter">x</span> <span class="operator">&lt;</span> <span class="number">0</span> <span class="operator">&amp;&amp;</span> <span class="variable parameter">y</span> <span class="operator">&gt;</span> <span class="number">0</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="keyword">return</span> <span class="type">Direction</span><span class="punctuation delimiter">.</span><span class="property">downLeft</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="variable parameter">x</span> <span class="operator">&lt;</span> <span class="number">0</span> <span class="operator">&amp;&amp;</span> <span class="variable parameter">y</span> <span class="operator">&lt;</span> <span class="number">0</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="keyword">return</span> <span class="type">Direction</span><span class="punctuation delimiter">.</span><span class="property">upLeft</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="keyword">function</span> <span class="function">moveInX</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="variable">mouseX</span> <span class="operator">-</span> <span class="variable">currentX</span> <span class="operator">-</span> <span class="variable">distanceFromCursorX</span> <span class="operator">&gt;</span> <span class="variable">nekoStepLength</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="keyword">return</span> <span class="variable">nekoStepLength</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span> <span class="keyword">else</span> <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="variable">mouseX</span> <span class="operator">-</span> <span class="variable">currentX</span> <span class="operator">-</span> <span class="variable">distanceFromCursorX</span> <span class="operator">&lt;</span> <span class="variable">nekoStepLength</span> <span class="operator">*</span> <span class="operator">-</span><span class="number">1</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="keyword">return</span> <span class="operator">-</span><span class="variable">nekoStepLength</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span> <span class="keyword">else</span> <span class="punctuation bracket">{</span>
+      <span class="keyword">return</span> <span class="number">0</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="keyword">function</span> <span class="function">moveInY</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="variable">mouseY</span> <span class="operator">-</span> <span class="variable">currentY</span> <span class="operator">-</span> <span class="variable">distanceFromCursorY</span> <span class="operator">&gt;</span> <span class="variable">nekoStepLength</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="keyword">return</span> <span class="variable">nekoStepLength</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span> <span class="keyword">else</span> <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="variable">mouseY</span> <span class="operator">-</span> <span class="variable">currentY</span> <span class="operator">-</span> <span class="variable">distanceFromCursorY</span> <span class="operator">&lt;</span> <span class="variable">nekoStepLength</span> <span class="operator">*</span> <span class="operator">-</span><span class="number">1</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="keyword">return</span> <span class="operator">-</span><span class="variable">nekoStepLength</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span> <span class="keyword">else</span> <span class="punctuation bracket">{</span>
+      <span class="keyword">return</span> <span class="number">0</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="keyword">function</span> <span class="function">moveNeko</span><span class="punctuation bracket">(</span><span class="variable parameter">x</span>: <span class="type builtin">number</span><span class="punctuation delimiter">,</span> <span class="variable parameter">y</span>: <span class="type builtin">number</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="variable">currentX</span> <span class="operator">+=</span> <span class="variable parameter">x</span><span class="punctuation delimiter">;</span>
+    <span class="variable">currentY</span> <span class="operator">+=</span> <span class="variable parameter">y</span><span class="punctuation delimiter">;</span>
+    <span class="variable">neko</span><span class="punctuation delimiter">.</span><span class="property">style</span><span class="punctuation delimiter">.</span><span class="property">left</span> <span class="operator">=</span> <span class="variable">currentX</span> <span class="operator">+</span> <span class="string">&quot;px&quot;</span><span class="punctuation delimiter">;</span>
+    <span class="variable">neko</span><span class="punctuation delimiter">.</span><span class="property">style</span><span class="punctuation delimiter">.</span><span class="property">top</span> <span class="operator">=</span> <span class="variable">currentY</span> <span class="operator">+</span> <span class="string">&quot;px&quot;</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="keyword">let</span> <span class="variable">idleLevel</span> <span class="operator">=</span> <span class="number">0</span><span class="punctuation delimiter">;</span>
+  <span class="keyword">let</span> <span class="variable">nekoAwake</span> <span class="operator">=</span> <span class="constant builtin">false</span><span class="punctuation delimiter">;</span>
+
+  <span class="keyword">function</span> <span class="function">nekoEventLoop</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">const</span> <span class="variable">x</span> <span class="operator">=</span> <span class="function">moveInX</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="keyword">const</span> <span class="variable">y</span> <span class="operator">=</span> <span class="function">moveInY</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="variable">nekoAwake</span> <span class="operator">&amp;&amp;</span> <span class="punctuation bracket">(</span><span class="variable">x</span> <span class="operator">!==</span> <span class="number">0</span> <span class="operator">||</span> <span class="variable">y</span> <span class="operator">!==</span> <span class="number">0</span><span class="punctuation bracket">)</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="comment">// if we can move, we&#39;re moving!</span>
+      <span class="comment">// console.log(&quot;moving&quot;, x, y);</span>
+      <span class="variable">idleLevel</span> <span class="operator">=</span> <span class="number">0</span><span class="punctuation delimiter">;</span>
+      <span class="function">moveNeko</span><span class="punctuation bracket">(</span><span class="variable">x</span><span class="punctuation delimiter">,</span> <span class="variable">y</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+      <span class="function">setAnimation</span><span class="punctuation bracket">(</span><span class="function">determineDirection</span><span class="punctuation bracket">(</span><span class="variable">x</span><span class="punctuation delimiter">,</span> <span class="variable">y</span><span class="punctuation bracket">)</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span> <span class="keyword">else</span> <span class="punctuation bracket">{</span>
+      <span class="comment">// if we can&#39;t move, we&#39;re idle</span>
+      <span class="comment">// console.log(&quot;idle&quot;, idleLevel);</span>
+      <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="variable">idleLevel</span> <span class="operator">&lt;</span> <span class="variable">idleLevelKeys</span><span class="punctuation delimiter">.</span><span class="property">length</span> <span class="operator">-</span> <span class="number">1</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+        <span class="variable">idleLevel</span><span class="operator">++</span><span class="punctuation delimiter">;</span>
+        <span class="function">setAnimation</span><span class="punctuation bracket">(</span><span class="variable">idleLevelKeys</span><span class="punctuation bracket">[</span><span class="variable">idleLevel</span><span class="punctuation bracket">]</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+      <span class="punctuation bracket">}</span>
+    <span class="punctuation bracket">}</span>
+
+    <span class="function">setTimeout</span><span class="punctuation bracket">(</span><span class="variable">nekoEventLoop</span><span class="punctuation delimiter">,</span> <span class="variable">animationSpeed</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="variable">neko</span><span class="punctuation delimiter">.</span><span class="function method">addEventListener</span><span class="punctuation bracket">(</span><span class="string">&quot;click&quot;</span><span class="punctuation delimiter">,</span> <span class="keyword">function</span> <span class="punctuation bracket">(</span><span class="variable parameter">e</span>: <span class="type">MouseEvent</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="operator">!</span><span class="variable">nekoAwake</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="variable">currentX</span> <span class="operator">=</span> <span class="variable parameter">e</span><span class="punctuation delimiter">.</span><span class="property">clientX</span> <span class="operator">-</span> <span class="number">32</span><span class="punctuation delimiter">;</span>
+      <span class="variable">currentY</span> <span class="operator">=</span> <span class="variable parameter">e</span><span class="punctuation delimiter">.</span><span class="property">clientY</span> <span class="operator">-</span> <span class="number">32</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+
+    <span class="variable">nekoAwake</span> <span class="operator">=</span> <span class="constant builtin">true</span><span class="punctuation delimiter">;</span>
+    <span class="variable">idleLevel</span> <span class="operator">=</span> <span class="number">0</span><span class="punctuation delimiter">;</span>
+    <span class="function">setAnimation</span><span class="punctuation bracket">(</span><span class="string">&quot;awake&quot;</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="function">nekoEventLoop</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+
+  <span class="variable">neko</span><span class="punctuation delimiter">.</span><span class="function method">appendChild</span><span class="punctuation bracket">(</span><span class="variable">nekoImage</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="function">animate</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+<span class="punctuation bracket">}</span><span class="punctuation delimiter">;</span>
+
+<span class="function">runOnDesktop</span><span class="punctuation bracket">(</span><span class="function">neko</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+</code></pre></article></main><div class="article-rhs-container"><div class="article-rhs"><div class="git-history-table-container"><span class="git-history-table-title">Revisions</span><table class="git-history-table"><thead><tr><th>Date</th><th>Hash</th></tr></thead><tbody><tr><td class="commit-date-tr">2024-04-18</td><td class="commit-link-tr">4a3d526d</td></tr><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">fb16250a</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">02dca1b8</td></tr></tbody></table></div><div class="prev-next-up-buttons-container">Navigation<table class="prev-next-up-buttons"><tr><td>Next</td><td><a class="next-button" href="http://localhost:4242/components/Neko/neko.css.html">neko.css</a></td></tr><tr><td>Up</td><td><a class="up-button" href="http://localhost:4242/components/Neko/index.html">Neko</a></td></tr></table></div></div></div></div></body></html>

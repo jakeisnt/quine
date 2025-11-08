@@ -1,0 +1,113 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"></meta><title>getCurrentTrack.ts / Jake Chvatal</title><meta property="og:title" content="getCurrentTrack.ts"></meta><meta property="og:type" content="website"></meta><meta property="og:url" content="https://jake.isnt.online"></meta><meta property="og:site_name" content="Jake Chvatal"></meta><meta name="keywords" content="jake"></meta><meta name="author" content="Jake Chvatal"></meta><meta name="robots" content="index,follow"></meta><meta name="description" content="hi"></meta><meta name="theme-color" media="(prefers-color-scheme: light)" content="white"></meta><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#111"></meta><link rel="icon" type="image/x-icon" href="/Users/jake/Documents/personal/site/favicons/favicon.ico"></link><link rel="apple-touch-icon" href="/Users/jake/Documents/personal/site/favicons/apple-touch-icon.png"></link><link rel="stylesheet" type="text/css" href="/resources/style.css" id="/resources/style.css"></link><link rel="stylesheet" type="text/css" href="/resources/global.css" id="/resources/global.css"></link><script src="/resources/lib.js" id="/resources/lib.js" type="module"></script><link rel="stylesheet" type="text/css" href="/resources/elementsstyle.css" id="/resources/elementsstyle.css"></link><link rel="manifest" href="/resources/manifest.json"></link><script src="/resources/elements.js" id="/resources/elements.js" type="module" defer="true"></script></head><body><link rel="stylesheet" href="/components/Sidebar/sidebar.css"></link><div class="sidebar"><div class="url-path"><b>jake.</b><span> / </span><a href="https://jake.isnt.online/components/index.html">components</a><span> / </span><a href="https://jake.isnt.online/components/LastFM/index.html">LastFM</a><span> / </span><b>getCurrentTrack.ts</b></div><script src="/components/ToggleDarkMode/toggle-dark-mode.js" type="module"></script><link rel="stylesheet" href="/components/ToggleDarkMode/toggle-dark-mode.css"></link><div class="toggle-dark-mode-container"><button class="toggle-dark-mode"></button></div></div><div class="site-body"><main><article class="wikipage"><h1 class="title-top">getCurrentTrack.ts</h1><link rel="stylesheet" href="/components/SourceBlock/source-block.css"></link><script src="/components/SourceBlock/load-code-blocks.js" type="module"></script><pre><code class="language-ts has-raw-code"><span class="keyword">import</span> <span class="punctuation bracket">{</span> <span class="variable">create</span><span class="punctuation delimiter">,</span> <span class="variable">create2</span><span class="punctuation delimiter">,</span> <span class="variable">get</span><span class="punctuation delimiter">,</span> <span class="variable">$</span> <span class="punctuation bracket">}</span> <span class="keyword">from</span> <span class="string">&quot;/resources/lib&quot;</span><span class="punctuation delimiter">;</span>
+
+<span class="comment">/* OLD SCHOOL CURRENT PLAYING STUFF */</span>
+<span class="comment">/* source: https://gist.github.com/trisweb/2c0c94273f653c81f34dbe8e85ad30e7 via https://www.trisweb.com/ */</span>
+<span class="comment">/*</span>
+<span class="comment">  /other cool idea: changing color and contrast of tbe website background when pressing a key, tapping or clicking</span>
+<span class="comment">*/</span>
+
+<span class="keyword">var</span> <span class="type">LFM_API</span> <span class="operator">=</span> <span class="string">&quot;https://ws.audioscrobbler.com/2.0/&quot;</span><span class="punctuation delimiter">;</span>
+<span class="keyword">var</span> <span class="type">LFM_KEY</span> <span class="operator">=</span> <span class="string">&quot;14eb0c0c914456103f2c584d930a44ba&quot;</span><span class="punctuation delimiter">;</span> <span class="comment">// Get one at https://secure.last.fm/login?next=/api/account/create</span>
+<span class="keyword">var</span> <span class="type">LFM_USER</span> <span class="operator">=</span> <span class="string">&quot;jakeisnt&quot;</span><span class="punctuation delimiter">;</span>
+<span class="keyword">var</span> <span class="variable">recentTracksUrl</span> <span class="operator">=</span>
+  <span class="type">LFM_API</span> <span class="operator">+</span>
+  <span class="string">&quot;?method=user.getrecenttracks&amp;user=&quot;</span> <span class="operator">+</span>
+  <span class="type">LFM_USER</span> <span class="operator">+</span>
+  <span class="string">&quot;&amp;api_key=&quot;</span> <span class="operator">+</span>
+  <span class="type">LFM_KEY</span> <span class="operator">+</span>
+  <span class="string">&quot;+&amp;format=json&amp;limit=1&quot;</span><span class="punctuation delimiter">;</span>
+
+<span class="keyword">const</span> <span class="type">LFM_TIMEOUT</span> <span class="operator">=</span> <span class="number">1000</span> <span class="operator">*</span> <span class="number">60</span><span class="punctuation delimiter">;</span> <span class="comment">// 1 minute</span>
+
+<span class="keyword">const</span> <span class="function">lastfm</span> <span class="operator">=</span> <span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="operator">=&gt;</span> <span class="punctuation bracket">{</span>
+  <span class="keyword">let</span> <span class="variable">nowPlayingNode</span>: <span class="type">HTMLElement</span> <span class="operator">|</span> <span class="constant builtin">null</span> <span class="operator">=</span> <span class="constant builtin">null</span><span class="punctuation delimiter">;</span>
+
+  <span class="keyword">function</span> <span class="function">getNowPlaying</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="function">get</span><span class="punctuation bracket">(</span><span class="variable">recentTracksUrl</span><span class="punctuation delimiter">,</span> <span class="punctuation bracket">(</span><span class="variable parameter">response</span><span class="punctuation bracket">)</span> <span class="operator">=&gt;</span> <span class="punctuation bracket">{</span>
+      <span class="keyword">var</span> <span class="variable">currentTrack</span> <span class="operator">=</span> <span class="variable parameter">response</span><span class="punctuation delimiter">.</span><span class="property">recenttracks</span><span class="punctuation delimiter">.</span><span class="property">track</span><span class="punctuation bracket">[</span><span class="number">0</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">;</span>
+
+      <span class="comment">// Check if it&#39;s the same, if not then rerender</span>
+      <span class="keyword">if</span> <span class="punctuation bracket">(</span>
+        <span class="operator">!</span><span class="variable builtin">window</span><span class="punctuation bracket">[</span><span class="string">&quot;nowPlaying&quot;</span><span class="punctuation bracket">]</span> <span class="operator">||</span>
+        <span class="variable builtin">window</span><span class="punctuation bracket">[</span><span class="string">&quot;nowPlaying&quot;</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">.</span><span class="property">mbid</span> <span class="operator">!=</span> <span class="variable">currentTrack</span><span class="punctuation delimiter">.</span><span class="property">mbid</span>
+      <span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+        <span class="variable builtin">window</span><span class="punctuation bracket">[</span><span class="string">&quot;nowPlaying&quot;</span><span class="punctuation bracket">]</span> <span class="operator">=</span> <span class="variable">currentTrack</span><span class="punctuation delimiter">;</span>
+        <span class="function">renderNowPlaying</span><span class="punctuation bracket">(</span><span class="variable">currentTrack</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+      <span class="punctuation bracket">}</span>
+      <span class="function">setTimeout</span><span class="punctuation bracket">(</span><span class="variable">getNowPlaying</span><span class="punctuation delimiter">,</span> <span class="type">LFM_TIMEOUT</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="keyword">function</span> <span class="function">getMetadata</span><span class="punctuation bracket">(</span><span class="variable parameter">track</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">return</span> <span class="function">create2</span><span class="punctuation bracket">(</span>
+      <span class="string">&quot;table&quot;</span><span class="punctuation delimiter">,</span>
+      <span class="punctuation bracket">{</span> <span class="property">className</span>: <span class="string">&quot;metadata-table&quot;</span> <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+      <span class="function">create2</span><span class="punctuation bracket">(</span>
+        <span class="string">&quot;tr&quot;</span><span class="punctuation delimiter">,</span>
+        <span class="punctuation bracket">{</span><span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+        <span class="function">create2</span><span class="punctuation bracket">(</span><span class="string">&quot;th&quot;</span><span class="punctuation delimiter">,</span> <span class="punctuation bracket">{</span><span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span> <span class="string">&quot;Artist&quot;</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">,</span>
+        <span class="function">create2</span><span class="punctuation bracket">(</span><span class="string">&quot;td&quot;</span><span class="punctuation delimiter">,</span> <span class="punctuation bracket">{</span><span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span> <span class="variable parameter">track</span><span class="punctuation delimiter">.</span><span class="property">artist</span><span class="punctuation bracket">[</span><span class="string">&quot;#text&quot;</span><span class="punctuation bracket">]</span><span class="punctuation bracket">)</span>
+      <span class="punctuation bracket">)</span><span class="punctuation delimiter">,</span>
+      <span class="function">create2</span><span class="punctuation bracket">(</span>
+        <span class="string">&quot;tr&quot;</span><span class="punctuation delimiter">,</span>
+        <span class="punctuation bracket">{</span><span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+        <span class="function">create2</span><span class="punctuation bracket">(</span><span class="string">&quot;th&quot;</span><span class="punctuation delimiter">,</span> <span class="punctuation bracket">{</span><span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span> <span class="string">&quot;Title&quot;</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">,</span>
+        <span class="function">create2</span><span class="punctuation bracket">(</span><span class="string">&quot;td&quot;</span><span class="punctuation delimiter">,</span> <span class="punctuation bracket">{</span><span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span> <span class="variable parameter">track</span><span class="punctuation delimiter">.</span><span class="property">name</span><span class="punctuation bracket">)</span>
+      <span class="punctuation bracket">)</span><span class="punctuation delimiter">,</span>
+      <span class="function">create2</span><span class="punctuation bracket">(</span>
+        <span class="string">&quot;tr&quot;</span><span class="punctuation delimiter">,</span>
+        <span class="punctuation bracket">{</span><span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+        <span class="function">create2</span><span class="punctuation bracket">(</span><span class="string">&quot;th&quot;</span><span class="punctuation delimiter">,</span> <span class="punctuation bracket">{</span><span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span> <span class="string">&quot;Listened&quot;</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">,</span>
+        <span class="function">create2</span><span class="punctuation bracket">(</span><span class="string">&quot;td&quot;</span><span class="punctuation delimiter">,</span> <span class="punctuation bracket">{</span><span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span> <span class="variable parameter">track</span><span class="punctuation delimiter">.</span><span class="property">date</span><span class="punctuation bracket">[</span><span class="string">&quot;#text&quot;</span><span class="punctuation bracket">]</span><span class="punctuation bracket">)</span>
+      <span class="punctuation bracket">)</span>
+    <span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="keyword">function</span> <span class="function">renderNowPlaying</span><span class="punctuation bracket">(</span><span class="variable parameter">track</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="variable builtin">console</span><span class="punctuation delimiter">.</span><span class="function method">log</span><span class="punctuation bracket">(</span><span class="variable parameter">track</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="variable">nowPlayingNode</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="variable">nowPlayingNode</span><span class="punctuation delimiter">.</span><span class="function method">remove</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+
+    <span class="variable">nowPlayingNode</span> <span class="operator">=</span> <span class="function">create</span><span class="punctuation bracket">(</span>
+      <span class="string">&quot;div&quot;</span><span class="punctuation delimiter">,</span>
+      <span class="punctuation bracket">{</span>
+        <span class="property">className</span>: <span class="string">&quot;now-playing&quot;</span><span class="punctuation delimiter">,</span>
+        <span class="property">href</span>: <span class="variable parameter">track</span><span class="punctuation delimiter">.</span><span class="property">url</span><span class="punctuation delimiter">,</span>
+        <span class="property">target</span>: <span class="string">&quot;blank&quot;</span><span class="punctuation delimiter">,</span>
+      <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+      <span class="function">$</span><span class="punctuation bracket">(</span><span class="string">&quot;.lastfm-now-playing-box&quot;</span><span class="punctuation bracket">)</span>
+    <span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+
+    <span class="keyword">const</span> <span class="variable">nowPlayingImage</span> <span class="operator">=</span> <span class="function">create</span><span class="punctuation bracket">(</span>
+      <span class="string">&quot;img&quot;</span><span class="punctuation delimiter">,</span>
+      <span class="punctuation bracket">{</span>
+        <span class="property">className</span>: <span class="string">&quot;np-image&quot;</span><span class="punctuation delimiter">,</span>
+        <span class="property">width</span>: <span class="string">&quot;128&quot;</span><span class="punctuation delimiter">,</span>
+        <span class="property">height</span>: <span class="string">&quot;128&quot;</span><span class="punctuation delimiter">,</span>
+        <span class="property">src</span>: <span class="variable parameter">track</span><span class="punctuation delimiter">.</span><span class="property">image</span><span class="punctuation delimiter">.</span><span class="function method">slice</span><span class="punctuation bracket">(</span><span class="operator">-</span><span class="number">1</span><span class="punctuation bracket">)</span><span class="punctuation bracket">[</span><span class="number">0</span><span class="punctuation bracket">]</span><span class="punctuation bracket">[</span><span class="string">&quot;#text&quot;</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">,</span>
+      <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+      <span class="variable">nowPlayingNode</span>
+    <span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+
+    <span class="comment">// const currently = track[&quot;@attr&quot;] &amp;&amp; track[&quot;@attr&quot;].nowplaying == &quot;true&quot;;</span>
+
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="variable">nowPlayingNode</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="variable">nowPlayingNode</span><span class="punctuation delimiter">.</span><span class="function method">appendChild</span><span class="punctuation bracket">(</span><span class="function">getMetadata</span><span class="punctuation bracket">(</span><span class="variable parameter">track</span><span class="punctuation bracket">)</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+
+      <span class="comment">// const metadata = create(&#39;div&#39;, {</span>
+      <span class="comment">//   class: &#39;np-metadata&#39;,</span>
+      <span class="comment">//   innerHTML: getMetadata(track, currently),</span>
+      <span class="comment">// }, nowPlayingNode);</span>
+
+      <span class="function">setTimeout</span><span class="punctuation bracket">(</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="operator">=&gt;</span> <span class="punctuation bracket">{</span>
+        <span class="variable">nowPlayingNode</span><span class="punctuation delimiter">?.</span><span class="function method">setAttribute</span><span class="punctuation bracket">(</span><span class="string">&quot;class&quot;</span><span class="punctuation delimiter">,</span> <span class="string">&quot;now-playing loaded&quot;</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+      <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span> <span class="number">100</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="function">getNowPlaying</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+<span class="punctuation bracket">}</span><span class="punctuation delimiter">;</span>
+
+<span class="function">lastfm</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+</code></pre></article></main><div class="article-rhs-container"><div class="article-rhs"><div class="git-history-table-container"><span class="git-history-table-title">Revisions</span><table class="git-history-table"><thead><tr><th>Date</th><th>Hash</th></tr></thead><tbody><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">fb16250a</td></tr><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">1fa3cb54</td></tr><tr><td class="commit-date-tr">2024-04-12</td><td class="commit-link-tr">e5f68a85</td></tr><tr><td class="commit-date-tr">2024-04-12</td><td class="commit-link-tr">42642b3f</td></tr><tr><td class="commit-date-tr">2024-04-12</td><td class="commit-link-tr">2b9b3c64</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">02dca1b8</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">2214e8fd</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">9a544393</td></tr></tbody></table></div><div class="prev-next-up-buttons-container">Navigation<table class="prev-next-up-buttons"><tr><td>Next</td><td><a class="next-button" href="https://jake.isnt.online/components/LastFM/lastfm.ts.html">lastfm.ts</a></td></tr><tr><td>Up</td><td><a class="up-button" href="/components/LastFM/index.html">LastFM</a></td></tr></table></div></div></div></div></body></html>

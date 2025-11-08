@@ -1,0 +1,7 @@
+$border: 1px solid var(--quote-background-border);
+$border-radius: 3px;
+
+@mixin border {
+  border: $border;
+  border-radius: $border-radius;
+}

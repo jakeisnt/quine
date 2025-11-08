@@ -1,0 +1,73 @@
+<!DOCTYPE html><html lang="en"><link rel="stylesheet" href="/resources/style.css"></link><link rel="stylesheet" href="/resources/global.css"></link><link rel="stylesheet" href="/resources/elementsstyle.css"></link><script type="module" src="/resources/lib.js"></script><script type="module" defer="true" src="/resources/elements.js"></script><head><meta charset="utf-8"></meta><meta name="viewport" content="width=device-width, initial-scale=1"></meta><title>source-block.scss / Jake Chvatal</title><meta property="og:title" content="source-block.scss"></meta><meta property="og:type" content="website"></meta><meta property="og:url" content="http://localhost:4242/"></meta><meta property="og:site_name" content="Jake Chvatal"></meta><meta name="keywords" content="jake"></meta><meta name="author" content="Jake Chvatal"></meta><meta name="robots" content="index,follow"></meta><meta name="description" content="hi"></meta><meta name="theme-color" media="(prefers-color-scheme: light)" content="white"></meta><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#111"></meta></head><body><link rel="stylesheet" href="/components/Sidebar/sidebar.css"></link><div class="sidebar"><div class="url-path"><b>jake.</b><span> / </span><a href="http://localhost:4242//components/index.html">components</a><span> / </span><a href="http://localhost:4242//components/SourceBlock/index.html">SourceBlock</a><span> / </span><b>source-block.scss</b></div><script type="module" src="/components/ToggleDarkMode/toggle-dark-mode.js"></script><link rel="stylesheet" href="/components/ToggleDarkMode/toggle-dark-mode.css"></link><div class="toggle-dark-mode-container"><button class="toggle-dark-mode"></button></div></div><div class="site-body"><main><article class="wikipage"><h1 class="title-top">source-block.scss</h1><link rel="stylesheet" href="/components/SourceBlock/source-block.css"></link><script type="module" src="/components/SourceBlock/load-code-blocks.js"></script><pre><code class="language-scss has-raw-code">@use &#x27;resources/core&#x27;;
+
+/* appearance of code block */
+pre code {
+  @include core.border;
+  position: relative;
+  display: block;
+  padding: 0.5em 0.5em !important;
+  padding-top: 0.4em !important;
+  padding-bottom: 0.8em !important;
+  overflow-x: auto;
+  font-size: 14px;
+  background-color: var(--quote-background) !important;
+  min-height: 36px;
+  min-width: 70ch;
+}
+
+code:hover {
+  border-color: var(--quote-background-border-highlighted);
+  transition: border-color 0.25s ease-in-out;
+}
+
+@media only screen and (max-width: 500px) {
+  pre code {
+    $width: calc(100% + 1rem);
+    margin-left: -1rem;
+    min-width: $width;
+    max-width: $width;
+  }
+}
+
+/** syntax highlighting */
+.keyword {
+  color: var(--purple);
+}
+
+.function {
+  color: var(--blue);
+}
+
+.type {
+  color: var(--darkblue);
+}
+
+.string {
+  color: var(--green);
+}
+
+.number {
+  color: var(--red);
+}
+
+.operator {
+  color: gray;
+}
+
+.comment {
+  color: rgb(72, 72, 72);
+  font-style: italic;
+}
+
+.punctuation {
+  color: var(--darkblue);
+}
+
+.variable {
+  color: var(--red);
+}
+
+.string {
+  color: var(--green);
+}
+</code></pre></article></main><div class="article-rhs-container"><div class="article-rhs"><div class="git-history-table-container"><span class="git-history-table-title">Revisions</span><table class="git-history-table"><thead><tr><th>Date</th><th>Hash</th></tr></thead><tbody><tr><td class="commit-date-tr">2024-04-17</td><td class="commit-link-tr">40ea5682</td></tr><tr><td class="commit-date-tr">2024-04-14</td><td class="commit-link-tr">4f13df31</td></tr><tr><td class="commit-date-tr">2024-04-14</td><td class="commit-link-tr">d364dead</td></tr></tbody></table></div><div class="prev-next-up-buttons-container">Navigation<table class="prev-next-up-buttons"><tr><td>Previous</td><td><a class="prev-button" href="http://localhost:4242/components/SourceBlock/SourceBlock.ts.html">SourceBlock.ts</a></td></tr><tr><td>Up</td><td><a class="up-button" href="http://localhost:4242/components/SourceBlock/index.html">SourceBlock</a></td></tr></table></div></div></div></div></body></html>

@@ -6,21 +6,19 @@ import { component } from "./components";
 import type {
   PageSyntax,
   HtmlAttributes,
-  NativeHtmlTag,
   HtmlTag,
   HtmlNode,
   Dependency,
 } from "../types/html";
 import { isHtmlAttributes } from "./parseDSL";
-import type { PageSettings } from "../types/site";
 
 /**
  * Convert HTML to a string.
  */
-function html(syn: PageSyntax, config: PageSettings) {
+function html(...args: PageSyntax[]) {
   let buffer: string[] = [];
   let dependencies: Dependency[] = [];
-  build(syn, buffer, dependencies, config);
+  build(args, buffer, dependencies);
 
   return {
     dependsOn: dependencies,
@@ -32,9 +30,8 @@ function html(syn: PageSyntax, config: PageSettings) {
  * Render a PageSyntax node to an HTML page string.
  * Include front matter that configures the document as a whole.
  */
-function htmlPage(syn: PageSyntax, cfg: PageSettings) {
-  const { dependsOn, body } = html(syn, cfg);
-
+function htmlPage(...args: PageSyntax[]) {
+  const { dependsOn, body } = html(...args);
   return {
     dependsOn,
     body: `<!DOCTYPE html>${body}`,
@@ -46,10 +43,7 @@ function htmlPage(syn: PageSyntax, cfg: PageSettings) {
  * @param attrs the attributes to build into the JS.
  * @param buffer buffer to queue the changes to.
  */
-function buildAttributes<T extends HtmlTag>(
-  attrs: HtmlAttributes<T>,
-  dependencies: Dependency[]
-) {
+function buildAttributes(attrs: HtmlAttributes, dependencies: Dependency[]) {
   if (!attrs || Object.keys(attrs).length === 0) {
     return "";
   }
@@ -60,11 +54,12 @@ function buildAttributes<T extends HtmlTag>(
   for (var key in attrs) {
     buffer.push(`${key}="${attrs[key]?.toString()}"`);
   }
-  if ("href" in attrs && attrs.href) {
+
+  if (attrs.href) {
     dependencies.push({ src: attrs.href });
   }
 
-  if ("src" in attrs && attrs.src) {
+  if (attrs.src) {
     dependencies.push({ src: attrs.src });
   }
 
@@ -80,41 +75,33 @@ function buildComponent(
   name: string,
   args: object,
   buffer: string[],
-  dependencies: Dependency[],
-  config: PageSettings
+  dependencies: Dependency[]
 ) {
-  const { dependsOn, body } = component(name, args, config);
-  build(body, buffer, dependencies, config);
+  const { dependsOn, body } = component(name, args);
+  build(body, buffer, dependencies);
   dependencies.push(...dependsOn);
 }
 
 /**
  * Build a single HTML tag.
  * The callback proceeds to build the rest of the page sequentially.
- *
- * TODO: Is this type corect? No.
  */
-function buildTag<T extends NativeHtmlTag>(
-  tagName: T | string,
-  attributes: HtmlAttributes<T | string>,
+function buildTag(
+  tagName: string,
+  attributes: HtmlAttributes,
   buffer: string[],
   dependencies: Dependency[],
   list: HtmlNode,
-  index: number,
-  config: PageSettings
+  index: number
 ) {
   const isComponent = tagName[0] === tagName[0].toUpperCase();
 
   if (isComponent) {
     buildComponent(
       tagName,
-      {
-        ...attributes,
-        children: Array.isArray(list) ? list.slice(index) : [list],
-      },
+      { ...attributes, children: list?.slice(index) },
       buffer,
-      dependencies,
-      config
+      dependencies
     );
     return;
   }
@@ -123,7 +110,7 @@ function buildTag<T extends NativeHtmlTag>(
   buffer.push(`<${tagName}${buildAttributes(attributes, dependencies)}>`);
 
   // Build the contents of the tag - an arbitrary array of elements.
-  buildRest(list, index, buffer, dependencies, config);
+  buildRest(list, index, buffer, dependencies);
 
   // Close the tag: </ tag >
   buffer.push(`</${tagName}>`);
@@ -133,10 +120,10 @@ function buildTag<T extends NativeHtmlTag>(
  * Build an HTML configuration from the list of nodes,
  * adding the stringified representation to the buffer.
  */
-function build(list: HtmlNode, buffer: string[], dependencies: Dependency[], config: PageSettings) {
+function build(list: HtmlNode, buffer: string[], dependencies: Dependency[]) {
   let index = 0;
 
-  let nextElement = Array.isArray(list) ? list[index] : list;
+  let nextElement = list?.[index];
 
   // if our next element is the start of an HTML tag:
   if (typeof nextElement === "string") {
@@ -145,7 +132,7 @@ function build(list: HtmlNode, buffer: string[], dependencies: Dependency[], con
     index += 1;
 
     let attributesToUse = attr;
-    nextElement = Array.isArray(list) ? list[index] : list;
+    nextElement = list?.[index];
 
     // If, after the tag, we have more attributes,
     // merge them with the attributes we found when splitting the tag.
@@ -154,10 +141,10 @@ function build(list: HtmlNode, buffer: string[], dependencies: Dependency[], con
       index += 1;
     }
 
-    buildTag(tagName, attributesToUse, buffer, dependencies, list, index, config);
+    buildTag(tagName, attributesToUse, buffer, dependencies, list, index);
   } else {
     // if we don't have a tag, we know we have an array of tags. Process those.
-    buildRest(list, index, buffer, dependencies, config);
+    buildRest(list, index, buffer, dependencies);
   }
 }
 
@@ -171,15 +158,14 @@ function buildRest(
   list: HtmlNode,
   index: number,
   buffer: string[],
-  dependencies: Dependency[],
-  config: PageSettings
+  dependencies: Dependency[]
 ) {
-  const length = Array.isArray(list) ? list.length : 0;
+  const length = list?.length ?? 0;
 
   while (index < length) {
-    var item = Array.isArray(list) ? list[index++] : list;
+    var item = list?.[index++];
     if (isArray(item)) {
-      build(item, buffer, dependencies, config);
+      build(item, buffer, dependencies);
     } else {
       // NOTE: The information is not encompassed in the type (yet)
       // but it's possible for anything in the tree to be undefined.
@@ -196,15 +182,11 @@ function buildRest(
  * @param attr2 the attributes to merge into attr1.
  * @returns a compbined set of HTML attributes
  */
-function mergeAttributes<T extends HtmlTag>(
-  attr1: HtmlAttributes<T>,
-  attr2: HtmlAttributes<T>
-) {
+function mergeAttributes(attr1: HtmlAttributes, attr2: HtmlAttributes) {
   for (var key in attr2) {
     if (!attr1.hasOwnProperty(key)) {
       attr1[key] = attr2[key];
     } else if (key === "class") {
-      // @ts-ignore
       attr1[key] += " " + attr2[key];
     }
   }
@@ -220,15 +202,12 @@ function mergeAttributes<T extends HtmlTag>(
  * @param tag the tag name to split out
  * @returns the tag name and corresponding HTML attributes to set -- if any.
  */
-function splitTag(tag: HtmlTag): [HtmlTag, HtmlAttributes<HtmlTag>] {
-  let attr: HtmlAttributes<HtmlTag> = {};
+function splitTag(tag: string): [HtmlTag, HtmlAttributes] {
+  let attr: HtmlAttributes = {};
   let match = tag.match(/([^\s\.#]+)(?:#([^\s\.#]+))?(?:\.([^\s#]+))?/);
-  // SHORTCUT: binding these attributes works on any tag, right?
-  // @ts-ignore
   if (match?.[2]) attr.id = match[2];
-  // @ts-ignore
   if (match?.[3]) attr.class = match[3].replace(/\./g, " ");
   return [match?.[1] as HtmlTag, attr];
 }
 
-export { htmlPage };
+export { html, htmlPage };

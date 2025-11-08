@@ -1,0 +1,37 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"></meta><title>log.ts / Jake Chvatal</title><meta property="og:title" content="log.ts"></meta><meta property="og:type" content="website"></meta><meta property="og:url" content="https://jake.isnt.online"></meta><meta property="og:site_name" content="Jake Chvatal"></meta><meta name="keywords" content="jake"></meta><meta name="author" content="Jake Chvatal"></meta><meta name="robots" content="index,follow"></meta><meta name="description" content="hi"></meta><meta name="theme-color" media="(prefers-color-scheme: light)" content="white"></meta><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#111"></meta><link rel="icon" type="image/x-icon" href="/Users/jake/Documents/personal/site/favicons/favicon.ico"></link><link rel="apple-touch-icon" href="/Users/jake/Documents/personal/site/favicons/apple-touch-icon.png"></link><link rel="stylesheet" type="text/css" href="/resources/style.css" id="/resources/style.css"></link><link rel="stylesheet" type="text/css" href="/resources/global.css" id="/resources/global.css"></link><script src="/resources/lib.js" id="/resources/lib.js" type="module"></script><link rel="stylesheet" type="text/css" href="/resources/elementsstyle.css" id="/resources/elementsstyle.css"></link><link rel="manifest" href="/resources/manifest.json"></link><script src="/resources/elements.js" id="/resources/elements.js" type="module" defer="true"></script></head><body><link rel="stylesheet" href="/components/Sidebar/sidebar.css"></link><div class="sidebar"><div class="url-path"><b>jake.</b><span> / </span><a href="https://jake.isnt.online/src/index.html">src</a><span> / </span><a href="https://jake.isnt.online/src/utils/index.html">utils</a><span> / </span><b>log.ts</b></div><script src="/components/ToggleDarkMode/toggle-dark-mode.js" type="module"></script><link rel="stylesheet" href="/components/ToggleDarkMode/toggle-dark-mode.css"></link><div class="toggle-dark-mode-container"><button class="toggle-dark-mode"></button></div></div><div class="site-body"><main><article class="wikipage"><h1 class="title-top">log.ts</h1><link rel="stylesheet" href="/components/SourceBlock/source-block.css"></link><script src="/components/SourceBlock/load-code-blocks.js" type="module"></script><pre><code class="language-ts has-raw-code"><span class="comment">// TODO: define custom getter for the logger that allows any object access,</span>
+<span class="comment">// but only actually logs info from the supported loggers</span>
+
+<span class="comment">// @ts-nocheck</span>
+
+<span class="keyword">let</span> <span class="variable">logger</span> <span class="operator">=</span> <span class="punctuation bracket">{</span>
+  <span class="comment">// general debug logs</span>
+  <span class="function method">debug</span><span class="punctuation bracket">(</span>...<span class="variable">args</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="comment">// console.log(...args);</span>
+  <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+
+  <span class="comment">// logs relevant to hot reloading</span>
+  <span class="function method">hotReload</span><span class="punctuation bracket">(</span>...<span class="variable">args</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="comment">// console.log(...args);</span>
+  <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+
+  <span class="function method">file</span><span class="punctuation bracket">(</span>...<span class="variable">args</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="comment">// console.log(...args);</span>
+  <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+
+  <span class="comment">// logs relevant to network</span>
+  <span class="function method">network</span><span class="punctuation bracket">(</span>...<span class="variable">args</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="comment">// console.log(...args);</span>
+  <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+
+  <span class="comment">// logs relevant to production</span>
+  <span class="function method">production</span><span class="punctuation bracket">(</span>...<span class="variable">args</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="variable builtin">console</span><span class="punctuation delimiter">.</span><span class="function method">log</span><span class="punctuation bracket">(</span>...<span class="variable">args</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+
+  <span class="function method">git</span><span class="punctuation bracket">(</span>...<span class="variable">args</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="variable builtin">console</span><span class="punctuation delimiter">.</span><span class="function method">log</span><span class="punctuation bracket">(</span>...<span class="variable">args</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+<span class="punctuation bracket">}</span><span class="punctuation delimiter">;</span>
+
+<span class="keyword">export</span> <span class="keyword">default</span> <span class="variable">logger</span><span class="punctuation delimiter">;</span>
+</code></pre></article></main><div class="article-rhs-container"><div class="article-rhs"><div class="git-history-table-container"><span class="git-history-table-title">Revisions</span><table class="git-history-table"><thead><tr><th>Date</th><th>Hash</th></tr></thead><tbody><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">0c9b2c0e</td></tr><tr><td class="commit-date-tr">2024-04-01</td><td class="commit-link-tr">a3c37e13</td></tr><tr><td class="commit-date-tr">2024-04-01</td><td class="commit-link-tr">645f49d5</td></tr><tr><td class="commit-date-tr">2024-04-01</td><td class="commit-link-tr">110e0165</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">02dca1b8</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">9a544393</td></tr></tbody></table></div><div class="prev-next-up-buttons-container">Navigation<table class="prev-next-up-buttons"><tr><td>Previous</td><td><a class="prev-button" href="https://jake.isnt.online/src/utils/object.ts.html">object.ts</a></td></tr><tr><td>Next</td><td><a class="next-button" href="https://jake.isnt.online/src/utils/cmd.ts.html">cmd.ts</a></td></tr><tr><td>Up</td><td><a class="up-button" href="/src/utils/index.html">utils</a></td></tr></table></div></div></div></div></body></html>

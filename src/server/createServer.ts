@@ -1,8 +1,7 @@
 import { Path } from "../utils/path";
 import { link } from "../utils/printstyle";
-import { withoutUrl } from "./utils";
+import { formatUrl, withoutUrl } from "./utils";
 import log from "../utils/log";
-import type { URL } from "../utils/url";
 
 type OnRequestType = (cfg: { path: Path }) => any;
 type OnSocketConnectedType = (ws: any) => any;
@@ -13,25 +12,32 @@ type OnSocketConnectedType = (ws: any) => any;
  */
 const createServer = ({
   url,
+  port,
   websocketPath,
   onRequest = () => {},
   onSocketConnected = () => {},
 }: {
-  url: URL;
+  url: string;
+  port: number;
   websocketPath: string;
   onRequest: OnRequestType;
   onSocketConnected: OnSocketConnectedType;
 }) => {
-  const linkText = link(url.toString()).underline().color("blue");
-  const httpWebsocketUrl = `${url}${websocketPath}`;
+  const fullUrl = formatUrl({ url, port });
+  const linkText = link(fullUrl).underline().color("blue");
+
+  const httpWebsocketUrl = formatUrl({
+    url,
+    port,
+    path: websocketPath,
+  });
 
   log.production(`Starting server at ${linkText}`);
 
   const server = Bun.serve({
-    port: url.port,
-
+    port,
     fetch(req, server) {
-      const path = withoutUrl(req.url, url);
+      const path = withoutUrl(req.url, fullUrl);
       log.network("FETCH", path);
       if (req.url === httpWebsocketUrl) {
         log.network("websocket request");

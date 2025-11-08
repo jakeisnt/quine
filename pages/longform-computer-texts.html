@@ -1,0 +1,373 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8" /><title>longform-computer-texts / pages / Jake Chvatal</title><meta content="width=device-width,initial-scale=1.0" name="viewport" /><meta content="longform-computer-texts" property="og:title" /><meta content="website" property="og:type" /><meta content="https://jake.isnt.online" property="og:url" /><meta content="Jake Chvatal" property="og:site_name" /><meta content="hi" name="description" /><meta content="Operating Systems, webring, programming, languages" name="keywords" /><meta content="Jake Chvatal" name="author" /><meta content="index,follow" name="robots" /><meta content="white" media="(prefers-color-scheme: light)" name="theme-color" /><meta content="#111" media="(prefers-color-scheme: dark)" name="theme-color" /><link href="/favicon/apple-touch-icon.png" rel="apple-touch-icon" /><link href="/manifest.json" rel="manifest" /><link href="/resources/style.css" id="/resources/style.css" rel="stylesheet" type="text/css" /><link href="/resources/global.css" id="/resources/global.css" rel="stylesheet" type="text/css" /><script id="/resources/lib.js" src="/resources/lib.js"></script><link href="/resources/elements.css" id="/resources/elements.css" rel="stylesheet" type="text/css" /><script defer="defer" id="/resources/elements.js" src="/resources/elements.js"></script><script defer="defer" id="https://unpkg.com/@highlightjs/cdn-assets@11.7.0/highlight.min.js" src="https://unpkg.com/@highlightjs/cdn-assets@11.7.0/highlight.min.js"></script><script defer="defer" id="https://unpkg.com/@highlightjs/cdn-assets@11.7.0/languages/clojure.min.js" src="https://unpkg.com/@highlightjs/cdn-assets@11.7.0/languages/clojure.min.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/nord.min.css" id="dark-theme-highlight" rel="stylesheet" /><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-light.min.css" id="light-theme-highlight" rel="stylesheet" /></head><body><span><div class="sidebar"><div class="url-path"><a href="/">jake.</a><a href="https://isnt.online"> ~ </a><span> / </span><a href="./index.html">pages</a><span> / </span><b>longform-computer-texts</b></div><span><div class="toggle-dark-mode-container"><button class="toggle-dark-mode"></button></div><script defer="defer" id="/components/toggle-dark-mode/toggle-dark-mode.js" src="/components/toggle-dark-mode/toggle-dark-mode.js"></script><link href="/components/toggle-dark-mode/toggle-dark-mode.css" id="/components/toggle-dark-mode/toggle-dark-mode.css" rel="stylesheet" type="text/css" /></span></div><link href="/components/sidebar/sidebar.css" id="/components/sidebar/sidebar.css" rel="stylesheet" type="text/css" /></span><div class="site-body"><main><article class="wikipage"><h1 class="title-top">longform-computer-texts</h1><div><p>Feed: Pascal's Scribbles Title: Long-form Texts on Interesting Detailsof Computers Date: Wed, 15 Apr 2020 18:00:00 -0400 Link:<a href="https://deterministic.space/several-months-of-reading-material.html">https://deterministic.space/several-months-of-reading-material.html</a></p><p>It seems especially recently I’ve come across more and more long-formtexts (think: hour-long blog posts; free books; series of posts). Iespecially like the ones that go into the very fine details of someniche topic and maybe also ramble a bit about completely unrelated buthighly entertaining asides. And while I will probably never have enoughtime to read them all, I decided to at least collect some of them herefor future reference. I’ll do my best to add summaries, and to updatethis list semi-regularly.</p><p>Contents</p><ul><li>“Learn Rust With Entirely Too Many Linked Lists” by AlexisBeingessner<sup id="fnref-1"><a href="#fn-1"></a></sup></li><li>“Programming Algorithms” by Vsevolod Domkin<sup id="fnref-2"><a href="#fn-2"></a></sup></li><li>“Aspects of Rust” by multiple people<sup id="fnref-3"><a href="#fn-3"></a></sup></li><li>“Reading files the hard way” by Amos Wenger<sup id="fnref-4"><a href="#fn-4"></a></sup></li><li>“Making our own ping” by Amos Wenger<sup id="fnref-5"><a href="#fn-5"></a></sup></li><li>“Making our own executable packer” by Amos Wenger<sup id="fnref-6"><a href="#fn-6"></a></sup></li><li>“Parsing” by Aleksey Kladov<sup id="fnref-7"><a href="#fn-7"></a></sup></li><li>“JavaScript Allongé” by Reg “raganwald” Braithwaite<sup id="fnref-8"><a href="#fn-8"></a></sup></li><li>“Crafting Interpreters” by Robert Nystrom<sup id="fnref-9"><a href="#fn-9"></a></sup></li><li>“A relatively simple Datalog engine in Rust” by Frank McSherry<sup id="fnref-10"><a href="#fn-10"></a></sup></li><li>“Non-lexical lifetimes” by Niko Matsakis<sup id="fnref-11"><a href="#fn-11"></a></sup></li><li>“Shifgrethor” by Without Boats<sup id="fnref-12"><a href="#fn-12"></a></sup></li><li>“Rayon/Parallel Iterators” by Niko Matsakis<sup id="fnref-13"><a href="#fn-13"></a></sup></li><li>“How Rust optimizes async/await” by Tyler Mandry<sup id="fnref-14"><a href="#fn-14"></a></sup></li><li>“Writing an OS in Rust” by Philipp Oppermann<sup id="fnref-15"><a href="#fn-15"></a></sup></li><li>“Learning Parser Combinators With Rust” by Bodil Stokke<sup id="fnref-16"><a href="#fn-16"></a></sup></li><li>“Manish vs. ASCII” by Manish Goregaokar<sup id="fnref-17"><a href="#fn-17"></a></sup></li><li>“The Wayland Protocol” by Drew DeVault<sup id="fnref-18"><a href="#fn-18"></a></sup></li></ul><p>“Learn Rust With Entirely Too Many Linked Lists<sup id="fnref-19"><a href="#fn-19"></a></sup>” by AlexisBeingessner</p><p>(\~180 pages; archived<sup id="fnref-20"><a href="#fn-20"></a></sup>)</p><p>The premise of this book is that writing a linked list is a beginner’sexercise in C but quite difficult to get right in Rust. So it takes thatas an opportunity to do just what the title says: It teaches you Rust byimplementing a linked list type in Rust, in five (as of April 2020)different ways.</p><p>Niches: data structures; linked lists; rust; smart pointers</p><p>Last update I saw: 2019-03-21</p><p>“Programming Algorithms<sup id="fnref-21"><a href="#fn-21"></a></sup>” by Vsevolod Domkin</p><p>(\~300 pages; archived<sup id="fnref-22"><a href="#fn-22"></a></sup>)</p><p>Book covering a lot of different data structures and algorithms. “Itsaim is to systematically explain how to write efficient programs and,also, the approaches and tools for determining why the program isn’tefficient enough.”</p><p>Niches: data structures; algorithms; lisp</p><p>Last update I saw: 2020-04-16</p><p>“Aspects of Rust” by multiple people</p><p>Several stand-alone posts by various people whose only connection isthat they cover nice aspects of Rust.</p><p>Niches: rust</p><ol><li><p>A half-hour to learn Rust<sup id="fnref-23"><a href="#fn-23"></a></sup> (archived<sup id="fnref-24"><a href="#fn-24"></a></sup>)</p><p>Whirlwind tour through Rust as a language by Amos Wenger.</p></li><li><p>Typed Key Pattern<sup id="fnref-25"><a href="#fn-25"></a></sup> (archived<sup id="fnref-26"><a href="#fn-26"></a></sup>)</p><p>By Aleksey Kladov.</p></li><li><p>The Secret Life of Cows<sup id="fnref-27"><a href="#fn-27"></a></sup> (archived<sup id="fnref-28"><a href="#fn-28"></a></sup>)</p><p>The Clone-on-Write smart pointer explained by yours truly.</p></li><li><p>Newtype Index Pattern<sup id="fnref-29"><a href="#fn-29"></a></sup> (archived<sup id="fnref-30"><a href="#fn-30"></a></sup>)</p><p>By Aleksey Kladov.</p></li><li><p>How to implement a trait for &str and &\[&str\]<sup id="fnref-31"><a href="#fn-31"></a></sup> (archived<sup id="fnref-32"><a href="#fn-32"></a></sup>)</p><p>Some musing on traits and borrows by yours truly.</p></li><li><p>Declarative memory management<sup id="fnref-33"><a href="#fn-33"></a></sup> (archived<sup id="fnref-34"><a href="#fn-34"></a></sup>)</p><p>By Amos Wenger. Introducing the complexities of memory managementand the ways Rust tries to represent them in a nice roundabout way.</p></li><li><p>Return-type based dispatch<sup id="fnref-35"><a href="#fn-35"></a></sup> (archived<sup id="fnref-36"><a href="#fn-36"></a></sup>)</p><p>By yours. By specifying at some later point in the code which typeyou want your function to return, the compiler can go back and fillin the blanks.</p></li><li><p>Working with strings in Rust<sup id="fnref-37"><a href="#fn-37"></a></sup> (archived<sup id="fnref-38"><a href="#fn-38"></a></sup>)</p><p>By Amos Wenger. Following the memory management post, this looks athow strings are actually pretty complicated and what Rust does aboutthem.</p></li></ol><p>“Reading files the hard way” by Amos Wenger</p><p>Writing files seems like a solved problem. But that doesn’t mean wecan’t solve it again from scratch.</p><p>Niches: POSIX; file systems; syscalls</p><ol><li>Part 1 (node.js, C, rust, strace)<sup id="fnref-39"><a href="#fn-39"></a></sup> (archived<sup id="fnref-40"><a href="#fn-40"></a></sup>)</li><li>Part 2 (x86 asm, linux kernel)<sup id="fnref-41"><a href="#fn-41"></a></sup> (archived<sup id="fnref-42"><a href="#fn-42"></a></sup>)</li><li>Part 3 (ftrace, disk layouts, ext4)<sup id="fnref-43"><a href="#fn-43"></a></sup> (archived<sup id="fnref-44"><a href="#fn-44"></a></sup>)</li></ol><p>“Making our own ping” by Amos Wenger</p><ol><li>A short (and mostly wrong) history of computer networking<sup id="fnref-45"><a href="#fn-45"></a></sup>(archived<sup id="fnref-46"><a href="#fn-46"></a></sup>)</li><li>Windows dynamic libraries, calling conventions, and transmute<sup id="fnref-47"><a href="#fn-47"></a></sup></li></ol><p>(archived<sup id="fnref-48"><a href="#fn-48"></a></sup>)</p><ol><li>FFI-safe types in Rust, newtypes and MaybeUninit<sup id="fnref-49"><a href="#fn-49"></a></sup>(archived<sup id="fnref-50"><a href="#fn-50"></a></sup>)</li><li>Designing and implementing a safer API on top of LoadLibrary<sup id="fnref-51"><a href="#fn-51"></a></sup></li></ol><p>(archived<sup id="fnref-52"><a href="#fn-52"></a></sup>)</p><ol><li>A simple ping library, parsing strings into IPv4 address<sup id="fnref-53"><a href="#fn-53"></a></sup>(archived<sup id="fnref-54"><a href="#fn-54"></a></sup>)</li><li>The builder pattern, and a macro that keeps FFI code DRY<sup id="fnref-55"><a href="#fn-55"></a></sup>(archived<sup id="fnref-56"><a href="#fn-56"></a></sup>)</li><li>Finding the default network interface through WMI<sup id="fnref-57"><a href="#fn-57"></a></sup>(archived<sup id="fnref-58"><a href="#fn-58"></a></sup>)</li><li>Binding C APIs with variable-length structs and UTF-16<sup id="fnref-59"><a href="#fn-59"></a></sup>(archived<sup id="fnref-60"><a href="#fn-60"></a></sup>)</li><li>Consuming Ethernet frames with the nom crate<sup id="fnref-61"><a href="#fn-61"></a></sup> (archived<sup id="fnref-62"><a href="#fn-62"></a></sup>)</li></ol><ol><li>Improving error handling - panics vs. proper errors<sup id="fnref-63"><a href="#fn-63"></a></sup>(archived<sup id="fnref-64"><a href="#fn-64"></a></sup>)</li><li>Parsing IPv4 packets, including numbers smaller than bytes<sup id="fnref-65"><a href="#fn-65"></a></sup></li></ol><p>(archived<sup id="fnref-66"><a href="#fn-66"></a></sup>)</p><ol><li>Parsing and serializing ICMP packets with cookie-factory.<sup id="fnref-67"><a href="#fn-67"></a></sup>(archived<sup id="fnref-68"><a href="#fn-68"></a></sup>)</li><li>Crafting ARP packets to find a remote host’s MAC address<sup id="fnref-69"><a href="#fn-69"></a></sup>(archived<sup id="fnref-70"><a href="#fn-70"></a></sup>)</li><li>Crafting ICMP-bearing IPv4 packets with the help of bitvec<sup id="fnref-71"><a href="#fn-71"></a></sup></li></ol><p>(archived<sup id="fnref-72"><a href="#fn-72"></a></sup>)</p><p>“Making our own executable packer” by Amos Wenger</p><ol><li>What’s in a Linux executable?<sup id="fnref-73"><a href="#fn-73"></a></sup> (archived<sup id="fnref-74"><a href="#fn-74"></a></sup>)</li><li>Running an executable without exec<sup id="fnref-75"><a href="#fn-75"></a></sup> (archived<sup id="fnref-76"><a href="#fn-76"></a></sup>)</li><li>Position-independent code<sup id="fnref-77"><a href="#fn-77"></a></sup> (archived<sup id="fnref-78"><a href="#fn-78"></a></sup>)</li><li>ELF relocations<sup id="fnref-79"><a href="#fn-79"></a></sup> (archived<sup id="fnref-80"><a href="#fn-80"></a></sup>)</li><li>The simplest shared library<sup id="fnref-81"><a href="#fn-81"></a></sup> (archived<sup id="fnref-82"><a href="#fn-82"></a></sup>)</li><li>Loading multiple ELF objects<sup id="fnref-83"><a href="#fn-83"></a></sup> (archived<sup id="fnref-84"><a href="#fn-84"></a></sup>)</li><li>Dynamic symbol resolution<sup id="fnref-85"><a href="#fn-85"></a></sup> (archived<sup id="fnref-86"><a href="#fn-86"></a></sup>)</li><li>Dynamic linker speed and correctness<sup id="fnref-87"><a href="#fn-87"></a></sup> (archived<sup id="fnref-88"><a href="#fn-88"></a></sup>)</li><li>GDB scripting and Indirect functions<sup id="fnref-89"><a href="#fn-89"></a></sup> (archived<sup id="fnref-90"><a href="#fn-90"></a></sup>)</li></ol><ol><li>Safer memory-mapped structures<sup id="fnref-91"><a href="#fn-91"></a></sup> (archived<sup id="fnref-92"><a href="#fn-92"></a></sup>)</li><li>More ELF relocations<sup id="fnref-93"><a href="#fn-93"></a></sup> (archived<sup id="fnref-94"><a href="#fn-94"></a></sup>)</li><li>A no<sub>std</sub> Rust binary<sup id="fnref-95"><a href="#fn-95"></a></sup> (archived<sup id="fnref-96"><a href="#fn-96"></a></sup>)</li><li>Thread-local storage<sup id="fnref-97"><a href="#fn-97"></a></sup> (archived<sup id="fnref-98"><a href="#fn-98"></a></sup>)</li></ol><p>“Parsing” by Aleksey Kladov</p><p>Not a real series of articles but a collection of posts by someone whoseGithub bio reads “Stuck writing parsers”.</p><p>Niches: parsers</p><ol><li>Modern Parser Generator<sup id="fnref-99"><a href="#fn-99"></a></sup> (archived<sup id="fnref-100"><a href="#fn-100"></a></sup>)</li><li>Simple but Powerful Pratt Parsing<sup id="fnref-101"><a href="#fn-101"></a></sup> (archived<sup id="fnref-102"><a href="#fn-102"></a></sup>)</li><li>From Pratt to Dijkstra<sup id="fnref-103"><a href="#fn-103"></a></sup> (archived<sup id="fnref-104"><a href="#fn-104"></a></sup>)</li></ol><p>“JavaScript Allongé<sup id="fnref-105"><a href="#fn-105"></a></sup>” by Reg “raganwald” Braithwaite</p><p>(\~530 pages; archived<sup id="fnref-106"><a href="#fn-106"></a></sup>)</p><p>Niches: functional programming; obscure JavaScript</p><p>Last update I saw: 2019-04-26</p><p>“Crafting Interpreters<sup id="fnref-107"><a href="#fn-107"></a></sup>” by Robert Nystrom</p><p>(\~800 pages; archived<sup id="fnref-108"><a href="#fn-108"></a></sup>)</p><p>Last update I saw: 2020-04-05</p><p>“A relatively simple Datalog engine in Rust<sup id="fnref-109"><a href="#fn-109"></a></sup>” by Frank McSherry</p><p>(\~20 pages; archived<sup id="fnref-110"><a href="#fn-110"></a></sup>)</p><p>Building a datalog engine in Rust.</p><p>Niches: datalog</p><p>“Non-lexical lifetimes” by Niko Matsakis</p><p>One of the main features of the Rust language is the concept ofownership and lifetimes. This series of posts by Niko Matsakis, one ofthe designers of the Rust language, is about the theory and practicalimplementation of a revamped and more complete way of this in the Rustcompiler. It starts in early 2016 and goes all the way to after theyfeature landed (end of 2018).</p><ol><li>Introduction<sup id="fnref-111"><a href="#fn-111"></a></sup> (archived<sup id="fnref-112"><a href="#fn-112"></a></sup>)</li><li>Non-lexical lifetimes based on liveness<sup id="fnref-113"><a href="#fn-113"></a></sup> (archived<sup id="fnref-114"><a href="#fn-114"></a></sup>)</li><li>Adding the outlives relation<sup id="fnref-115"><a href="#fn-115"></a></sup> (archived<sup id="fnref-116"><a href="#fn-116"></a></sup>)</li><li>Using liveness and location<sup id="fnref-117"><a href="#fn-117"></a></sup> (archived<sup id="fnref-118"><a href="#fn-118"></a></sup>)</li><li>Nested method calls via two-phase borrowing<sup id="fnref-119"><a href="#fn-119"></a></sup> (archived<sup id="fnref-120"><a href="#fn-120"></a></sup>)</li><li>Draft RFC and prototype available<sup id="fnref-121"><a href="#fn-121"></a></sup> (archived<sup id="fnref-122"><a href="#fn-122"></a></sup>)</li><li>An alias-based formulation of the borrow checker<sup id="fnref-123"><a href="#fn-123"></a></sup>(archived<sup id="fnref-124"><a href="#fn-124"></a></sup>)</li><li>MIR-based borrow check (NLL) status update<sup id="fnref-125"><a href="#fn-125"></a></sup> (archived<sup id="fnref-126"><a href="#fn-126"></a></sup>)</li><li>MIR-based borrowck is almost here<sup id="fnref-127"><a href="#fn-127"></a></sup> (archived<sup id="fnref-128"><a href="#fn-128"></a></sup>)</li></ol><ol><li>Interprocedural conflicts<sup id="fnref-129"><a href="#fn-129"></a></sup> (archived<sup id="fnref-130"><a href="#fn-130"></a></sup>)</li><li>Polonius and region errors<sup id="fnref-131"><a href="#fn-131"></a></sup> (archived<sup id="fnref-132"><a href="#fn-132"></a></sup>)</li><li>Polonius and the case of the hereditary harrop predicate<sup id="fnref-133"><a href="#fn-133"></a></sup></li></ol><p>(archived<sup id="fnref-134"><a href="#fn-134"></a></sup>)</p><p>“Shifgrethor” by Without Boats</p><p>A proposed API for a GC in Rust.</p><ol><li>Garbage collection as a Rust library<sup id="fnref-135"><a href="#fn-135"></a></sup> (archived<sup id="fnref-136"><a href="#fn-136"></a></sup>)</li><li>Notes on tracing garbage collectors<sup id="fnref-137"><a href="#fn-137"></a></sup> (archived<sup id="fnref-138"><a href="#fn-138"></a></sup>)</li><li>Rooting<sup id="fnref-139"><a href="#fn-139"></a></sup> (archived<sup id="fnref-140"><a href="#fn-140"></a></sup>)</li><li>Tracing<sup id="fnref-141"><a href="#fn-141"></a></sup> (archived<sup id="fnref-142"><a href="#fn-142"></a></sup>)</li></ol><p>“Rayon/Parallel Iterators” by Niko Matsakis</p><p>Niches: concurrency</p><ol><li>Rayon: Data parallelism in Rust<sup id="fnref-143"><a href="#fn-143"></a></sup> (archived<sup id="fnref-144"><a href="#fn-144"></a></sup>)</li><li>Parallel Iterators Part 1: Foundations<sup id="fnref-145"><a href="#fn-145"></a></sup> (archived<sup id="fnref-146"><a href="#fn-146"></a></sup>)</li><li>Parallel Iterators Part 2: Producers<sup id="fnref-147"><a href="#fn-147"></a></sup> (archived<sup id="fnref-148"><a href="#fn-148"></a></sup>)</li><li>Parallel Iterators, part 3: Consumers<sup id="fnref-149"><a href="#fn-149"></a></sup> (archived<sup id="fnref-150"><a href="#fn-150"></a></sup>)</li></ol><p>“How Rust optimizes async/await” by Tyler Mandry</p><p>Niches: compilers; memory layout</p><ol><li>Part I<sup id="fnref-151"><a href="#fn-151"></a></sup> (archived<sup id="fnref-152"><a href="#fn-152"></a></sup>)</li><li>Part II: Program analysis<sup id="fnref-153"><a href="#fn-153"></a></sup> (archived<sup id="fnref-154"><a href="#fn-154"></a></sup>)</li></ol><p>“Writing an OS in Rust” by Philipp Oppermann</p><p>Niches: operating systems, assembler</p><ol><li>A Freestanding Rust Binary<sup id="fnref-155"><a href="#fn-155"></a></sup> (archived<sup id="fnref-156"><a href="#fn-156"></a></sup>)</li><li>A Minimal Rust Kernel<sup id="fnref-157"><a href="#fn-157"></a></sup> (archived<sup id="fnref-158"><a href="#fn-158"></a></sup>)</li><li>VGA Text Mode<sup id="fnref-159"><a href="#fn-159"></a></sup> (archived<sup id="fnref-160"><a href="#fn-160"></a></sup>)</li><li>Testing<sup id="fnref-161"><a href="#fn-161"></a></sup> (archived<sup id="fnref-162"><a href="#fn-162"></a></sup>)</li><li>CPU Exceptions<sup id="fnref-163"><a href="#fn-163"></a></sup> (archived<sup id="fnref-164"><a href="#fn-164"></a></sup>)</li><li>Double Faults<sup id="fnref-165"><a href="#fn-165"></a></sup> (archived<sup id="fnref-166"><a href="#fn-166"></a></sup>)</li><li>Hardware Interrupts<sup id="fnref-167"><a href="#fn-167"></a></sup> (archived<sup id="fnref-168"><a href="#fn-168"></a></sup>)</li><li>Introduction to Paging<sup id="fnref-169"><a href="#fn-169"></a></sup> (archived<sup id="fnref-170"><a href="#fn-170"></a></sup>)</li><li>Paging Implementation<sup id="fnref-171"><a href="#fn-171"></a></sup> (archived<sup id="fnref-172"><a href="#fn-172"></a></sup>)</li></ol><ol><li>Heap Allocation<sup id="fnref-173"><a href="#fn-173"></a></sup> (archived<sup id="fnref-174"><a href="#fn-174"></a></sup>)</li><li>Allocator Designs<sup id="fnref-175"><a href="#fn-175"></a></sup> (archived<sup id="fnref-176"><a href="#fn-176"></a></sup>)</li><li>Async/Await<sup id="fnref-177"><a href="#fn-177"></a></sup> (archived<sup id="fnref-178"><a href="#fn-178"></a></sup>)</li></ol><p>“Learning Parser Combinators With Rust<sup id="fnref-179"><a href="#fn-179"></a></sup>” by Bodil Stokke</p><p>(\~60 pages; archived<sup id="fnref-180"><a href="#fn-180"></a></sup>)</p><p>Assuming you know Rust, this teaches you the fundamentals of parsercombinators in a very hands-on way.</p><p>Niches: parsers</p><p>“Manish vs. ASCII” by Manish Goregaokar</p><p>Several posts on why assuming text is ASCII is unhelpful.</p><p>Niches: unicode</p><ol><li><p>Let’s Stop Ascribing Meaning to Code Points<sup id="fnref-181"><a href="#fn-181"></a></sup> (archived<sup id="fnref-182"><a href="#fn-182"></a></sup>)</p><p>tl;dr you should not index into a Unicode text, like, ever.</p></li><li><p>Breaking Our Latin-1 Assumptions<sup id="fnref-183"><a href="#fn-183"></a></sup> (archived<sup id="fnref-184"><a href="#fn-184"></a></sup>)</p><p>Examples for scripts/languages that really don’t work if you assumeyou have ASCII text.</p></li><li><p>Picking Apart the Crashing iOS String<sup id="fnref-185"><a href="#fn-185"></a></sup> (archived<sup id="fnref-186"><a href="#fn-186"></a></sup>)</p><p>Fun analysis of a Unicode rendering bug that crashed iOS devices.</p></li></ol><p>“The Wayland Protocol\[185\]” by Drew DeVault</p><p>(\~156 pages; archived\[186\])</p><p>“Wayland is the next-generation display server for Unix-likesystems\[…\] This book will help you establish a firm understanding ofthe concepts, design, and implementation of \[it\]”.</p><p>Niches: wayland; graphics; protocols; unix</p><p>Links:</p><li id="fn-1"><p><span>``` example
+    https://deterministic.space/feed.xml#learn-rust-with-entirely-too-many-linked-lists-by-alexis-beingessner (link)
+    ```</span><a href="#fnref-1">↩</a></p></li><li id="fn-2"><p><span>``` example
+    https://deterministic.space/feed.xml#programming-algorithms-by-vsevolod-domkin (link)
+    ```</span><a href="#fnref-2">↩</a></p></li><li id="fn-3"><p><span>``` example
+    https://deterministic.space/feed.xml#aspects-of-rust-by-multiple-people (link)
+    ```</span><a href="#fnref-3">↩</a></p></li><li id="fn-4"><p><span>``` example
+    https://deterministic.space/feed.xml#reading-files-the-hard-way-by-amos-wenger (link)
+    ```</span><a href="#fnref-4">↩</a></p></li><li id="fn-5"><p><span>``` example
+    https://deterministic.space/feed.xml#making-our-own-ping-by-amos-wenger (link)
+    ```</span><a href="#fnref-5">↩</a></p></li><li id="fn-6"><p><span>``` example
+    https://deterministic.space/feed.xml#making-our-own-executable-packer-by-amos-wenger (link)
+    ```</span><a href="#fnref-6">↩</a></p></li><li id="fn-7"><p><span>``` example
+    https://deterministic.space/feed.xml#parsing-by-aleksey-kladov (link)
+    ```</span><a href="#fnref-7">↩</a></p></li><li id="fn-8"><p><span>``` example
+    https://deterministic.space/feed.xml#javascript-allong%C3%A9-by-reg-raganwald-braithwaite (link)
+    ```</span><a href="#fnref-8">↩</a></p></li><li id="fn-9"><p><span>``` example
+    https://deterministic.space/feed.xml#crafting-interpreters-by-robert-nystrom (link)
+    ```</span><a href="#fnref-9">↩</a></p></li><li id="fn-10"><p><span>``` example
+    https://deterministic.space/feed.xml#a-relatively-simple-datalog-engine-in-rust-by-frank-mcsherry (link)
+    ```</span><a href="#fnref-10">↩</a></p></li><li id="fn-11"><p><span>``` example
+    https://deterministic.space/feed.xml#non-lexical-lifetimes-by-niko-matsakis (link)
+    ```</span><a href="#fnref-11">↩</a></p></li><li id="fn-12"><p><span>``` example
+    https://deterministic.space/feed.xml#shifgrethor-by-without-boats (link)
+    ```</span><a href="#fnref-12">↩</a></p></li><li id="fn-13"><p><span>``` example
+    https://deterministic.space/feed.xml#rayonparallel-iterators-by-niko-matsakis (link)
+    ```</span><a href="#fnref-13">↩</a></p></li><li id="fn-14"><p><span>``` example
+    https://deterministic.space/feed.xml#how-rust-optimizes-asyncawait-by-tyler-mandry (link)
+    ```</span><a href="#fnref-14">↩</a></p></li><li id="fn-15"><p><span>``` example
+    https://deterministic.space/feed.xml#writing-an-os-in-rust-by-philipp-oppermann (link)
+    ```</span><a href="#fnref-15">↩</a></p></li><li id="fn-16"><p><span>``` example
+    https://deterministic.space/feed.xml#learning-parser-combinators-with-rust-by-bodil-stokke (link)
+    ```</span><a href="#fnref-16">↩</a></p></li><li id="fn-17"><p><span>``` example
+    https://deterministic.space/feed.xml#manish-vs-ascii-by-manish-goregaokar (link)
+    ```</span><a href="#fnref-17">↩</a></p></li><li id="fn-18"><p><span>``` example
+    https://deterministic.space/feed.xml#the-wayland-protocol-by-drew-devault (link)
+    ```</span><a href="#fnref-18">↩</a></p></li><li id="fn-19"><p><span>``` example
+    https://rust-unofficial.github.io/too-many-lists/index.html (link)
+    ```</span><a href="#fnref-19">↩</a></p></li><li id="fn-20"><p><span>``` example
+    https://web.archive.org/web/20200416132847/https://rust-unofficial.github.io/too-many-lists/index.html (link)
+    ```</span><a href="#fnref-20">↩</a></p></li><li id="fn-21"><p><span>``` example
+    https://leanpub.com/progalgs/read (link)
+    ```</span><a href="#fnref-21">↩</a></p></li><li id="fn-22"><p><span>``` example
+    https://web.archive.org/web/20200416131734/https://leanpub.com/progalgs/read (link)
+    ```</span><a href="#fnref-22">↩</a></p></li><li id="fn-23"><p><span>``` example
+    https://fasterthanli.me/blog/2020/a-half-hour-to-learn-rust/ (link)
+    ```</span><a href="#fnref-23">↩</a></p></li><li id="fn-24"><p><span>``` example
+    https://web.archive.org/web/20200416203813/https://fasterthanli.me/blog/2020/a-half-hour-to-learn-rust/ (link)
+    ```</span><a href="#fnref-24">↩</a></p></li><li id="fn-25"><p><span>``` example
+    https://matklad.github.io/2018/05/24/typed-key-pattern.html (link)
+    ```</span><a href="#fnref-25">↩</a></p></li><li id="fn-26"><p><span>``` example
+    https://web.archive.org/web/20200426170858/https://matklad.github.io/2018/05/24/typed-key-pattern.html (link)
+    ```</span><a href="#fnref-26">↩</a></p></li><li id="fn-27"><p><span>``` example
+    https://deterministic.space/secret-life-of-cows.html (link)
+    ```</span><a href="#fnref-27">↩</a></p></li><li id="fn-28"><p><span>``` example
+    https://web.archive.org/web/20200426171212/https://deterministic.space/secret-life-of-cows.html (link)
+    ```</span><a href="#fnref-28">↩</a></p></li><li id="fn-29"><p><span>``` example
+    https://matklad.github.io/2018/06/04/newtype-index-pattern.html (link)
+    ```</span><a href="#fnref-29">↩</a></p></li><li id="fn-30"><p><span>``` example
+    https://web.archive.org/web/20200426170901/https://matklad.github.io/2018/06/04/newtype-index-pattern.html (link)
+    ```</span><a href="#fnref-30">↩</a></p></li><li id="fn-31"><p><span>``` example
+    https://deterministic.space/return-type-based-dispatch.html (link)
+    ```</span><a href="#fnref-31">↩</a></p></li><li id="fn-32"><p><span>``` example
+    https://web.archive.org/web/20200426171311/https://deterministic.space/return-type-based-dispatch.html (link)
+    ```</span><a href="#fnref-32">↩</a></p></li><li id="fn-33"><p><span>``` example
+    https://fasterthanli.me/blog/2019/declarative-memory-management/ (link)
+    ```</span><a href="#fnref-33">↩</a></p></li><li id="fn-34"><p><span>``` example
+    https://web.archive.org/web/20200416202910/https://fasterthanli.me/blog/2019/declarative-memory-management/ (link)
+    ```</span><a href="#fnref-34">↩</a></p></li><li id="fn-35"><p><span>``` example
+    https://deterministic.space/return-type-based-dispatch.html (link)
+    ```</span><a href="#fnref-35">↩</a></p></li><li id="fn-36"><p><span>``` example
+    https://web.archive.org/web/20200426171311/https://deterministic.space/return-type-based-dispatch.html (link)
+    ```</span><a href="#fnref-36">↩</a></p></li><li id="fn-37"><p><span>``` example
+    https://fasterthanli.me/blog/2020/working-with-strings-in-rust/ (link)
+    ```</span><a href="#fnref-37">↩</a></p></li><li id="fn-38"><p><span>``` example
+    https://web.archive.org/web/20200416203533/https://fasterthanli.me/blog/2020/working-with-strings-in-rust/ (link)
+    ```</span><a href="#fnref-38">↩</a></p></li><li id="fn-39"><p><span>``` example
+    https://fasterthanli.me/blog/2019/reading-files-the-hard-way/ (link)
+    ```</span><a href="#fnref-39">↩</a></p></li><li id="fn-40"><p><span>``` example
+    https://web.archive.org/web/20200416203146/https://fasterthanli.me/blog/2019/reading-files-the-hard-way/ (link)
+    ```</span><a href="#fnref-40">↩</a></p></li><li id="fn-41"><p><span>``` example
+    https://fasterthanli.me/blog/2019/reading-files-the-hard-way-2/ (link)
+    ```</span><a href="#fnref-41">↩</a></p></li><li id="fn-42"><p><span>``` example
+    https://web.archive.org/web/20200416203148/https://fasterthanli.me/blog/2019/reading-files-the-hard-way-2/ (link)
+    ```</span><a href="#fnref-42">↩</a></p></li><li id="fn-43"><p><span>``` example
+    https://fasterthanli.me/blog/2019/reading-files-the-hard-way-3/ (link)
+    ```</span><a href="#fnref-43">↩</a></p></li><li id="fn-44"><p><span>``` example
+    https://web.archive.org/web/20200416203157/https://fasterthanli.me/blog/2019/reading-files-the-hard-way-3/ (link)
+    ```</span><a href="#fnref-44">↩</a></p></li><li id="fn-45"><p><span>``` example
+    https://fasterthanli.me/blog/2019/making-our-own-ping/ (link)
+    ```</span><a href="#fnref-45">↩</a></p></li><li id="fn-46"><p><span>``` example
+    https://web.archive.org/web/20200416134726/https://fasterthanli.me/blog/2019/making-our-own-ping/ (link)
+    ```</span><a href="#fnref-46">↩</a></p></li><li id="fn-47"><p><span>``` example
+    https://fasterthanli.me/blog/2019/making-our-own-ping-2/ (link)
+    ```</span><a href="#fnref-47">↩</a></p></li><li id="fn-48"><p><span>``` example
+    https://web.archive.org/web/20200416145917/https://fasterthanli.me/blog/2019/making-our-own-ping-2/ (link)
+    ```</span><a href="#fnref-48">↩</a></p></li><li id="fn-49"><p><span>``` example
+    https://fasterthanli.me/blog/2019/making-our-own-ping-3/ (link)
+    ```</span><a href="#fnref-49">↩</a></p></li><li id="fn-50"><p><span>``` example
+    https://web.archive.org/web/20200416145936/https://fasterthanli.me/blog/2019/making-our-own-ping-3/ (link)
+    ```</span><a href="#fnref-50">↩</a></p></li><li id="fn-51"><p><span>``` example
+    https://fasterthanli.me/blog/2019/making-our-own-ping-4/ (link)
+    ```</span><a href="#fnref-51">↩</a></p></li><li id="fn-52"><p><span>``` example
+    https://web.archive.org/web/20200416145936/https://fasterthanli.me/blog/2019/making-our-own-ping-4/ (link)
+    ```</span><a href="#fnref-52">↩</a></p></li><li id="fn-53"><p><span>``` example
+    https://fasterthanli.me/blog/2019/making-our-own-ping-5/ (link)
+    ```</span><a href="#fnref-53">↩</a></p></li><li id="fn-54"><p><span>``` example
+    https://web.archive.org/web/20200416145942/https://fasterthanli.me/blog/2019/making-our-own-ping-5/ (link)
+    ```</span><a href="#fnref-54">↩</a></p></li><li id="fn-55"><p><span>``` example
+    https://fasterthanli.me/blog/2019/making-our-own-ping-6/ (link)
+    ```</span><a href="#fnref-55">↩</a></p></li><li id="fn-56"><p><span>``` example
+    https://web.archive.org/web/20200416145943/https://fasterthanli.me/blog/2019/making-our-own-ping-6/ (link)
+    ```</span><a href="#fnref-56">↩</a></p></li><li id="fn-57"><p><span>``` example
+    https://fasterthanli.me/blog/2019/making-our-own-ping-7/ (link)
+    ```</span><a href="#fnref-57">↩</a></p></li><li id="fn-58"><p><span>``` example
+    https://web.archive.org/web/20200416145943/https://fasterthanli.me/blog/2019/making-our-own-ping-7/ (link)
+    ```</span><a href="#fnref-58">↩</a></p></li><li id="fn-59"><p><span>``` example
+    https://fasterthanli.me/blog/2019/making-our-own-ping-8/ (link)
+    ```</span><a href="#fnref-59">↩</a></p></li><li id="fn-60"><p><span>``` example
+    https://web.archive.org/web/20200416150009/https://fasterthanli.me/blog/2019/making-our-own-ping-8/ (link)
+    ```</span><a href="#fnref-60">↩</a></p></li><li id="fn-61"><p><span>``` example
+    https://fasterthanli.me/blog/2019/making-our-own-ping-9/ (link)
+    ```</span><a href="#fnref-61">↩</a></p></li><li id="fn-62"><p><span>``` example
+    https://web.archive.org/web/20200416150006/https://fasterthanli.me/blog/2019/making-our-own-ping-9/ (link)
+    ```</span><a href="#fnref-62">↩</a></p></li><li id="fn-63"><p><span>``` example
+    https://fasterthanli.me/blog/2019/making-our-own-ping-10/ (link)
+    ```</span><a href="#fnref-63">↩</a></p></li><li id="fn-64"><p><span>``` example
+    https://web.archive.org/web/20200416150009/https://fasterthanli.me/blog/2019/making-our-own-ping-10/ (link)
+    ```</span><a href="#fnref-64">↩</a></p></li><li id="fn-65"><p><span>``` example
+    https://fasterthanli.me/blog/2019/making-our-own-ping-11/ (link)
+    ```</span><a href="#fnref-65">↩</a></p></li><li id="fn-66"><p><span>``` example
+    https://web.archive.org/web/20200416150021/https://fasterthanli.me/blog/2019/making-our-own-ping-11/ (link)
+    ```</span><a href="#fnref-66">↩</a></p></li><li id="fn-67"><p><span>``` example
+    https://fasterthanli.me/blog/2019/making-our-own-ping-12/ (link)
+    ```</span><a href="#fnref-67">↩</a></p></li><li id="fn-68"><p><span>``` example
+    https://web.archive.org/web/20200416150207/https://fasterthanli.me/blog/2019/making-our-own-ping-12/ (link)
+    ```</span><a href="#fnref-68">↩</a></p></li><li id="fn-69"><p><span>``` example
+    https://fasterthanli.me/blog/2019/making-our-own-ping-13/ (link)
+    ```</span><a href="#fnref-69">↩</a></p></li><li id="fn-70"><p><span>``` example
+    https://web.archive.org/web/20200416150054/https://fasterthanli.me/blog/2019/making-our-own-ping-13/ (link)
+    ```</span><a href="#fnref-70">↩</a></p></li><li id="fn-71"><p><span>``` example
+    https://fasterthanli.me/blog/2019/making-our-own-ping-14/ (link)
+    ```</span><a href="#fnref-71">↩</a></p></li><li id="fn-72"><p><span>``` example
+    https://web.archive.org/web/20200416150207/https://fasterthanli.me/blog/2019/making-our-own-ping-14/ (link)
+    ```</span><a href="#fnref-72">↩</a></p></li><li id="fn-73"><p><span>``` example
+    https://fasterthanli.me/blog/2020/whats-in-a-linux-executable/ (link)
+    ```</span><a href="#fnref-73">↩</a></p></li><li id="fn-74"><p><span>``` example
+    https://web.archive.org/web/20200416203931/https://fasterthanli.me/blog/2020/whats-in-a-linux-executable/ (link)
+    ```</span><a href="#fnref-74">↩</a></p></li><li id="fn-75"><p><span>``` example
+    https://fasterthanli.me/blog/2020/running-an-executable-without-exec/ (link)
+    ```</span><a href="#fnref-75">↩</a></p></li><li id="fn-76"><p><span>``` example
+    https://web.archive.org/web/20200416203942/https://fasterthanli.me/blog/2020/running-an-executable-without-exec/ (link)
+    ```</span><a href="#fnref-76">↩</a></p></li><li id="fn-77"><p><span>``` example
+    https://fasterthanli.me/blog/2020/position-independent-code/ (link)
+    ```</span><a href="#fnref-77">↩</a></p></li><li id="fn-78"><p><span>``` example
+    https://web.archive.org/web/20200416203931/https://fasterthanli.me/blog/2020/position-independent-code/ (link)
+    ```</span><a href="#fnref-78">↩</a></p></li><li id="fn-79"><p><span>``` example
+    https://fasterthanli.me/blog/2020/elf-relocations/ (link)
+    ```</span><a href="#fnref-79">↩</a></p></li><li id="fn-80"><p><span>``` example
+    https://web.archive.org/web/20200416203942/https://fasterthanli.me/blog/2020/elf-relocations/ (link)
+    ```</span><a href="#fnref-80">↩</a></p></li><li id="fn-81"><p><span>``` example
+    https://fasterthanli.me/blog/2020/the-simplest-shared-library/ (link)
+    ```</span><a href="#fnref-81">↩</a></p></li><li id="fn-82"><p><span>``` example
+    https://web.archive.org/web/20200416203942/https://fasterthanli.me/blog/2020/the-simplest-shared-library/ (link)
+    ```</span><a href="#fnref-82">↩</a></p></li><li id="fn-83"><p><span>``` example
+    https://fasterthanli.me/blog/2020/loading-multiple-elf-objects/ (link)
+    ```</span><a href="#fnref-83">↩</a></p></li><li id="fn-84"><p><span>``` example
+    https://web.archive.org/web/20200416203946/https://fasterthanli.me/blog/2020/loading-multiple-elf-objects/ (link)
+    ```</span><a href="#fnref-84">↩</a></p></li><li id="fn-85"><p><span>``` example
+    https://fasterthanli.me/blog/2020/dynamic-symbol-resolution/ (link)
+    ```</span><a href="#fnref-85">↩</a></p></li><li id="fn-86"><p><span>``` example
+    https://web.archive.org/web/20200416203951/https://fasterthanli.me/blog/2020/dynamic-symbol-resolution/ (link)
+    ```</span><a href="#fnref-86">↩</a></p></li><li id="fn-87"><p><span>``` example
+    https://fasterthanli.me/blog/2020/dynamic-linker-speed-and-correctness/ (link)
+    ```</span><a href="#fnref-87">↩</a></p></li><li id="fn-88"><p><span>``` example
+    https://web.archive.org/web/20200416203951/https://fasterthanli.me/blog/2020/dynamic-linker-speed-and-correctness/ (link)
+    ```</span><a href="#fnref-88">↩</a></p></li><li id="fn-89"><p><span>``` example
+    https://fasterthanli.me/blog/2020/gdb-scripting-and-indirect-functions/ (link)
+    ```</span><a href="#fnref-89">↩</a></p></li><li id="fn-90"><p><span>``` example
+    https://web.archive.org/web/20200416203954/https://fasterthanli.me/blog/2020/gdb-scripting-and-indirect-functions/ (link)
+    ```</span><a href="#fnref-90">↩</a></p></li><li id="fn-91"><p><span>``` example
+    https://fasterthanli.me/blog/2020/safer-memory-mapped-structures/ (link)
+    ```</span><a href="#fnref-91">↩</a></p></li><li id="fn-92"><p><span>``` example
+    https://web.archive.org/web/20200416204004/https://fasterthanli.me/blog/2020/safer-memory-mapped-structures/ (link)
+    ```</span><a href="#fnref-92">↩</a></p></li><li id="fn-93"><p><span>``` example
+    https://fasterthanli.me/blog/2020/more-elf-relocations/ (link)
+    ```</span><a href="#fnref-93">↩</a></p></li><li id="fn-94"><p><span>``` example
+    https://web.archive.org/web/20200416204015/https://fasterthanli.me/blog/2020/more-elf-relocations/ (link)
+    ```</span><a href="#fnref-94">↩</a></p></li><li id="fn-95"><p><span>``` example
+    https://fasterthanli.me/blog/2020/a-no-std-rust-binary/ (link)
+    ```</span><a href="#fnref-95">↩</a></p></li><li id="fn-96"><p><span>``` example
+    https://web.archive.org/web/20200426170253/https://fasterthanli.me/blog/2020/a-no-std-rust-binary/ (link)
+    ```</span><a href="#fnref-96">↩</a></p></li><li id="fn-97"><p><span>``` example
+    https://fasterthanli.me/blog/2020/thread-local-storage/ (link)
+    ```</span><a href="#fnref-97">↩</a></p></li><li id="fn-98"><p><span>``` example
+    https://web.archive.org/web/20200504104021/https://fasterthanli.me/blog/2020/thread-local-storage/ (link)
+    ```</span><a href="#fnref-98">↩</a></p></li><li id="fn-99"><p><span>``` example
+    https://matklad.github.io/2018/06/06/modern-parser-generator.html (link)
+    ```</span><a href="#fnref-99">↩</a></p></li><li id="fn-100"><p><span>``` example
+    https://web.archive.org/web/20200426170539/https://matklad.github.io/2018/06/06/modern-parser-generator.html (link)
+    ```</span><a href="#fnref-100">↩</a></p></li><li id="fn-101"><p><span>``` example
+    https://matklad.github.io/2020/04/13/simple-but-powerful-pratt-parsing.html (link)
+    ```</span><a href="#fnref-101">↩</a></p></li><li id="fn-102"><p><span>``` example
+    https://web.archive.org/web/20200416155208/https://matklad.github.io/2020/04/13/simple-but-powerful-pratt-parsing.html (link)
+    ```</span><a href="#fnref-102">↩</a></p></li><li id="fn-103"><p><span>``` example
+    https://matklad.github.io/2020/04/15/from-pratt-to-dijkstra.html (link)
+    ```</span><a href="#fnref-103">↩</a></p></li><li id="fn-104"><p><span>``` example
+    https://web.archive.org/web/20200416155220/https://matklad.github.io/2020/04/15/from-pratt-to-dijkstra.html (link)
+    ```</span><a href="#fnref-104">↩</a></p></li><li id="fn-105"><p><span>``` example
+    https://leanpub.com/javascriptallongesix/read (link)
+    ```</span><a href="#fnref-105">↩</a></p></li><li id="fn-106"><p><span>``` example
+    https://web.archive.org/web/20200416145246/https://leanpub.com/javascriptallongesix/read (link)
+    ```</span><a href="#fnref-106">↩</a></p></li><li id="fn-107"><p><span>``` example
+    http://craftinginterpreters.com/contents.html (link)
+    ```</span><a href="#fnref-107">↩</a></p></li><li id="fn-108"><p><span>``` example
+    https://web.archive.org/web/20200411062649/http://craftinginterpreters.com/contents.html (link)
+    ```</span><a href="#fnref-108">↩</a></p></li><li id="fn-109"><p><span>``` example
+    https://github.com/frankmcsherry/blog/blob/81e9555bbee110954f2c3d35caf86ea7e7612fa6/posts/2018-05-19.md (link)
+    ```</span><a href="#fnref-109">↩</a></p></li><li id="fn-110"><p><span>``` example
+    https://web.archive.org/web/20200423163205/https://github.com/frankmcsherry/blog/blob/81e9555bbee110954f2c3d35caf86ea7e7612fa6/posts/2018-05-19.md (link)
+    ```</span><a href="#fnref-110">↩</a></p></li><li id="fn-111"><p><span>``` example
+    https://smallcultfollowing.com/babysteps/blog/2016/04/27/non-lexical-lifetimes-introduction/ (link)
+    ```</span><a href="#fnref-111">↩</a></p></li><li id="fn-112"><p><span>``` example
+    https://web.archive.org/web/20200416170054/https://smallcultfollowing.com/babysteps/blog/2016/04/27/non-lexical-lifetimes-introduction/ (link)
+    ```</span><a href="#fnref-112">↩</a></p></li><li id="fn-113"><p><span>``` example
+    http://smallcultfollowing.com/babysteps/blog/2016/05/04/non-lexical-lifetimes-based-on-liveness/ (link)
+    ```</span><a href="#fnref-113">↩</a></p></li><li id="fn-114"><p><span>``` example
+    https://web.archive.org/web/20190917065228/http://smallcultfollowing.com/babysteps/blog/2016/05/04/non-lexical-lifetimes-based-on-liveness/ (link)
+    ```</span><a href="#fnref-114">↩</a></p></li><li id="fn-115"><p><span>``` example
+    https://smallcultfollowing.com/babysteps/blog/2016/05/09/non-lexical-lifetimes-adding-the-outlives-relation/ (link)
+    ```</span><a href="#fnref-115">↩</a></p></li><li id="fn-116"><p><span>``` example
+    https://web.archive.org/web/20200416170116/https://smallcultfollowing.com/babysteps/blog/2016/05/09/non-lexical-lifetimes-adding-the-outlives-relation/ (link)
+    ```</span><a href="#fnref-116">↩</a></p></li><li id="fn-117"><p><span>``` example
+    https://smallcultfollowing.com/babysteps/blog/2017/02/21/non-lexical-lifetimes-using-liveness-and-location/ (link)
+    ```</span><a href="#fnref-117">↩</a></p></li><li id="fn-118"><p><span>``` example
+    https://web.archive.org/web/20200416170119/https://smallcultfollowing.com/babysteps/blog/2017/02/21/non-lexical-lifetimes-using-liveness-and-location/ (link)
+    ```</span><a href="#fnref-118">↩</a></p></li><li id="fn-119"><p><span>``` example
+    https://smallcultfollowing.com/babysteps/blog/2017/03/01/nested-method-calls-via-two-phase-borrowing/ (link)
+    ```</span><a href="#fnref-119">↩</a></p></li><li id="fn-120"><p><span>``` example
+    https://web.archive.org/web/20200416170122/https://smallcultfollowing.com/babysteps/blog/2017/03/01/nested-method-calls-via-two-phase-borrowing/ (link)
+    ```</span><a href="#fnref-120">↩</a></p></li><li id="fn-121"><p><span>``` example
+    https://smallcultfollowing.com/babysteps/blog/2017/07/11/non-lexical-lifetimes-draft-rfc-and-prototype-available/ (link)
+    ```</span><a href="#fnref-121">↩</a></p></li><li id="fn-122"><p><span>``` example
+    https://web.archive.org/web/20200416170125/https://smallcultfollowing.com/babysteps/blog/2017/07/11/non-lexical-lifetimes-draft-rfc-and-prototype-available/ (link)
+    ```</span><a href="#fnref-122">↩</a></p></li><li id="fn-123"><p><span>``` example
+    https://smallcultfollowing.com/babysteps/blog/2018/04/27/an-alias-based-formulation-of-the-borrow-checker/ (link)
+    ```</span><a href="#fnref-123">↩</a></p></li><li id="fn-124"><p><span>``` example
+    https://web.archive.org/web/20200416170128/https://smallcultfollowing.com/babysteps/blog/2018/04/27/an-alias-based-formulation-of-the-borrow-checker/ (link)
+    ```</span><a href="#fnref-124">↩</a></p></li><li id="fn-125"><p><span>``` example
+    https://smallcultfollowing.com/babysteps/blog/2018/06/15/mir-based-borrow-check-nll-status-update/ (link)
+    ```</span><a href="#fnref-125">↩</a></p></li><li id="fn-126"><p><span>``` example
+    https://web.archive.org/web/20200416170132/https://smallcultfollowing.com/babysteps/blog/2018/06/15/mir-based-borrow-check-nll-status-update/ (link)
+    ```</span><a href="#fnref-126">↩</a></p></li><li id="fn-127"><p><span>``` example
+    https://smallcultfollowing.com/babysteps/blog/2018/10/31/mir-based-borrowck-is-almost-here/ (link)
+    ```</span><a href="#fnref-127">↩</a></p></li><li id="fn-128"><p><span>``` example
+    https://web.archive.org/web/20200416170139/https://smallcultfollowing.com/babysteps/blog/2018/10/31/mir-based-borrowck-is-almost-here/ (link)
+    ```</span><a href="#fnref-128">↩</a></p></li><li id="fn-129"><p><span>``` example
+    https://smallcultfollowing.com/babysteps/blog/2018/11/01/after-nll-interprocedural-conflicts/ (link)
+    ```</span><a href="#fnref-129">↩</a></p></li><li id="fn-130"><p><span>``` example
+    https://web.archive.org/web/20200416170144/https://smallcultfollowing.com/babysteps/blog/2018/11/01/after-nll-interprocedural-conflicts/ (link)
+    ```</span><a href="#fnref-130">↩</a></p></li><li id="fn-131"><p><span>``` example
+    https://smallcultfollowing.com/babysteps/blog/2019/01/17/polonius-and-region-errors/ (link)
+    ```</span><a href="#fnref-131">↩</a></p></li><li id="fn-132"><p><span>``` example
+    https://web.archive.org/web/20200416170147/https://smallcultfollowing.com/babysteps/blog/2019/01/17/polonius-and-region-errors/ (link)
+    ```</span><a href="#fnref-132">↩</a></p></li><li id="fn-133"><p><span>``` example
+    https://smallcultfollowing.com/babysteps/blog/2019/01/21/hereditary-harrop-region-constraints/ (link)
+    ```</span><a href="#fnref-133">↩</a></p></li><li id="fn-134"><p><span>``` example
+    https://web.archive.org/web/20200416170150/https://smallcultfollowing.com/babysteps/blog/2019/01/21/hereditary-harrop-region-constraints/ (link)
+    ```</span><a href="#fnref-134">↩</a></p></li><li id="fn-135"><p><span>``` example
+    https://boats.gitlab.io/blog/post/shifgrethor-i/ (link)
+    ```</span><a href="#fnref-135">↩</a></p></li><li id="fn-136"><p><span>``` example
+    https://web.archive.org/web/20200416172628/https://boats.gitlab.io/blog/post/shifgrethor-i/ (link)
+    ```</span><a href="#fnref-136">↩</a></p></li><li id="fn-137"><p><span>``` example
+    https://boats.gitlab.io/blog/post/shifgrethor-ii/ (link)
+    ```</span><a href="#fnref-137">↩</a></p></li><li id="fn-138"><p><span>``` example
+    https://web.archive.org/web/20200416172630/https://boats.gitlab.io/blog/post/shifgrethor-ii/ (link)
+    ```</span><a href="#fnref-138">↩</a></p></li><li id="fn-139"><p><span>``` example
+    https://boats.gitlab.io/blog/post/shifgrethor-iii/ (link)
+    ```</span><a href="#fnref-139">↩</a></p></li><li id="fn-140"><p><span>``` example
+    https://web.archive.org/web/20200416172636/https://boats.gitlab.io/blog/post/shifgrethor-iii/ (link)
+    ```</span><a href="#fnref-140">↩</a></p></li><li id="fn-141"><p><span>``` example
+    https://boats.gitlab.io/blog/post/shifgrethor-iv/ (link)
+    ```</span><a href="#fnref-141">↩</a></p></li><li id="fn-142"><p><span>``` example
+    https://web.archive.org/web/20200416172639/https://boats.gitlab.io/blog/post/shifgrethor-iv/ (link)
+    ```</span><a href="#fnref-142">↩</a></p></li><li id="fn-143"><p><span>``` example
+    https://smallcultfollowing.com/babysteps/blog/2015/12/18/rayon-data-parallelism-in-rust/ (link)
+    ```</span><a href="#fnref-143">↩</a></p></li><li id="fn-144"><p><span>``` example
+    https://web.archive.org/web/20200423162646/https://smallcultfollowing.com/babysteps/blog/2015/12/18/rayon-data-parallelism-in-rust/ (link)
+    ```</span><a href="#fnref-144">↩</a></p></li><li id="fn-145"><p><span>``` example
+    https://smallcultfollowing.com/babysteps/blog/2016/02/19/parallel-iterators-part-1-foundations/ (link)
+    ```</span><a href="#fnref-145">↩</a></p></li><li id="fn-146"><p><span>``` example
+    https://web.archive.org/web/20200423162647/https://smallcultfollowing.com/babysteps/blog/2016/02/19/parallel-iterators-part-1-foundations/ (link)
+    ```</span><a href="#fnref-146">↩</a></p></li><li id="fn-147"><p><span>``` example
+    https://smallcultfollowing.com/babysteps/blog/2016/02/25/parallel-iterators-part-2-producers/ (link)
+    ```</span><a href="#fnref-147">↩</a></p></li><li id="fn-148"><p><span>``` example
+    https://web.archive.org/web/20200423162653/https://smallcultfollowing.com/babysteps/blog/2016/02/25/parallel-iterators-part-2-producers/ (link)
+    ```</span><a href="#fnref-148">↩</a></p></li><li id="fn-149"><p><span>``` example
+    https://smallcultfollowing.com/babysteps/blog/2016/11/14/parallel-iterators-part-3-consumers/ (link)
+    ```</span><a href="#fnref-149">↩</a></p></li><li id="fn-150"><p><span>``` example
+    https://web.archive.org/web/20200423162650/https://smallcultfollowing.com/babysteps/blog/2016/11/14/parallel-iterators-part-3-consumers/ (link)
+    ```</span><a href="#fnref-150">↩</a></p></li><li id="fn-151"><p><span>``` example
+    https://tmandry.gitlab.io/blog/posts/optimizing-await-1/ (link)
+    ```</span><a href="#fnref-151">↩</a></p></li><li id="fn-152"><p><span>``` example
+    https://web.archive.org/web/20200417142143/https://tmandry.gitlab.io/blog/posts/optimizing-await-1/ (link)
+    ```</span><a href="#fnref-152">↩</a></p></li><li id="fn-153"><p><span>``` example
+    https://tmandry.gitlab.io/blog/posts/optimizing-await-2/ (link)
+    ```</span><a href="#fnref-153">↩</a></p></li><li id="fn-154"><p><span>``` example
+    https://web.archive.org/web/20200417142149/https://tmandry.gitlab.io/blog/posts/optimizing-await-2/ (link)
+    ```</span><a href="#fnref-154">↩</a></p></li><li id="fn-155"><p><span>``` example
+    https://os.phil-opp.com/freestanding-rust-binary/ (link)
+    ```</span><a href="#fnref-155">↩</a></p></li><li id="fn-156"><p><span>``` example
+    https://web.archive.org/web/20200419114640/https://os.phil-opp.com/freestanding-rust-binary/ (link)
+    ```</span><a href="#fnref-156">↩</a></p></li><li id="fn-157"><p><span>``` example
+    https://os.phil-opp.com/minimal-rust-kernel/ (link)
+    ```</span><a href="#fnref-157">↩</a></p></li><li id="fn-158"><p><span>``` example
+    https://web.archive.org/web/20200419114644/https://os.phil-opp.com/minimal-rust-kernel/ (link)
+    ```</span><a href="#fnref-158">↩</a></p></li><li id="fn-159"><p><span>``` example
+    https://os.phil-opp.com/vga-text-mode/ (link)
+    ```</span><a href="#fnref-159">↩</a></p></li><li id="fn-160"><p><span>``` example
+    https://web.archive.org/web/20200419114648/https://os.phil-opp.com/vga-text-mode/ (link)
+    ```</span><a href="#fnref-160">↩</a></p></li><li id="fn-161"><p><span>``` example
+    https://os.phil-opp.com/testing/ (link)
+    ```</span><a href="#fnref-161">↩</a></p></li><li id="fn-162"><p><span>``` example
+    https://web.archive.org/web/20200419114651/https://os.phil-opp.com/testing/ (link)
+    ```</span><a href="#fnref-162">↩</a></p></li><li id="fn-163"><p><span>``` example
+    https://os.phil-opp.com/cpu-exceptions/ (link)
+    ```</span><a href="#fnref-163">↩</a></p></li><li id="fn-164"><p><span>``` example
+    https://web.archive.org/web/20200419114838/https://os.phil-opp.com/cpu-exceptions/ (link)
+    ```</span><a href="#fnref-164">↩</a></p></li><li id="fn-165"><p><span>``` example
+    https://os.phil-opp.com/double-fault-exceptions/ (link)
+    ```</span><a href="#fnref-165">↩</a></p></li><li id="fn-166"><p><span>``` example
+    https://web.archive.org/web/20200419114841/https://os.phil-opp.com/double-fault-exceptions/ (link)
+    ```</span><a href="#fnref-166">↩</a></p></li><li id="fn-167"><p><span>``` example
+    https://os.phil-opp.com/hardware-interrupts/ (link)
+    ```</span><a href="#fnref-167">↩</a></p></li><li id="fn-168"><p><span>``` example
+    https://web.archive.org/web/20200419114844/https://os.phil-opp.com/hardware-interrupts/ (link)
+    ```</span><a href="#fnref-168">↩</a></p></li><li id="fn-169"><p><span>``` example
+    https://os.phil-opp.com/paging-introduction/ (link)
+    ```</span><a href="#fnref-169">↩</a></p></li><li id="fn-170"><p><span>``` example
+    https://web.archive.org/web/20200419115000/https://os.phil-opp.com/paging-introduction/ (link)
+    ```</span><a href="#fnref-170">↩</a></p></li><li id="fn-171"><p><span>``` example
+    https://os.phil-opp.com/paging-implementation/ (link)
+    ```</span><a href="#fnref-171">↩</a></p></li><li id="fn-172"><p><span>``` example
+    https://web.archive.org/web/20200419115003/https://os.phil-opp.com/paging-implementation/ (link)
+    ```</span><a href="#fnref-172">↩</a></p></li><li id="fn-173"><p><span>``` example
+    https://os.phil-opp.com/heap-allocation/ (link)
+    ```</span><a href="#fnref-173">↩</a></p></li><li id="fn-174"><p><span>``` example
+    https://web.archive.org/web/20200419115006/https://os.phil-opp.com/heap-allocation/ (link)
+    ```</span><a href="#fnref-174">↩</a></p></li><li id="fn-175"><p><span>``` example
+    https://os.phil-opp.com/allocator-designs/ (link)
+    ```</span><a href="#fnref-175">↩</a></p></li><li id="fn-176"><p><span>``` example
+    https://web.archive.org/web/20200419115009/https://os.phil-opp.com/allocator-designs/ (link)
+    ```</span><a href="#fnref-176">↩</a></p></li><li id="fn-177"><p><span>``` example
+    https://os.phil-opp.com/async-await/ (link)
+    ```</span><a href="#fnref-177">↩</a></p></li><li id="fn-178"><p><span>``` example
+    https://web.archive.org/web/20200419115012/https://os.phil-opp.com/async-await/ (link)
+    ```</span><a href="#fnref-178">↩</a></p></li><li id="fn-179"><p><span>``` example
+    https://bodil.lol/parser-combinators/ (link)
+    ```</span><a href="#fnref-179">↩</a></p></li><li id="fn-180"><p><span>``` example
+    https://web.archive.org/web/20200423162949/https://bodil.lol/parser-combinators/ (link)
+    ```</span><a href="#fnref-180">↩</a></p></li><li id="fn-181"><p><span>``` example
+    https://manishearth.github.io/blog/2017/01/14/stop-ascribing-meaning-to-unicode-code-points/ (link)
+    ```</span><a href="#fnref-181">↩</a></p></li><li id="fn-182"><p><span>``` example
+    https://web.archive.org/web/20200430223156/https://manishearth.github.io/blog/2017/01/14/stop-ascribing-meaning-to-unicode-code-points/ (link)
+    ```</span><a href="#fnref-182">↩</a></p></li><li id="fn-183"><p><span>``` example
+    https://manishearth.github.io/blog/2017/01/15/breaking-our-latin-1-assumptions/ (link)
+    ```</span><a href="#fnref-183">↩</a></p></li><li id="fn-184"><p><span>``` example
+    https://web.archive.org/web//https://manishearth.github.io/blog/2017/01/15/breaking-our-latin-1-assumptions/ (link)
+    ```</span><a href="#fnref-184">↩</a></p></li><li id="fn-185"><p><span>``` example
+    https://manishearth.github.io/blog/2018/02/15/picking-apart-the-crashing-ios-string/ (link)
+    ```</span><a href="#fnref-185">↩</a></p></li><li id="fn-186"><p><span>``` example
+    https://web.archive.org/web/20200430223226/https://manishearth.github.io/blog/2018/02/15/picking-apart-the-crashing-ios-string/ (link)
+    ```</span><a href="#fnref-186">↩</a></p></li></div></article></main><div class="article-rhs-container"><div class="article-rhs"><span><div class="sitemap-container"><span class="sitemap-title">In this article</span><table class="sitemap"></table></div></span><span><div class="git-history-table-container"><span class="git-history-table-title">Revisions</span><table class="git-history-table"><tr><th>Date</th><th>Hash</th></tr><tbody><tr><td class="commit-date-tr">2023-02-22</td><td class="commit-link-tr"><a href="https://github.com/jakeisnt/wiki/blob/ea5044fc387f17e24dcab6f3873a541cd640bfa1//longform-computer-texts.md">ea5044fc</a></td></tr></tbody></table></div></span><span><div class="prev-next-up-buttons-container">Navigation<table class="prev-next-up-buttons"><tr><td>Previous</td><td><a class="prev-button" href="/pages/advice.html">advice</a></td></tr><tr><td>Next</td><td><a class="next-button" href="/pages/fitness.html">fitness</a></td></tr><tr><td>Up</td><td><a class="up-button" href="/pages">pages</a></td></tr></table></div></span></div></div></div></body></html>

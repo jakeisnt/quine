@@ -1,0 +1,107 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"></meta><title>html.ts / Jake Chvatal</title><meta property="og:title" content="html.ts"></meta><meta property="og:type" content="website"></meta><meta property="og:url" content="https://jake.isnt.online"></meta><meta property="og:site_name" content="Jake Chvatal"></meta><meta name="keywords" content="jake"></meta><meta name="author" content="Jake Chvatal"></meta><meta name="robots" content="index,follow"></meta><meta name="description" content="hi"></meta><meta name="theme-color" media="(prefers-color-scheme: light)" content="white"></meta><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#111"></meta><link rel="icon" type="image/x-icon" href="/Users/jake/Documents/personal/site/favicons/favicon.ico"></link><link rel="apple-touch-icon" href="/Users/jake/Documents/personal/site/favicons/apple-touch-icon.png"></link><link rel="stylesheet" type="text/css" href="/resources/style.css" id="/resources/style.css"></link><link rel="stylesheet" type="text/css" href="/resources/global.css" id="/resources/global.css"></link><script src="/resources/lib.js" id="/resources/lib.js" type="module"></script><link rel="stylesheet" type="text/css" href="/resources/elementsstyle.css" id="/resources/elementsstyle.css"></link><link rel="manifest" href="/resources/manifest.json"></link><script src="/resources/elements.js" id="/resources/elements.js" type="module" defer="true"></script></head><body><link rel="stylesheet" href="/components/Sidebar/sidebar.css"></link><div class="sidebar"><div class="url-path"><b>jake.</b><span> / </span><a href="https://jake.isnt.online/src/index.html">src</a><span> / </span><a href="https://jake.isnt.online/src/types/index.html">types</a><span> / </span><b>html.ts</b></div><script src="/components/ToggleDarkMode/toggle-dark-mode.js" type="module"></script><link rel="stylesheet" href="/components/ToggleDarkMode/toggle-dark-mode.css"></link><div class="toggle-dark-mode-container"><button class="toggle-dark-mode"></button></div></div><div class="site-body"><main><article class="wikipage"><h1 class="title-top">html.ts</h1><link rel="stylesheet" href="/components/SourceBlock/source-block.css"></link><script src="/components/SourceBlock/load-code-blocks.js" type="module"></script><pre><code class="language-ts has-raw-code"><span class="comment">// All tags supported by the browser.</span>
+<span class="comment">// @ts-ignore</span>
+<span class="keyword">type</span> <span class="type">NativeHtmlTag</span> <span class="operator">=</span>
+  <span class="operator">|</span> <span class="string">&quot;html&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;body&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;div&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;img&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;a&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;h1&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;h2&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;h3&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;h4&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;h5&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;h6&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;button&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;script&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;link&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;meta&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;table&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;tr&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;td&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;p&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;span&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;ul&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;li&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;ol&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;form&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;input&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;label&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;select&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;option&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;textarea&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;header&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;footer&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;main&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;nav&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;section&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;article&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;aside&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;figure&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;figcaption&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;canvas&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;audio&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;video&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;source&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;track&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;embed&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;object&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;param&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;iframe&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;picture&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;svg&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;path&quot;</span>
+  <span class="operator">|</span> <span class="string">&quot;g&quot;</span><span class="punctuation delimiter">;</span>
+
+<span class="comment">// Any acceptable tag, including components.</span>
+<span class="keyword">type</span> <span class="type">HtmlTag</span> <span class="operator">=</span> <span class="type builtin">string</span><span class="punctuation delimiter">;</span>
+
+<span class="comment">// A generic HTML attribute.</span>
+<span class="comment">// Doesn&#39;t type specific tag names.</span>
+<span class="comment">// Allows passing anything.</span>
+<span class="keyword">type</span> <span class="type">GenericAttribute</span> <span class="operator">=</span> <span class="punctuation bracket">{</span> <span class="punctuation bracket">[</span><span class="variable">key</span>: <span class="type builtin">string</span><span class="punctuation bracket">]</span>: <span class="type builtin">any</span> <span class="punctuation bracket">}</span><span class="punctuation delimiter">;</span>
+
+<span class="keyword">type</span> <span class="type">HtmlAttributes</span> <span class="operator">=</span> <span class="type">GenericAttribute</span> <span class="operator">&amp;</span> <span class="punctuation bracket">{</span>
+  <span class="property">src</span>?: <span class="type builtin">string</span><span class="punctuation delimiter">;</span>
+  <span class="property">href</span>?: <span class="type builtin">string</span><span class="punctuation delimiter">;</span>
+  <span class="property">class</span>?: <span class="type builtin">string</span><span class="punctuation delimiter">;</span>
+  <span class="property">role</span>?: <span class="type builtin">string</span><span class="punctuation delimiter">;</span>
+  <span class="property">id</span>?: <span class="type builtin">string</span><span class="punctuation delimiter">;</span>
+<span class="punctuation bracket">}</span><span class="punctuation delimiter">;</span>
+
+<span class="comment">// HTML nodes that are never rendered.</span>
+<span class="comment">// These should be discarded if found in the tree.</span>
+<span class="keyword">type</span> <span class="type">FalsyHtmlNode</span> <span class="operator">=</span> <span class="constant builtin">undefined</span> <span class="operator">|</span> <span class="constant builtin">null</span><span class="punctuation delimiter">;</span>
+
+<span class="keyword">type</span> <span class="type">HtmlTerminalNode</span> <span class="operator">=</span> <span class="type builtin">string</span> <span class="operator">|</span> <span class="type">FalsyHtmlNode</span><span class="punctuation delimiter">;</span>
+
+<span class="comment">// An HTML node available to our DSL.</span>
+<span class="keyword">type</span> <span class="type">HtmlNode</span> <span class="operator">=</span> <span class="type builtin">string</span> <span class="operator">|</span> <span class="type">HtmlTagNode</span> <span class="operator">|</span> <span class="type">HtmlNode</span><span class="punctuation bracket">[</span><span class="punctuation bracket">]</span> <span class="operator">|</span> <span class="type">HtmlTerminalNode</span><span class="punctuation delimiter">;</span>
+
+<span class="comment">// A compound HTML tag.</span>
+<span class="comment">// Optionally allows the user to configure the HTML with attributes.</span>
+<span class="keyword">type</span> <span class="type">HtmlTagNode</span> <span class="operator">=</span>
+  <span class="operator">|</span> <span class="punctuation bracket">[</span><span class="type">HtmlTag</span><span class="punctuation bracket">]</span>
+  <span class="operator">|</span> <span class="punctuation bracket">[</span><span class="type">HtmlTag</span><span class="punctuation delimiter">,</span> ...<span class="type">HtmlNode</span><span class="punctuation bracket">[</span><span class="punctuation bracket">]</span><span class="punctuation bracket">]</span>
+  <span class="operator">|</span> <span class="punctuation bracket">[</span><span class="type">HtmlTag</span><span class="punctuation delimiter">,</span> <span class="type">HtmlAttributes</span><span class="punctuation delimiter">,</span> ...<span class="type">HtmlNode</span><span class="punctuation bracket">[</span><span class="punctuation bracket">]</span><span class="punctuation bracket">]</span>
+  <span class="comment">// NOTE: this should be the same type as the above.</span>
+  <span class="comment">// but typescript is having trouble reading it?</span>
+  <span class="operator">|</span> <span class="punctuation bracket">[</span><span class="type">HtmlTag</span><span class="punctuation delimiter">,</span> <span class="type">HtmlAttributes</span><span class="punctuation delimiter">,</span> ...<span class="type builtin">string</span><span class="punctuation bracket">[</span><span class="punctuation bracket">]</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">;</span>
+
+<span class="keyword">type</span> <span class="type">PageSyntax</span> <span class="operator">=</span> <span class="type">HtmlNode</span><span class="punctuation delimiter">;</span>
+
+<span class="comment">// A dependency on another file.</span>
+<span class="keyword">type</span> <span class="type">Dependency</span> <span class="operator">=</span> <span class="punctuation bracket">{</span>
+  <span class="property">src</span>: <span class="type builtin">string</span><span class="punctuation delimiter">;</span>
+<span class="punctuation bracket">}</span><span class="punctuation delimiter">;</span>
+
+<span class="keyword">export</span> <span class="keyword">type</span> <span class="punctuation bracket">{</span>
+  <span class="type">HtmlTag</span><span class="punctuation delimiter">,</span>
+  <span class="type">PageSyntax</span><span class="punctuation delimiter">,</span>
+  <span class="type">HtmlNode</span><span class="punctuation delimiter">,</span>
+  <span class="type">HtmlTagNode</span><span class="punctuation delimiter">,</span>
+  <span class="type">HtmlAttributes</span><span class="punctuation delimiter">,</span>
+  <span class="type">HtmlTerminalNode</span><span class="punctuation delimiter">,</span>
+  <span class="type">Dependency</span><span class="punctuation delimiter">,</span>
+<span class="punctuation bracket">}</span><span class="punctuation delimiter">;</span>
+</code></pre></article></main><div class="article-rhs-container"><div class="article-rhs"><div class="git-history-table-container"><span class="git-history-table-title">Revisions</span><table class="git-history-table"><thead><tr><th>Date</th><th>Hash</th></tr></thead><tbody><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">0c9b2c0e</td></tr><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">c1bd8543</td></tr><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">c7508525</td></tr><tr><td class="commit-date-tr">2024-04-12</td><td class="commit-link-tr">e5f68a85</td></tr><tr><td class="commit-date-tr">2024-04-12</td><td class="commit-link-tr">2b9b3c64</td></tr><tr><td class="commit-date-tr">2024-04-12</td><td class="commit-link-tr">cd584b50</td></tr><tr><td class="commit-date-tr">2024-04-12</td><td class="commit-link-tr">96b0c066</td></tr><tr><td class="commit-date-tr">2024-04-01</td><td class="commit-link-tr">a3c37e13</td></tr><tr><td class="commit-date-tr">2024-04-01</td><td class="commit-link-tr">3baa0660</td></tr><tr><td class="commit-date-tr">2024-04-01</td><td class="commit-link-tr">bce55469</td></tr><tr><td class="commit-date-tr">2024-04-01</td><td class="commit-link-tr">390faed6</td></tr><tr><td class="commit-date-tr">2024-04-01</td><td class="commit-link-tr">110e0165</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">216698d1</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">3a28fba7</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">b53e2351</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">c64fbf31</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">02dca1b8</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">475e09ab</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">175f29ec</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">2214e8fd</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">3e22c4b6</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">dec57c39</td></tr></tbody></table></div><div class="prev-next-up-buttons-container">Navigation<table class="prev-next-up-buttons"><tr><td>Next</td><td><a class="next-button" href="https://jake.isnt.online/src/types/ascii.ts.html">ascii.ts</a></td></tr><tr><td>Up</td><td><a class="up-button" href="/src/types/index.html">types</a></td></tr></table></div></div></div></div></body></html>

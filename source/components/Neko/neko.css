@@ -1,0 +1,19 @@
+.neko {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  z-index: 100;
+  overflow: hidden;
+}
+
+.neko-bed {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  overflow: hidden;
+  z-index: 10;
+  border-radius: 32px 0 0 0;
+  width: 80px;
+  height: 80px;
+  background-color: var(--highlight);
+}

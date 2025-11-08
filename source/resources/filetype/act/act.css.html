@@ -1,0 +1,99 @@
+<!DOCTYPE html><html lang="en"><link rel="stylesheet" href="/resources/style.css"></link><link rel="stylesheet" href="/resources/global.css"></link><link rel="stylesheet" href="/resources/elementsstyle.css"></link><script type="module" src="/resources/lib.js"></script><script type="module" defer="true" src="/resources/elements.js"></script><head><meta charset="utf-8"></meta><meta name="viewport" content="width=device-width, initial-scale=1"></meta><title>act.css / Jake Chvatal</title><meta property="og:title" content="act.css"></meta><meta property="og:type" content="website"></meta><meta property="og:url" content="http://localhost:4242/"></meta><meta property="og:site_name" content="Jake Chvatal"></meta><meta name="keywords" content="jake"></meta><meta name="author" content="Jake Chvatal"></meta><meta name="robots" content="index,follow"></meta><meta name="description" content="hi"></meta><meta name="theme-color" media="(prefers-color-scheme: light)" content="white"></meta><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#111"></meta></head><body><link rel="stylesheet" href="/components/Sidebar/sidebar.css"></link><div class="sidebar"><div class="url-path"><b>jake.</b><span> / </span><a href="http://localhost:4242//resources/index.html">resources</a><span> / </span><a href="http://localhost:4242//resources/filetype/index.html">filetype</a><span> / </span><a href="http://localhost:4242//resources/filetype/act/index.html">act</a><span> / </span><b>act.css</b></div><script type="module" src="/components/ToggleDarkMode/toggle-dark-mode.js"></script><link rel="stylesheet" href="/components/ToggleDarkMode/toggle-dark-mode.css"></link><div class="toggle-dark-mode-container"><button class="toggle-dark-mode"></button></div></div><div class="site-body"><main><article class="wikipage"><h1 class="title-top">act.css</h1><link rel="stylesheet" href="/components/SourceBlock/source-block.css"></link><script type="module" src="/components/SourceBlock/load-code-blocks.js"></script><pre><code class="language-css has-raw-code"><span class="comment">/* --- For conversations. --- */</span>
+<span class="punctuation delimiter">:</span><span class="attribute">root</span> {
+  <span class="property">--script-context</span><span class="punctuation delimiter">:</span> gray;
+  <span class="property">--text-me</span><span class="punctuation delimiter">:</span> <span class="string special"><span class="punctuation delimiter">#</span>43CC47</span>;
+  <span class="property">--text-me-back</span><span class="punctuation delimiter">:</span> white;
+  <span class="property">--text-other</span><span class="punctuation delimiter">:</span> <span class="string special"><span class="punctuation delimiter">#</span>E8E9EA</span>;
+  <span class="property">--text-other-back</span><span class="punctuation delimiter">:</span> black;
+}
+
+<span class="keyword">@media</span> (<span class="property">prefers-color-scheme</span><span class="punctuation delimiter">:</span> dark) {
+  <span class="punctuation delimiter">:</span><span class="attribute">root</span> {
+    <span class="property">--script-context</span><span class="punctuation delimiter">:</span> darkgray;
+    <span class="property">--text-me</span><span class="punctuation delimiter">:</span> <span class="string special"><span class="punctuation delimiter">#</span>1889FF</span>;
+    <span class="property">--text-me-back</span><span class="punctuation delimiter">:</span> white;
+    <span class="property">--text-other</span><span class="punctuation delimiter">:</span> <span class="string special"><span class="punctuation delimiter">#</span>333137</span>;
+    <span class="property">--text-other-back</span><span class="punctuation delimiter">:</span> white;
+  }
+}
+
+.<span class="property">act-container</span> {
+  <span class="property">padding</span><span class="punctuation delimiter">:</span> <span class="number">0.5<span class="type">em</span></span>;
+  <span class="property">max-width</span><span class="punctuation delimiter">:</span> <span class="number">500<span class="type">px</span></span>;
+}
+
+.<span class="property">script-control-menu</span> {
+  <span class="property">text-align</span><span class="punctuation delimiter">:</span> center;
+}
+
+.<span class="property">script-control-menu</span> <span class="punctuation delimiter">#</span><span class="property">characterSelector</span> {
+  <span class="property">border-radius</span><span class="punctuation delimiter">:</span> <span class="number">9<span class="type">px</span></span>;
+  <span class="property">background-color</span><span class="punctuation delimiter">:</span> <span class="function">var</span>(<span class="variable">--text-me</span>);
+  <span class="property">color</span><span class="punctuation delimiter">:</span> <span class="function">var</span>(<span class="variable">--text-me-back</span>);
+}
+
+.<span class="property">message</span>  {
+  <span class="property">max-width</span><span class="punctuation delimiter">:</span> <span class="number">18<span class="type">rem</span></span>;
+  <span class="property">width</span><span class="punctuation delimiter">:</span> fit-content;
+  <span class="property">margin</span><span class="punctuation delimiter">:</span> <span class="number">0.5<span class="type">rem</span></span>;
+}
+
+.<span class="property">message-body</span> {
+  <span class="property">border-radius</span><span class="punctuation delimiter">:</span> <span class="number">16<span class="type">px</span></span>;
+  <span class="property">padding-left</span><span class="punctuation delimiter">:</span> <span class="number">0.75<span class="type">rem</span></span>;
+  <span class="property">padding-right</span><span class="punctuation delimiter">:</span> <span class="number">0.75<span class="type">rem</span></span>;
+  <span class="property">padding-top</span><span class="punctuation delimiter">:</span> <span class="number">0.375<span class="type">rem</span></span>;
+  <span class="property">padding-bottom</span><span class="punctuation delimiter">:</span> <span class="number">0.5<span class="type">rem</span></span>;
+}
+
+<span class="comment">/* A message shown to the left. */</span>
+.<span class="property">message</span>.<span class="property">left</span> {
+  <span class="property">margin-left</span><span class="punctuation delimiter">:</span> <span class="number">0</span>;
+}
+
+.<span class="property">message-body</span>.<span class="property">left</span> {
+  <span class="property">color</span><span class="punctuation delimiter">:</span> <span class="function">var</span>(<span class="variable">--text-other-back</span>);
+  <span class="property">background-color</span><span class="punctuation delimiter">:</span> <span class="function">var</span>(<span class="variable">--text-other</span>);
+}
+
+<span class="comment">/* A message shown to the right. */</span>
+.<span class="property">message</span>.<span class="property">right</span> {
+  <span class="property">margin-right</span><span class="punctuation delimiter">:</span> <span class="number">0</span>;
+  <span class="property">margin-left</span><span class="punctuation delimiter">:</span> auto;
+}
+
+.<span class="property">message-body</span>.<span class="property">right</span> {
+  <span class="property">background-color</span><span class="punctuation delimiter">:</span> <span class="function">var</span>(<span class="variable">--text-me</span>);
+  <span class="property">color</span><span class="punctuation delimiter">:</span> <span class="function">var</span>(<span class="variable">--text-me-back</span>);
+}
+
+.<span class="property">message-sender</span> {
+  <span class="property">color</span><span class="punctuation delimiter">:</span> <span class="function">var</span>(<span class="variable">--script-context</span>);
+  <span class="property">padding</span><span class="punctuation delimiter">:</span> <span class="number">0</span>;
+  <span class="property">margin</span><span class="punctuation delimiter">:</span> <span class="number">0.25<span class="type">rem</span></span>;
+  <span class="property">font-size</span><span class="punctuation delimiter">:</span> <span class="number">12<span class="type">px</span></span>;
+  <span class="property">margin-left</span><span class="punctuation delimiter">:</span> <span class="number">0.625<span class="type">rem</span></span>;
+}
+
+.<span class="property">message</span>.<span class="property">left</span> <span class="operator">&gt;</span> .<span class="property">message-sender</span> {
+  <span class="property">text-align</span><span class="punctuation delimiter">:</span> left;
+}
+
+.<span class="property">message</span>.<span class="property">right</span> <span class="operator">&gt;</span> .<span class="property">message-sender</span> {
+  <span class="property">display</span><span class="punctuation delimiter">:</span> none;
+}
+
+.<span class="property">message-body</span> <span class="operator">&gt;</span> .<span class="property">message-text</span> {
+  <span class="property">padding</span><span class="punctuation delimiter">:</span> <span class="number">0</span>;
+  <span class="property">margin</span><span class="punctuation delimiter">:</span> <span class="number">0</span>;
+}
+
+.<span class="property">context</span> {
+  <span class="property">color</span><span class="punctuation delimiter">:</span> <span class="function">var</span>(<span class="variable">--script-context</span>);
+  <span class="property">text-align</span><span class="punctuation delimiter">:</span> center;
+  <span class="property">max-width</span><span class="punctuation delimiter">:</span> <span class="number">80<span class="type">%</span></span>;
+  <span class="property">margin-left</span><span class="punctuation delimiter">:</span> auto;
+  <span class="property">margin-right</span><span class="punctuation delimiter">:</span> auto;
+  <span class="property">font-style</span><span class="punctuation delimiter">:</span> italic;
+}
+</code></pre></article></main><div class="article-rhs-container"><div class="article-rhs"><div class="git-history-table-container"><span class="git-history-table-title">Revisions</span><table class="git-history-table"><thead><tr><th>Date</th><th>Hash</th></tr></thead><tbody><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">0c9b2c0e</td></tr><tr><td class="commit-date-tr">2023-06-10</td><td class="commit-link-tr">3f32e164</td></tr><tr><td class="commit-date-tr">2023-06-02</td><td class="commit-link-tr">509802b7</td></tr><tr><td class="commit-date-tr">2023-05-25</td><td class="commit-link-tr">b3ad9dc5</td></tr><tr><td class="commit-date-tr">2023-04-23</td><td class="commit-link-tr">268e74b2</td></tr></tbody></table></div><div class="prev-next-up-buttons-container">Navigation<table class="prev-next-up-buttons"><tr><td>Next</td><td><a class="next-button" href="http://localhost:4242/resources/filetype/act/act.ts.html">act.ts</a></td></tr><tr><td>Up</td><td><a class="up-button" href="http://localhost:4242/resources/filetype/act/index.html">act</a></td></tr></table></div></div></div></div></body></html>

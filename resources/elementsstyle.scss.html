@@ -1,0 +1,253 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"></meta><title>elementsstyle.scss / Jake Chvatal</title><meta property="og:title" content="elementsstyle.scss"></meta><meta property="og:type" content="website"></meta><meta property="og:url" content="https://jake.isnt.online"></meta><meta property="og:site_name" content="Jake Chvatal"></meta><meta name="keywords" content="jake"></meta><meta name="author" content="Jake Chvatal"></meta><meta name="robots" content="index,follow"></meta><meta name="description" content="hi"></meta><meta name="theme-color" media="(prefers-color-scheme: light)" content="white"></meta><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#111"></meta><link rel="icon" type="image/x-icon" href="/Users/jake/Documents/personal/site/favicons/favicon.ico"></link><link rel="apple-touch-icon" href="/Users/jake/Documents/personal/site/favicons/apple-touch-icon.png"></link><link rel="stylesheet" type="text/css" href="/resources/style.css" id="/resources/style.css"></link><link rel="stylesheet" type="text/css" href="/resources/global.css" id="/resources/global.css"></link><script src="/resources/lib.js" id="/resources/lib.js" type="module"></script><link rel="stylesheet" type="text/css" href="/resources/elementsstyle.css" id="/resources/elementsstyle.css"></link><link rel="manifest" href="/resources/manifest.json"></link><script src="/resources/elements.js" id="/resources/elements.js" type="module" defer="true"></script></head><body><link rel="stylesheet" href="/components/Sidebar/sidebar.css"></link><div class="sidebar"><div class="url-path"><b>jake.</b><span> / </span><a href="https://jake.isnt.online/resources/index.html">resources</a><span> / </span><b>elementsstyle.scss</b></div><script src="/components/ToggleDarkMode/toggle-dark-mode.js" type="module"></script><link rel="stylesheet" href="/components/ToggleDarkMode/toggle-dark-mode.css"></link><div class="toggle-dark-mode-container"><button class="toggle-dark-mode"></button></div></div><div class="site-body"><main><article class="wikipage"><h1 class="title-top">elementsstyle.scss</h1><link rel="stylesheet" href="/components/SourceBlock/source-block.css"></link><script src="/components/SourceBlock/load-code-blocks.js" type="module"></script><pre><code class="language-scss has-raw-code">@use &#x27;style/core&#x27;;
+
+/* Overrides of default HTML components */
+
+/* --- Table ----------------------------------- */
+table {
+  @include core.border;
+  overflow-wrap: break-word;
+  border-spacing: 0;
+  font-size: 14px;
+  width: 100%;
+  margin: 1em 0em;
+}
+
+table tr:last-child td:first-child {
+    border-bottom-left-radius: core.$border-radius;
+}
+
+table tr:last-child td:last-child {
+    border-bottom-right-radius: core.$border-radius;
+}
+
+table:hover {
+  border-color: var(--quote-background-border-highlighted);
+  transition: border-color 0.25s ease-in-out;
+}
+
+td, th {
+  text-align: left;
+  font-weight: normal;
+  padding: 0;
+  padding: 0.3rem 0.5rem;
+}
+
+table tr:not(:last-child) td, th {
+  border-bottom: core.$border;
+}
+
+th {
+  background-color: var(--quote-background);
+}
+
+th:last-child {
+  border-right: 0;
+}
+
+td:not(:last-child), th:not(:last-child) {
+  border-right: core.$border;
+}
+
+td:hover {
+  text-shadow: 2px 2px 8px white;
+  transition: text-shadow 0.2s ease-in;
+}
+
+@media only screen and (max-width: 500px) {
+  table {
+    margin-left: -1rem;
+    width: calc(100vw - 2rem);
+  }
+}
+
+/* --- Text ------------------------------------ */
+h1 {
+  margin-top: 0.125em;
+  margin-bottom: 1rem;
+}
+
+button.inlineText {
+  font-size: 20px;
+  display: inline-block;
+  opacity: 0.2;
+  margin-right: 2px;
+  padding: 0px;
+  padding-right: 2px;
+  border: 0;
+}
+
+button.inlineText:hover {
+  opacity: 0.5;
+  transition: opacity 0.2s ease-in;
+}
+
+p {
+  margin-top: 0.25em;
+}
+
+@media only screen and (max-width: 500px) {
+  h1::after {
+    display: none;
+  }
+
+  button.inlineText {
+    margin-left: -1.2rem;
+  }
+}
+
+/* Lists */
+
+ul {
+  padding-left: 1rem;
+  list-style: none;
+}
+
+ul &gt; li::before {
+  content: &#x27;‒ &#x27;;
+  font-weight: 600;
+  opacity: 0.3;
+  margin-left: -1rem;
+}
+
+ol {
+  padding-left: 1rem;
+  list-style: none;
+  counter-reset: li;
+}
+
+ol &gt; li {
+  counter-increment: li;
+}
+
+ol &gt; li::before {
+  content: counter(li) &#x27;. &#x27;;
+  opacity: 0.3;
+  margin-left: -1rem;
+}
+
+ol &gt; li:first-of-type::before {
+  counter-set: li;
+}
+
+@media only screen and (max-width: 500px) {
+  ul, ol {
+    padding-left: 0;
+  }
+}
+
+/* Code blocks */
+pre {
+  white-space: pre-wrap;
+}
+
+/* inline literal code */
+code {
+  color: var(--link);
+  font-size: 14px;
+  padding: 0 4px;
+  background-color: var(--quote-background);
+  border-bottom: 2px solid var(--quote-background);
+  border-radius: core.$border-radius;
+}
+
+/* Links */
+a {
+  text-decoration: none;
+  color: var(--link);
+}
+
+a:hover, a:focus {
+  background-color: var(--highlight);
+  opacity: 0.8;
+  padding: 0 3px;
+  margin: 0 -3px;
+  transition: opacity 0.1s ease-out;
+}
+
+a:active {
+  color: var(--highlight-text);
+}
+
+::selection {
+  background-color: var(--highlight);
+  color: var(--highlight-text);
+}
+
+
+/* Buttons and labels */
+button {
+  background-color: var(--page-background);
+  color: var(--text-color);
+  transition: background-color 0.075s ease-out;
+  padding: 0.25em 0.5em;
+  border-radius: core.$border-radius;
+  border: 1px solid var(--subtle-text);
+}
+
+button:hover {
+  color: var(--highlight-text);
+  transition: background-color 0.075s ease-in;
+}
+
+.insetButtonPanel {
+  right: 6px;
+  top: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  position: absolute;
+}
+
+button.inset {
+  background-color: var(--quote-background-border);
+  font-family: &#x27;Inter&#x27;, sans-serif;
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+button.inset:hover {
+  background-color: var(--highlight);
+  color: var(--highlight-text);
+  transition: background-color 0.075s ease-in;
+}
+
+.label.inset {
+  display: block;
+  position: absolute;
+  background-color: var(--quote-background-border);
+  right: 0;
+  bottom: 0;
+  font-family: &#x27;Inter&#x27;, sans-serif;
+  font-size: 12px;
+  padding: 0px 5px;
+  padding-bottom: 1px;
+  padding-right: 6px;
+  margin: 0;
+  border-top-right-radius: core.$border-radius;
+  border-top-left-radius: core.$border-radius;
+  border-bottom-right-radius: core.$border-radius;
+  opacity: 0.8;
+}
+
+@media only screen and (max-width: 500px) {
+  .label.inset, button.inset {
+    margin-right: -1rem;
+  }
+}
+
+/* footnotes */
+
+.footnoteRef {
+  font-size: 0.8em;
+  vertical-align: super;
+  line-height: 0;
+  margin-left: 0.2em;
+  margin-right: 0.2em;
+}
+
+.footnote {
+  list-style: none;
+  font-size: 14px;
+  color: var(--subtle-text);
+}
+</code></pre></article></main><div class="article-rhs-container"><div class="article-rhs"><div class="git-history-table-container"><span class="git-history-table-title">Revisions</span><table class="git-history-table"><thead><tr><th>Date</th><th>Hash</th></tr></thead><tbody><tr><td class="commit-date-tr">2024-04-14</td><td class="commit-link-tr">80c18980</td></tr><tr><td class="commit-date-tr">2024-04-14</td><td class="commit-link-tr">5a4d5a4d</td></tr></tbody></table></div><div class="prev-next-up-buttons-container">Navigation<table class="prev-next-up-buttons"><tr><td>Next</td><td><a class="next-button" href="https://jake.isnt.online/resources/CNAME.html">CNAME</a></td></tr><tr><td>Up</td><td><a class="up-button" href="/resources/index.html">resources</a></td></tr></table></div></div></div></div></body></html>

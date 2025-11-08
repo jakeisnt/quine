@@ -1,0 +1,268 @@
+@charset "UTF-8";
+/* Overrides of default HTML components */
+/* --- Table ----------------------------------- */
+table {
+  border: 1px solid var(--quote-background-border);
+  border-radius: 3px;
+  overflow-wrap: break-word;
+  border-spacing: 0;
+  font-size: 14px;
+  width: 100%;
+  margin: 1em 0em;
+}
+
+table tr:last-child td:first-child {
+  border-bottom-left-radius: 3px;
+}
+
+table tr:last-child td:last-child {
+  border-bottom-right-radius: 3px;
+}
+
+table:hover {
+  border-color: var(--quote-background-border-highlighted);
+  transition: border-color 0.25s ease-in-out;
+}
+
+td, th {
+  text-align: left;
+  font-weight: normal;
+  padding: 0;
+  padding: 0.3rem 0.5rem;
+}
+
+table tr:not(:last-child) td, th {
+  border-bottom: 1px solid var(--quote-background-border);
+}
+
+th {
+  background-color: var(--quote-background);
+}
+
+th:last-child {
+  border-right: 0;
+}
+
+td:not(:last-child), th:not(:last-child) {
+  border-right: 1px solid var(--quote-background-border);
+}
+
+td:hover {
+  text-shadow: 2px 2px 8px white;
+  transition: text-shadow 0.2s ease-in;
+}
+
+@media only screen and (max-width: 500px) {
+  table {
+    margin-left: -1rem;
+    width: calc(100vw - 2rem);
+  }
+}
+/* --- Text ------------------------------------ */
+h1 {
+  margin-top: 0.125em;
+  margin-bottom: 1rem;
+}
+
+button.inlineText {
+  font-size: 20px;
+  display: inline-block;
+  opacity: 0.2;
+  margin-right: 2px;
+  padding: 0px;
+  padding-right: 2px;
+  border: 0;
+}
+
+button.inlineText:hover {
+  opacity: 0.5;
+  transition: opacity 0.2s ease-in;
+}
+
+p {
+  margin-top: 0.25em;
+}
+
+@media only screen and (max-width: 500px) {
+  h1::after {
+    display: none;
+  }
+  button.inlineText {
+    margin-left: -1.2rem;
+  }
+}
+/* Lists */
+ul {
+  padding-left: 1rem;
+  list-style: none;
+}
+
+ul > li::before {
+  content: "‒ ";
+  font-weight: 600;
+  opacity: 0.3;
+  margin-left: -1rem;
+}
+
+ol {
+  padding-left: 1rem;
+  list-style: none;
+  counter-reset: li;
+}
+
+ol > li {
+  counter-increment: li;
+}
+
+ol > li::before {
+  content: counter(li) ". ";
+  opacity: 0.3;
+  margin-left: -1rem;
+}
+
+ol > li:first-of-type::before {
+  counter-set: li;
+}
+
+@media only screen and (max-width: 500px) {
+  ul, ol {
+    padding-left: 0;
+  }
+}
+/* Code blocks */
+pre {
+  white-space: pre-wrap;
+}
+
+/* inline literal code */
+code {
+  color: var(--link);
+  font-size: 14px;
+  padding: 0 4px;
+  background-color: var(--quote-background);
+  border-bottom: 2px solid var(--quote-background);
+  border-radius: 3px;
+}
+
+/* Full width code block */
+pre code {
+  border: 1px solid var(--quote-background-border);
+  border-radius: 3px;
+  position: relative;
+  display: block;
+  padding: 0.5em 0.5em !important;
+  padding-top: 0.4em !important;
+  padding-bottom: 0.8em !important;
+  overflow-x: auto;
+  font-size: 14px;
+  background-color: var(--quote-background) !important;
+  min-height: 36px;
+  text-color: var(--subtle-text);
+}
+
+code:hover {
+  border-color: var(--quote-background-border-highlighted);
+  transition: border-color 0.25s ease-in-out;
+}
+
+@media only screen and (max-width: 500px) {
+  pre code {
+    margin-left: -1rem;
+    width: calc(100% + 1rem);
+  }
+}
+/* Links */
+a {
+  text-decoration: none;
+  color: var(--link);
+}
+
+a:hover, a:focus {
+  background-color: var(--highlight);
+  opacity: 0.8;
+  padding: 0 3px;
+  margin: 0 -3px;
+  transition: opacity 0.1s ease-out;
+}
+
+a:active {
+  color: var(--highlight-text);
+}
+
+::selection {
+  background-color: var(--highlight);
+  color: var(--highlight-text);
+}
+
+/* Buttons and labels */
+button {
+  background-color: var(--page-background);
+  color: var(--text-color);
+  transition: background-color 0.075s ease-out;
+  padding: 0.25em 0.5em;
+  border-radius: 3px;
+  border: 1px solid var(--subtle-text);
+}
+
+button:hover {
+  color: var(--highlight-text);
+  transition: background-color 0.075s ease-in;
+}
+
+button.inset {
+  display: block;
+  position: absolute;
+  content: "after";
+  background-color: var(--quote-background-border);
+  right: 6px;
+  top: 6px;
+  font-family: "Inter", sans-serif;
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+button.inset:hover {
+  background-color: var(--highlight);
+  color: var(--highlight-text);
+  transition: background-color 0.075s ease-in;
+}
+
+.label.inset {
+  display: block;
+  position: absolute;
+  background-color: var(--quote-background-border);
+  right: 0px;
+  bottom: 0;
+  font-family: "Inter", sans-serif;
+  font-size: 12px;
+  padding: 0px 5px;
+  padding-bottom: 1px;
+  padding-right: 6px;
+  margin: 0;
+  border-top-right-radius: 3px;
+  border-top-left-radius: 3px;
+  border-bottom-right-radius: 3px;
+  opacity: 0.8;
+}
+
+@media only screen and (max-width: 500px) {
+  .label.inset, button.inset {
+    margin-right: -1rem;
+  }
+}
+/* footnotes */
+.footnoteRef {
+  font-size: 0.8em;
+  vertical-align: super;
+  line-height: 0;
+  margin-left: 0.2em;
+  margin-right: 0.2em;
+}
+
+.footnote {
+  list-style: none;
+  font-size: 14px;
+  color: var(--subtle-text);
+}
+
+/*# sourceMappingURL=elements.css.map */

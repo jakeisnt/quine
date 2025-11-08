@@ -1,0 +1,72 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"></meta><title>commit.ts / Jake Chvatal</title><meta property="og:title" content="commit.ts"></meta><meta property="og:type" content="website"></meta><meta property="og:url" content="https://jake.isnt.online"></meta><meta property="og:site_name" content="Jake Chvatal"></meta><meta name="keywords" content="jake"></meta><meta name="author" content="Jake Chvatal"></meta><meta name="robots" content="index,follow"></meta><meta name="description" content="hi"></meta><meta name="theme-color" media="(prefers-color-scheme: light)" content="white"></meta><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#111"></meta><link rel="icon" type="image/x-icon" href="/Users/jake/Documents/personal/site/favicons/favicon.ico"></link><link rel="apple-touch-icon" href="/Users/jake/Documents/personal/site/favicons/apple-touch-icon.png"></link><link rel="stylesheet" type="text/css" href="/resources/style.css" id="/resources/style.css"></link><link rel="stylesheet" type="text/css" href="/resources/global.css" id="/resources/global.css"></link><script src="/resources/lib.js" id="/resources/lib.js" type="module"></script><link rel="stylesheet" type="text/css" href="/resources/elementsstyle.css" id="/resources/elementsstyle.css"></link><link rel="manifest" href="/resources/manifest.json"></link><script src="/resources/elements.js" id="/resources/elements.js" type="module" defer="true"></script></head><body><link rel="stylesheet" href="/components/Sidebar/sidebar.css"></link><div class="sidebar"><div class="url-path"><b>jake.</b><span> / </span><a href="https://jake.isnt.online/src/index.html">src</a><span> / </span><a href="https://jake.isnt.online/src/utils/index.html">utils</a><span> / </span><a href="https://jake.isnt.online/src/utils/git/index.html">git</a><span> / </span><b>commit.ts</b></div><script src="/components/ToggleDarkMode/toggle-dark-mode.js" type="module"></script><link rel="stylesheet" href="/components/ToggleDarkMode/toggle-dark-mode.css"></link><div class="toggle-dark-mode-container"><button class="toggle-dark-mode"></button></div></div><div class="site-body"><main><article class="wikipage"><h1 class="title-top">commit.ts</h1><link rel="stylesheet" href="/components/SourceBlock/source-block.css"></link><script src="/components/SourceBlock/load-code-blocks.js" type="module"></script><pre><code class="language-ts has-raw-code"><span class="keyword">import</span> <span class="keyword">type</span> <span class="punctuation bracket">{</span> <span class="type">Repo</span> <span class="punctuation bracket">}</span> <span class="keyword">from</span> <span class="string">&quot;.&quot;</span><span class="punctuation delimiter">;</span>
+<span class="comment">// import type { Path } from &quot;../path&quot;;</span>
+
+<span class="comment">/**</span>
+<span class="comment"> * A single commit in a repository.</span>
+<span class="comment"> * Ask me questions about the specific commit.</span>
+<span class="comment"> */</span>
+<span class="keyword">class</span> <span class="type">RepoCommit</span> <span class="punctuation bracket">{</span>
+  <span class="comment">// short hash to reference teh git commit</span>
+  <span class="keyword">public</span> <span class="property">shortHash</span>: <span class="type builtin">string</span><span class="punctuation delimiter">;</span>
+  <span class="comment">// long hash to reference the git commit</span>
+  <span class="keyword">public</span> <span class="property">longHash</span>: <span class="type builtin">string</span><span class="punctuation delimiter">;</span>
+  <span class="comment">// commit date from the git format: YYYY-MM-DD</span>
+  <span class="keyword">public</span> <span class="property">commitDate</span>: <span class="type builtin">string</span><span class="punctuation delimiter">;</span>
+  <span class="keyword">public</span> <span class="property">timestamp</span>: <span class="type builtin">number</span><span class="punctuation delimiter">;</span>
+  <span class="comment">// &#39;backlink&#39; ref to the repo that this commit is a part of</span>
+  <span class="keyword">public</span> <span class="property">repo</span>: <span class="type">Repo</span><span class="punctuation delimiter">;</span>
+
+  <span class="function method">constructor</span><span class="punctuation bracket">(</span><span class="punctuation bracket">{</span>
+    shortHash<span class="punctuation delimiter">,</span>
+    longHash<span class="punctuation delimiter">,</span>
+    commitDate<span class="punctuation delimiter">,</span>
+    timestamp<span class="punctuation delimiter">,</span>
+    repo<span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">}</span>: <span class="punctuation bracket">{</span>
+    <span class="property">shortHash</span>: <span class="type builtin">string</span><span class="punctuation delimiter">;</span>
+    <span class="property">longHash</span>: <span class="type builtin">string</span><span class="punctuation delimiter">;</span>
+    <span class="property">commitDate</span>: <span class="type builtin">string</span><span class="punctuation delimiter">;</span>
+    <span class="property">timestamp</span>: <span class="type builtin">number</span><span class="punctuation delimiter">;</span>
+    <span class="property">repo</span>: <span class="type">Repo</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">shortHash</span> <span class="operator">=</span> <span class="variable">shortHash</span><span class="punctuation delimiter">;</span>
+    <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">longHash</span> <span class="operator">=</span> <span class="variable">longHash</span><span class="punctuation delimiter">;</span>
+    <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">commitDate</span> <span class="operator">=</span> <span class="variable">commitDate</span><span class="punctuation delimiter">;</span>
+    <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">timestamp</span> <span class="operator">=</span> <span class="variable">timestamp</span><span class="punctuation delimiter">;</span>
+    <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">repo</span> <span class="operator">=</span> <span class="variable">repo</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="keyword">static</span> <span class="function method">create</span><span class="punctuation bracket">(</span><span class="variable parameter">args</span>: <span class="punctuation bracket">{</span>
+    <span class="property">shortHash</span>: <span class="type builtin">string</span><span class="punctuation delimiter">;</span>
+    <span class="property">longHash</span>: <span class="type builtin">string</span><span class="punctuation delimiter">;</span>
+    <span class="property">commitDate</span>: <span class="type builtin">string</span><span class="punctuation delimiter">;</span>
+    <span class="property">timestamp</span>: <span class="type builtin">number</span><span class="punctuation delimiter">;</span>
+    <span class="property">repo</span>: <span class="type">Repo</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">return</span> <span class="keyword">new</span> <span class="type">RepoCommit</span><span class="punctuation bracket">(</span><span class="variable parameter">args</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="keyword">get</span> <span class="function method">date</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">return</span> <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">commitDate</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="comment">/**</span>
+<span class="comment">   * Get the link associated with this repo commit at a given path.</span>
+<span class="comment">   *</span>
+<span class="comment">   * TODO: not quite finished yet.</span>
+<span class="comment">   */</span>
+  <span class="comment">// historyLink(filePath: Path) {</span>
+  <span class="comment">//   if (!this.repo.remoteUrl) {</span>
+  <span class="comment">//     throw new Error(</span>
+  <span class="comment">//       &quot;Cannot create history link without a defined remote URL&quot;</span>
+  <span class="comment">//     );</span>
+  <span class="comment">//   }</span>
+
+  <span class="comment">//   return `${this.repo.remoteUrl}/blob/${</span>
+  <span class="comment">//     this.longHash</span>
+  <span class="comment">//   }/${filePath.toString()}`;</span>
+  <span class="comment">// }</span>
+<span class="punctuation bracket">}</span>
+
+<span class="keyword">export</span> <span class="keyword">default</span> <span class="type">RepoCommit</span><span class="punctuation delimiter">;</span>
+</code></pre></article></main><div class="article-rhs-container"><div class="article-rhs"><div class="git-history-table-container"><span class="git-history-table-title">Revisions</span><table class="git-history-table"><thead><tr><th>Date</th><th>Hash</th></tr></thead><tbody><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">0c9b2c0e</td></tr><tr><td class="commit-date-tr">2024-04-01</td><td class="commit-link-tr">d3ab8b31</td></tr><tr><td class="commit-date-tr">2024-04-01</td><td class="commit-link-tr">a3c37e13</td></tr><tr><td class="commit-date-tr">2024-04-01</td><td class="commit-link-tr">a8957e34</td></tr><tr><td class="commit-date-tr">2024-04-01</td><td class="commit-link-tr">3baa0660</td></tr><tr><td class="commit-date-tr">2024-04-01</td><td class="commit-link-tr">110e0165</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">02dca1b8</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">692ce828</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">9a544393</td></tr></tbody></table></div><div class="prev-next-up-buttons-container">Navigation<table class="prev-next-up-buttons"><tr><td>Previous</td><td><a class="prev-button" href="https://jake.isnt.online/src/utils/git/repo.ts.html">repo.ts</a></td></tr><tr><td>Next</td><td><a class="next-button" href="https://jake.isnt.online/src/utils/git/index.ts.html">index.ts</a></td></tr><tr><td>Up</td><td><a class="up-button" href="/src/utils/git/index.html">git</a></td></tr></table></div></div></div></div></body></html>

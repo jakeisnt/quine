@@ -1,6 +1,7 @@
 import pathLibrary from "path";
 import { execSync } from "./cmd";
 import fs from "fs";
+import logger from "./log";
 import mime from "mime";
 import { Repo } from "./git";
 
@@ -26,9 +27,6 @@ class Path {
 
   public relativePathString: String = "";
   private pathString: string = "";
-
-  private doesFileExist?: boolean = undefined;
-  private lstats?: fs.Stats = undefined;
 
   /**
    * Construct a Path.
@@ -104,12 +102,6 @@ class Path {
     return this.pathArray[this.pathArray.length - 1];
   }
 
-  /**
-   * Get the title of this file, NOT including the extension.
-   */
-  get title() {
-    return this.name.split(".")[0];
-  }
   /**
    * Get the mimeType of this file based on its path string.
    */
@@ -189,7 +181,10 @@ class Path {
    * Copy the file or directory at this path to another path.
    * If the path is not a subdir of this path, throw an error.
    */
-  copy(from: Path, to: Path) {
+  copy(fromPath: Path | string, toPath: Path | string) {
+    const from = Path.create(fromPath);
+    const to = Path.create(toPath);
+
     // TODO: this would be a good safeguard to add, but it doesn't work?
     // if (!this.contains(from)) {
     //   throw new Error(
@@ -210,15 +205,19 @@ class Path {
    * Move the file or directory at this path to another path.
    * If the path is not a subdir of this path, throw an error.
    */
-  move(fromPath: Path | string, toPath: Path | string) {
+  move(
+    fromPath: Path | string,
+    toPath: Path | string,
+    { force = false }: { force: boolean } = {
+      force: false,
+    }
+  ) {
     console.log("moving from ", { from: fromPath, to: toPath });
 
     try {
       // Avoid normalizing the paths by using the originals provided
-      // Use shell: true to allow wildcard expansion
       execSync(`rsync -av --delete ${fromPath} ${toPath}`, {
         cwd: this.toString(),
-        shell: true,
       });
     } catch (e) {
       console.log("error moving directory", e);
@@ -231,26 +230,32 @@ class Path {
    * REMOVE 'maybeOtherPath' from this path's string.
    * If 'maypeReplaceWithPath' is defined, append it.
    */
-  relativeTo(
-    maybeOtherPath: Path | string,
-    maybeReplaceWithPath: Path | string = ""
-  ) {
+  relativeTo(maybeOtherPath: Path | string, maybeReplaceWithPath = "") {
     const otherPath = Path.create(maybeOtherPath);
+    const replaceWith = maybeReplaceWithPath.toString();
 
     if (!this.pathString.startsWith(otherPath.toString())) {
       throw new Error(
-        `Path we are removing is not present on the current path. Was looking for path: ${this.pathString} relative to ${maybeOtherPath}`
+        `Path we are removing is no present on the current path. Was looking for path: ${this.pathString} relative to ${maybeOtherPath}`
       );
     }
 
     let resultingPathString = this.pathString;
-
     if (otherPath) {
+      if (otherPath.toString() === resultingPathString) {
+        resultingPathString = "";
+      }
+
       resultingPathString = resultingPathString.replace(
-        otherPath.toString(),
-        maybeReplaceWithPath.toString()
+        `${otherPath.toString()}`,
+        ""
       );
     }
+
+    if (maybeReplaceWithPath) {
+      resultingPathString = replaceWith.toString() + resultingPathString;
+    }
+
     return Path.create(resultingPathString);
   }
 
@@ -258,11 +263,7 @@ class Path {
    * Does the file at this path exist?
    */
   exists() {
-    if (this.doesFileExist === undefined) {
-      this.doesFileExist = fs.existsSync(this.pathString);
-    }
-
-    return this.doesFileExist;
+    return fs.existsSync(this.pathString);
   }
 
   /**
@@ -301,14 +302,12 @@ class Path {
     }
 
     if (!this.exists()) {
-      throw new Error(`File ${this.toString()} doesnt exist`);
+      throw new Error(
+        `Cannot check if a path is a directory if it doesn't exist. Was looking for path: ${this.pathString}`
+      );
     }
 
-    if (!this.lstats) {
-      this.lstats = fs.lstatSync(this.pathString);
-    }
-
-    return this.lstats?.isDirectory();
+    return fs.lstatSync(this.pathString).isDirectory();
   }
 
   // read this path as a utf8 string
@@ -382,7 +381,8 @@ class Path {
    * producing the conjunction of the two.
    */
   join(nextPart: Path | string) {
-    return Path.create(this.pathString + nextPart.toString());
+    logger.file("Joining path", this.pathString, "with", nextPart.toString());
+    return new Path(this.pathString + nextPart.toString());
   }
 
   /**
@@ -448,6 +448,9 @@ class Path {
   /**
    * Watch this file for any action.
    * Invoke a callback listener if the file changes.
+   *
+   * NOTE: We currently don't listen for file change events.
+   * Those cause this to fail because we pass `this` through.
    */
   watch(callback: Function) {
     if (!this.exists()) {
@@ -462,12 +465,6 @@ class Path {
     });
 
     return () => watcher.close();
-  }
-
-  normalize() {
-    return Path.create(
-      pathLibrary.normalize(this.toString())
-    );
   }
 }
 

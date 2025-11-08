@@ -1,0 +1,63 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"></meta><title>Article.ts / Jake Chvatal</title><meta property="og:title" content="Article.ts"></meta><meta property="og:type" content="website"></meta><meta property="og:url" content="https://jake.isnt.online"></meta><meta property="og:site_name" content="Jake Chvatal"></meta><meta name="keywords" content="jake"></meta><meta name="author" content="Jake Chvatal"></meta><meta name="robots" content="index,follow"></meta><meta name="description" content="hi"></meta><meta name="theme-color" media="(prefers-color-scheme: light)" content="white"></meta><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#111"></meta><link rel="icon" type="image/x-icon" href="/Users/jake/Documents/personal/site/favicons/favicon.ico"></link><link rel="apple-touch-icon" href="/Users/jake/Documents/personal/site/favicons/apple-touch-icon.png"></link><link rel="stylesheet" type="text/css" href="/resources/style.css" id="/resources/style.css"></link><link rel="stylesheet" type="text/css" href="/resources/global.css" id="/resources/global.css"></link><script src="/resources/lib.js" id="/resources/lib.js" type="module"></script><link rel="stylesheet" type="text/css" href="/resources/elementsstyle.css" id="/resources/elementsstyle.css"></link><link rel="manifest" href="/resources/manifest.json"></link><script src="/resources/elements.js" id="/resources/elements.js" type="module" defer="true"></script></head><body><link rel="stylesheet" href="/components/Sidebar/sidebar.css"></link><div class="sidebar"><div class="url-path"><b>jake.</b><span> / </span><a href="https://jake.isnt.online/components/index.html">components</a><span> / </span><a href="https://jake.isnt.online/components/Article/index.html">Article</a><span> / </span><b>Article.ts</b></div><script src="/components/ToggleDarkMode/toggle-dark-mode.js" type="module"></script><link rel="stylesheet" href="/components/ToggleDarkMode/toggle-dark-mode.css"></link><div class="toggle-dark-mode-container"><button class="toggle-dark-mode"></button></div></div><div class="site-body"><main><article class="wikipage"><h1 class="title-top">Article.ts</h1><link rel="stylesheet" href="/components/SourceBlock/source-block.css"></link><script src="/components/SourceBlock/load-code-blocks.js" type="module"></script><pre><code class="language-ts has-raw-code"><span class="keyword">import</span> <span class="keyword">type</span> <span class="punctuation bracket">{</span> <span class="type">PageSyntax</span> <span class="punctuation bracket">}</span> <span class="keyword">from</span> <span class="string">&quot;../../src/types/html&quot;</span><span class="punctuation delimiter">;</span>
+<span class="keyword">import</span> <span class="keyword">type</span> <span class="punctuation bracket">{</span> <span class="type">PageSettings</span> <span class="punctuation bracket">}</span> <span class="keyword">from</span> <span class="string">&quot;../../src/types/site&quot;</span><span class="punctuation delimiter">;</span>
+<span class="keyword">import</span> <span class="type">TextFile</span> <span class="keyword">from</span> <span class="string">&quot;../../src/file/classes/text&quot;</span><span class="punctuation delimiter">;</span>
+
+<span class="comment">/**</span>
+<span class="comment"> * Render an &#39;article&#39; using some standard style configuration.</span>
+<span class="comment"> * An article is usually a source code file.</span>
+<span class="comment"> */</span>
+<span class="keyword">const</span> <span class="function">renderArticle</span> <span class="operator">=</span> <span class="punctuation bracket">(</span><span class="punctuation bracket">{</span>
+  children<span class="punctuation delimiter">,</span>
+  file<span class="punctuation delimiter">,</span>
+  siteName<span class="punctuation delimiter">,</span>
+  rootUrl<span class="punctuation delimiter">,</span>
+  sourceDir<span class="punctuation delimiter">,</span>
+  resourcesDir<span class="punctuation delimiter">,</span>
+  faviconsDir<span class="punctuation delimiter">,</span>
+<span class="punctuation bracket">}</span>: <span class="type">PageSettings</span> <span class="operator">&amp;</span> <span class="punctuation bracket">{</span>
+  <span class="property">articleHtml</span>: <span class="type">PageSyntax</span><span class="punctuation delimiter">;</span>
+  <span class="property">file</span>: <span class="type">TextFile</span><span class="punctuation delimiter">;</span>
+  <span class="property">children</span><span class="punctuation delimiter">;</span>
+<span class="punctuation bracket">}</span><span class="punctuation bracket">)</span>: <span class="type">PageSyntax</span> <span class="operator">=&gt;</span> <span class="punctuation bracket">{</span>
+  <span class="keyword">const</span> <span class="variable">title</span> <span class="operator">=</span> <span class="variable">file</span><span class="punctuation delimiter">.</span><span class="property">name</span><span class="punctuation delimiter">;</span>
+
+  <span class="keyword">return</span> <span class="punctuation bracket">[</span>
+    <span class="string">&quot;html&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="punctuation bracket">[</span><span class="string">&quot;Header&quot;</span><span class="punctuation delimiter">,</span> <span class="punctuation bracket">{</span> title<span class="punctuation delimiter">,</span> rootUrl<span class="punctuation delimiter">,</span> siteName<span class="punctuation delimiter">,</span> resourcesDir<span class="punctuation delimiter">,</span> faviconsDir <span class="punctuation bracket">}</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">,</span>
+    <span class="punctuation bracket">[</span>
+      <span class="string">&quot;body&quot;</span><span class="punctuation delimiter">,</span>
+      <span class="punctuation bracket">[</span><span class="string">&quot;Sidebar&quot;</span><span class="punctuation delimiter">,</span> <span class="punctuation bracket">{</span> <span class="property">path</span>: <span class="variable">file</span><span class="punctuation delimiter">.</span><span class="property">path</span><span class="punctuation delimiter">,</span> title<span class="punctuation delimiter">,</span> rootUrl<span class="punctuation delimiter">,</span> sourceDir <span class="punctuation bracket">}</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">,</span>
+      <span class="punctuation bracket">[</span>
+        <span class="string">&quot;div&quot;</span><span class="punctuation delimiter">,</span>
+        <span class="punctuation bracket">{</span> <span class="property">class</span>: <span class="string">&quot;site-body&quot;</span> <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+        <span class="punctuation bracket">[</span>
+          <span class="string">&quot;main&quot;</span><span class="punctuation delimiter">,</span>
+          <span class="punctuation bracket">[</span>
+            <span class="string">&quot;article&quot;</span><span class="punctuation delimiter">,</span>
+            <span class="punctuation bracket">{</span> <span class="property">class</span>: <span class="string">&quot;wikipage&quot;</span> <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+            <span class="punctuation bracket">[</span><span class="string">&quot;h1&quot;</span><span class="punctuation delimiter">,</span> <span class="punctuation bracket">{</span> <span class="property">class</span>: <span class="string">&quot;title-top&quot;</span> <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span> <span class="variable">title</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">,</span>
+            <span class="variable">children</span><span class="punctuation delimiter">,</span>
+          <span class="punctuation bracket">]</span><span class="punctuation delimiter">,</span>
+        <span class="punctuation bracket">]</span><span class="punctuation delimiter">,</span>
+        <span class="punctuation bracket">[</span>
+          <span class="string">&quot;div&quot;</span><span class="punctuation delimiter">,</span>
+          <span class="punctuation bracket">{</span> <span class="property">class</span>: <span class="string">&quot;article-rhs-container&quot;</span> <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+          <span class="punctuation bracket">[</span>
+            <span class="string">&quot;div&quot;</span><span class="punctuation delimiter">,</span>
+            <span class="punctuation bracket">{</span> <span class="property">class</span>: <span class="string">&quot;article-rhs&quot;</span> <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+            <span class="punctuation bracket">[</span><span class="string">&quot;GitHistoryTable&quot;</span><span class="punctuation delimiter">,</span> <span class="punctuation bracket">{</span> file <span class="punctuation bracket">}</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">,</span>
+            <span class="punctuation bracket">[</span><span class="string">&quot;PrevNextUpButtons&quot;</span><span class="punctuation delimiter">,</span> <span class="punctuation bracket">{</span> file<span class="punctuation delimiter">,</span> rootUrl<span class="punctuation delimiter">,</span> sourceDir <span class="punctuation bracket">}</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">,</span>
+          <span class="punctuation bracket">]</span><span class="punctuation delimiter">,</span>
+        <span class="punctuation bracket">]</span><span class="punctuation delimiter">,</span>
+      <span class="punctuation bracket">]</span><span class="punctuation delimiter">,</span>
+    <span class="punctuation bracket">]</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">]</span><span class="punctuation delimiter">;</span>
+<span class="punctuation bracket">}</span><span class="punctuation delimiter">;</span>
+
+<span class="keyword">const</span> <span class="type">Article</span> <span class="operator">=</span> <span class="punctuation bracket">(</span><span class="variable parameter">args</span><span class="punctuation bracket">)</span> <span class="operator">=&gt;</span> <span class="punctuation bracket">(</span><span class="punctuation bracket">{</span>
+  <span class="property">dependsOn</span>: <span class="punctuation bracket">[</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">,</span>
+  <span class="property">body</span>: <span class="function">renderArticle</span><span class="punctuation bracket">(</span><span class="variable parameter">args</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">,</span>
+<span class="punctuation bracket">}</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+
+<span class="keyword">export</span> <span class="keyword">default</span> <span class="type">Article</span><span class="punctuation delimiter">;</span>
+</code></pre></article></main><div class="article-rhs-container"><div class="article-rhs"><div class="git-history-table-container"><span class="git-history-table-title">Revisions</span><table class="git-history-table"><thead><tr><th>Date</th><th>Hash</th></tr></thead><tbody><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">0c9b2c0e</td></tr><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">c1bd8543</td></tr><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">a9376262</td></tr><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">e905627e</td></tr></tbody></table></div><div class="prev-next-up-buttons-container">Navigation<table class="prev-next-up-buttons"><tr><td>Up</td><td><a class="up-button" href="/components/Article/index.html">Article</a></td></tr></table></div></div></div></div></body></html>

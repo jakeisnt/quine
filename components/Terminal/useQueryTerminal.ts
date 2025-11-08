@@ -1,4 +1,4 @@
-import { $ } from "@/resources/lib";
+import { $ } from "../../resources/lib";
 
 // ideas:
 // - browse files available

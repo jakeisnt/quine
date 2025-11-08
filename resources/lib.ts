@@ -20,15 +20,15 @@ function runOnDesktop(fn: () => void) {
 /**
  * Create an html element with attributes and append it to a parent element
  */
-function createParent<T extends HtmlTag>(
-  elementName: T,
-  attributes: HtmlAttributes<T> | {} = {},
+function createParent(
+  elementName: HtmlTag,
+  attributes: HtmlAttributes = {},
   {
     parent,
     children,
   }: {
     parent?: HTMLElement;
-    children?: (HTMLElement | HtmlTerminalNode)[];
+    children?: HtmlTerminalNode[];
   }
 ) {
   const elem = document.createElement(elementName);
@@ -60,18 +60,18 @@ function createParent<T extends HtmlTag>(
   return elem;
 }
 
-function create<T extends HtmlTag>(
-  elementName: T,
-  attributes: HtmlAttributes<T>,
+function create(
+  elementName: HtmlTag,
+  attributes: HtmlAttributes,
   parent?: HTMLElement
 ) {
   return createParent(elementName, attributes, { parent });
 }
 
-function create2<T extends HtmlTag>(
-  elementName: T,
-  attributes: HtmlAttributes<T>,
-  ...children: (HTMLElement | HtmlTerminalNode)[]
+function create2(
+  elementName: HtmlTag,
+  attributes: HtmlAttributes,
+  ...children: HtmlTerminalNode[]
 ) {
   return createParent(elementName, attributes, {
     children,
@@ -79,6 +79,7 @@ function create2<T extends HtmlTag>(
 }
 
 var httpRequest: XMLHttpRequest;
+
 type HttpMethod = "GET" | "POST";
 
 function req(url: string, method: HttpMethod, then: Function) {
@@ -106,8 +107,7 @@ function req(url: string, method: HttpMethod, then: Function) {
 
 const get = (url: string, then: Function) => req(url, "GET", then);
 
-const $ = (selector: string): HTMLElement | undefined =>
-  (document.querySelector(selector) as HTMLElement) ?? undefined;
+const $ = (selector: string) => document.querySelector(selector);
 const all = (selector: string) =>
   Array.from(document.querySelectorAll(selector));
 

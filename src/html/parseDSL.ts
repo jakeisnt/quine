@@ -11,9 +11,7 @@ import type {
 /**
  * Is `attrs` a set of HTML attributes`
  */
-const isHtmlAttributes = <T extends HtmlTag>(
-  attrs: any
-): attrs is HtmlAttributes<T> => {
+const isHtmlAttributes = (attrs: any): attrs is HtmlAttributes => {
   return isObject(attrs);
 };
 
@@ -27,10 +25,10 @@ const tagName = ([name]: HtmlTagNode) => name;
 /**
  * Get the attributes object of a tag.
  */
-const tagAttributes = <T extends HtmlTag>([, attributes]: HtmlTagNode):
-  | HtmlAttributes<T>
+const tagAttributes = ([, attributes]: HtmlTagNode):
+  | HtmlAttributes
   | undefined => {
-  return isHtmlAttributes<T>(attributes) ? attributes : undefined;
+  return isHtmlAttributes(attributes) ? attributes : undefined;
 };
 
 /**
@@ -86,9 +84,9 @@ const getTagLink = (tag: HtmlNode): string | undefined => {
   // NOTE: There is a bug here where some attrs to an a tag are null. Not sure why.
   switch (true) {
     case ["a", "href", "link"].includes(name):
-      return attrs?.["href"];
+      return attrs?.href;
     case ["img", "script"].includes(name):
-      return attrs?.["src"];
+      return attrs?.src;
     default:
       throw new Error(
         `No link found in tag, invalid input to getLinkTag: ${tag.toString()}`

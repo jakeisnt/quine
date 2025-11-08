@@ -1,0 +1,122 @@
+<!DOCTYPE html><html lang="en"><link rel="stylesheet" href="/resources/style.css"></link><link rel="stylesheet" href="/resources/global.css"></link><link rel="stylesheet" href="/resources/elementsstyle.css"></link><script type="module" src="/resources/lib.js"></script><script type="module" defer="true" src="/resources/elements.js"></script><head><meta charset="utf-8"></meta><meta name="viewport" content="width=device-width, initial-scale=1"></meta><title>Header.ts / Jake Chvatal</title><meta property="og:title" content="Header.ts"></meta><meta property="og:type" content="website"></meta><meta property="og:url" content="http://localhost:4242/"></meta><meta property="og:site_name" content="Jake Chvatal"></meta><meta name="keywords" content="jake"></meta><meta name="author" content="Jake Chvatal"></meta><meta name="robots" content="index,follow"></meta><meta name="description" content="hi"></meta><meta name="theme-color" media="(prefers-color-scheme: light)" content="white"></meta><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#111"></meta></head><body><link rel="stylesheet" href="/components/Sidebar/sidebar.css"></link><div class="sidebar"><div class="url-path"><b>jake.</b><span> / </span><a href="http://localhost:4242//components/index.html">components</a><span> / </span><a href="http://localhost:4242//components/Header/index.html">Header</a><span> / </span><b>Header.ts</b></div><script type="module" src="/components/ToggleDarkMode/toggle-dark-mode.js"></script><link rel="stylesheet" href="/components/ToggleDarkMode/toggle-dark-mode.css"></link><div class="toggle-dark-mode-container"><button class="toggle-dark-mode"></button></div></div><div class="site-body"><main><article class="wikipage"><h1 class="title-top">Header.ts</h1><link rel="stylesheet" href="/components/SourceBlock/source-block.css"></link><script type="module" src="/components/SourceBlock/load-code-blocks.js"></script><pre><code class="language-ts has-raw-code"><span class="keyword">import</span> <span class="punctuation bracket">{</span> <span class="type">PageSyntax</span> <span class="punctuation bracket">}</span> <span class="keyword">from</span> <span class="string">&quot;../../src/types/html&quot;</span><span class="punctuation delimiter">;</span>
+
+<span class="comment">/**</span>
+<span class="comment"> * Construct a meta tag with a name and content.</span>
+<span class="comment"> */</span>
+<span class="keyword">const</span> <span class="function">meta</span> <span class="operator">=</span> <span class="punctuation bracket">(</span><span class="variable parameter">key</span>: <span class="type builtin">string</span><span class="punctuation delimiter">,</span> <span class="variable parameter">value</span>: <span class="type builtin">string</span><span class="punctuation bracket">)</span>: <span class="type">PageSyntax</span> <span class="operator">=&gt;</span> <span class="punctuation bracket">{</span>
+  <span class="keyword">return</span> <span class="punctuation bracket">[</span><span class="string">&quot;meta&quot;</span><span class="punctuation delimiter">,</span> <span class="punctuation bracket">{</span> <span class="property">name</span>: <span class="variable parameter">key</span><span class="punctuation delimiter">,</span> <span class="property">content</span>: <span class="variable parameter">value</span> <span class="punctuation bracket">}</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">;</span>
+<span class="punctuation bracket">}</span><span class="punctuation delimiter">;</span>
+
+<span class="comment">/**</span>
+<span class="comment"> * Construct a meta property tag.</span>
+<span class="comment"> */</span>
+<span class="keyword">const</span> <span class="function">prop</span> <span class="operator">=</span> <span class="punctuation bracket">(</span><span class="variable parameter">key</span>: <span class="type builtin">string</span><span class="punctuation delimiter">,</span> <span class="variable parameter">value</span>: <span class="type builtin">string</span><span class="punctuation bracket">)</span>: <span class="type">PageSyntax</span> <span class="operator">=&gt;</span> <span class="punctuation bracket">{</span>
+  <span class="keyword">return</span> <span class="punctuation bracket">[</span><span class="string">&quot;meta&quot;</span><span class="punctuation delimiter">,</span> <span class="punctuation bracket">{</span> <span class="property">property</span>: <span class="variable parameter">key</span><span class="punctuation delimiter">,</span> <span class="property">content</span>: <span class="variable parameter">value</span> <span class="punctuation bracket">}</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">;</span>
+<span class="punctuation bracket">}</span><span class="punctuation delimiter">;</span>
+
+<span class="comment">/**</span>
+<span class="comment"> * Provided an icon directory, configure page icons of the front matter.</span>
+<span class="comment"> */</span>
+<span class="keyword">const</span> <span class="function">favicons</span> <span class="operator">=</span> <span class="punctuation bracket">(</span><span class="variable parameter">iconDir</span>: <span class="type builtin">string</span><span class="punctuation bracket">)</span> <span class="operator">=&gt;</span> <span class="punctuation bracket">{</span>
+  <span class="keyword">return</span> <span class="punctuation bracket">[</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">;</span>
+  <span class="keyword">return</span> <span class="punctuation bracket">[</span>
+    <span class="punctuation bracket">[</span>
+      <span class="string">&quot;link&quot;</span><span class="punctuation delimiter">,</span>
+      <span class="punctuation bracket">{</span> <span class="property">rel</span>: <span class="string">&quot;icon&quot;</span><span class="punctuation delimiter">,</span> <span class="property">type</span>: <span class="string">&quot;image/x-icon&quot;</span><span class="punctuation delimiter">,</span> <span class="property">href</span>: <span class="variable parameter">iconDir</span> <span class="operator">+</span> <span class="string">&quot;/favicon.ico&quot;</span> <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+    <span class="punctuation bracket">]</span><span class="punctuation delimiter">,</span>
+    <span class="punctuation bracket">[</span>
+      <span class="string">&quot;link&quot;</span><span class="punctuation delimiter">,</span>
+      <span class="punctuation bracket">{</span> <span class="property">rel</span>: <span class="string">&quot;apple-touch-icon&quot;</span><span class="punctuation delimiter">,</span> <span class="property">href</span>: <span class="variable parameter">iconDir</span> <span class="operator">+</span> <span class="string">&quot;/apple-touch-icon.png&quot;</span> <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+    <span class="punctuation bracket">]</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">]</span><span class="punctuation delimiter">;</span>
+<span class="punctuation bracket">}</span><span class="punctuation delimiter">;</span>
+
+<span class="comment">/**</span>
+<span class="comment"> * Configure the page color scheme.</span>
+<span class="comment"> */</span>
+<span class="keyword">const</span> <span class="function">colorScheme</span> <span class="operator">=</span> <span class="punctuation bracket">(</span>
+  <span class="variable parameter">schemeName</span>: <span class="type builtin">string</span><span class="punctuation delimiter">,</span>
+  <span class="variable parameter">backgroundColor</span>: <span class="type builtin">string</span>
+<span class="punctuation bracket">)</span>: <span class="type">PageSyntax</span> <span class="operator">=&gt;</span> <span class="punctuation bracket">{</span>
+  <span class="keyword">return</span> <span class="punctuation bracket">[</span>
+    <span class="string">&quot;meta&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="punctuation bracket">{</span>
+      <span class="property">name</span>: <span class="string">&quot;theme-color&quot;</span><span class="punctuation delimiter">,</span>
+      <span class="property">media</span>: <span class="string">`(prefers-color-scheme: <span class="embedded"><span class="punctuation special">${</span><span class="variable parameter">schemeName</span><span class="punctuation special">}</span></span>)`</span><span class="punctuation delimiter">,</span>
+      <span class="property">content</span>: <span class="variable parameter">backgroundColor</span><span class="punctuation delimiter">,</span>
+    <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">]</span><span class="punctuation delimiter">;</span>
+<span class="punctuation bracket">}</span><span class="punctuation delimiter">;</span>
+
+<span class="comment">/**</span>
+<span class="comment"> * Configure the color theme of this particular site. (hardcoded.)</span>
+<span class="comment"> */</span>
+<span class="keyword">const</span> <span class="function">theme</span> <span class="operator">=</span> <span class="punctuation bracket">(</span><span class="punctuation bracket">)</span>: <span class="type">PageSyntax</span><span class="punctuation bracket">[</span><span class="punctuation bracket">]</span> <span class="operator">=&gt;</span> <span class="punctuation bracket">{</span>
+  <span class="keyword">return</span> <span class="punctuation bracket">[</span><span class="function">colorScheme</span><span class="punctuation bracket">(</span><span class="string">&quot;light&quot;</span><span class="punctuation delimiter">,</span> <span class="string">&quot;white&quot;</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">,</span> <span class="function">colorScheme</span><span class="punctuation bracket">(</span><span class="string">&quot;dark&quot;</span><span class="punctuation delimiter">,</span> <span class="string">&quot;#111&quot;</span><span class="punctuation bracket">)</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">;</span>
+<span class="punctuation bracket">}</span><span class="punctuation delimiter">;</span>
+
+<span class="comment">/**</span>
+<span class="comment"> * Generate open graph headers for this website</span>
+<span class="comment"> * @param title the title of this specific page.</span>
+<span class="comment"> * @param url the root URL that the site will be hosted on</span>
+<span class="comment"> * @param siteName the name of the website as a whole.</span>
+<span class="comment"> */</span>
+<span class="keyword">const</span> <span class="function">openGraphHeaders</span> <span class="operator">=</span> <span class="punctuation bracket">(</span><span class="punctuation bracket">{</span>
+  title<span class="punctuation delimiter">,</span>
+  url<span class="punctuation delimiter">,</span>
+  siteName <span class="operator">=</span> <span class="variable">title</span><span class="punctuation delimiter">,</span>
+<span class="punctuation bracket">}</span>: <span class="punctuation bracket">{</span>
+  <span class="property">title</span>: <span class="type builtin">string</span><span class="punctuation delimiter">;</span>
+  <span class="property">url</span>: <span class="type builtin">string</span><span class="punctuation delimiter">;</span>
+  <span class="property">siteName</span>?: <span class="type builtin">string</span><span class="punctuation delimiter">;</span>
+<span class="punctuation bracket">}</span><span class="punctuation bracket">)</span>: <span class="type">PageSyntax</span><span class="punctuation bracket">[</span><span class="punctuation bracket">]</span> <span class="operator">=&gt;</span> <span class="punctuation bracket">{</span>
+  <span class="keyword">return</span> <span class="punctuation bracket">[</span>
+    <span class="function">prop</span><span class="punctuation bracket">(</span><span class="string">&quot;og:title&quot;</span><span class="punctuation delimiter">,</span> <span class="variable">title</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">,</span>
+    <span class="function">prop</span><span class="punctuation bracket">(</span><span class="string">&quot;og:type&quot;</span><span class="punctuation delimiter">,</span> <span class="string">&quot;website&quot;</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">,</span>
+    <span class="function">prop</span><span class="punctuation bracket">(</span><span class="string">&quot;og:url&quot;</span><span class="punctuation delimiter">,</span> <span class="variable">url</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">,</span>
+    <span class="function">prop</span><span class="punctuation bracket">(</span><span class="string">&quot;og:site_name&quot;</span><span class="punctuation delimiter">,</span> <span class="variable">siteName</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">]</span><span class="punctuation delimiter">;</span>
+<span class="punctuation bracket">}</span><span class="punctuation delimiter">;</span>
+
+<span class="comment">// header we can use for every page</span>
+<span class="keyword">const</span> <span class="function">header</span> <span class="operator">=</span> <span class="punctuation bracket">(</span><span class="punctuation bracket">{</span>
+  title<span class="punctuation delimiter">,</span>
+  targetDir<span class="punctuation delimiter">,</span>
+  url<span class="punctuation delimiter">,</span>
+  siteName<span class="punctuation delimiter">,</span>
+  resourcesDir<span class="punctuation delimiter">,</span>
+  faviconsDir<span class="punctuation delimiter">,</span>
+<span class="punctuation bracket">}</span><span class="punctuation bracket">)</span>: <span class="type">PageSyntax</span> <span class="operator">=&gt;</span> <span class="punctuation bracket">{</span>
+  <span class="keyword">return</span> <span class="punctuation bracket">[</span>
+    <span class="string">&quot;head&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="punctuation bracket">[</span><span class="string">&quot;meta&quot;</span><span class="punctuation delimiter">,</span> <span class="punctuation bracket">{</span> <span class="property">charset</span>: <span class="string">&quot;utf-8&quot;</span> <span class="punctuation bracket">}</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">,</span>
+    <span class="punctuation bracket">[</span>
+      <span class="string">&quot;meta&quot;</span><span class="punctuation delimiter">,</span>
+      <span class="punctuation bracket">{</span> <span class="property">name</span>: <span class="string">&quot;viewport&quot;</span><span class="punctuation delimiter">,</span> <span class="property">content</span>: <span class="string">&quot;width=device-width, initial-scale=1&quot;</span> <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+    <span class="punctuation bracket">]</span><span class="punctuation delimiter">,</span>
+    <span class="punctuation bracket">[</span><span class="string">&quot;title&quot;</span><span class="punctuation delimiter">,</span> <span class="string">`<span class="embedded"><span class="punctuation special">${</span><span class="variable">title</span><span class="punctuation special">}</span></span> / <span class="embedded"><span class="punctuation special">${</span><span class="variable">siteName</span><span class="punctuation special">}</span></span>`</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">,</span>
+    <span class="function">openGraphHeaders</span><span class="punctuation bracket">(</span><span class="punctuation bracket">{</span> title<span class="punctuation delimiter">,</span> url<span class="punctuation delimiter">,</span> siteName <span class="punctuation bracket">}</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">,</span>
+    <span class="function">meta</span><span class="punctuation bracket">(</span><span class="string">&quot;keywords&quot;</span><span class="punctuation delimiter">,</span> <span class="string">&quot;jake&quot;</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">,</span>
+    <span class="function">meta</span><span class="punctuation bracket">(</span><span class="string">&quot;author&quot;</span><span class="punctuation delimiter">,</span> <span class="string">&quot;Jake Chvatal&quot;</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">,</span>
+    <span class="function">meta</span><span class="punctuation bracket">(</span><span class="string">&quot;robots&quot;</span><span class="punctuation delimiter">,</span> <span class="string">&quot;index,follow&quot;</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">,</span>
+    <span class="function">meta</span><span class="punctuation bracket">(</span><span class="string">&quot;description&quot;</span><span class="punctuation delimiter">,</span> <span class="string">&quot;hi&quot;</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">,</span>
+    <span class="function">theme</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">,</span>
+    <span class="function">favicons</span><span class="punctuation bracket">(</span><span class="variable">faviconsDir</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">,</span>
+    <span class="comment">// TODO: generate manifest.</span>
+    <span class="comment">// [&quot;link&quot;, { rel: &quot;manifest&quot;, href: &quot;/resources/manifest.json&quot; }],</span>
+  <span class="punctuation bracket">]</span><span class="punctuation delimiter">;</span>
+<span class="punctuation bracket">}</span><span class="punctuation delimiter">;</span>
+
+<span class="keyword">const</span> <span class="type">Header</span> <span class="operator">=</span> <span class="punctuation bracket">(</span><span class="variable parameter">args</span><span class="punctuation bracket">)</span> <span class="operator">=&gt;</span> <span class="punctuation bracket">(</span><span class="punctuation bracket">{</span>
+  <span class="property">dependsOn</span>: <span class="punctuation bracket">[</span>
+    <span class="punctuation bracket">{</span> <span class="property">src</span>: <span class="string">&quot;resources/style.scss&quot;</span> <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+    <span class="punctuation bracket">{</span> <span class="property">src</span>: <span class="string">&quot;resources/global.scss&quot;</span> <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+    <span class="punctuation bracket">{</span> <span class="property">src</span>: <span class="string">&quot;resources/elementsstyle.scss&quot;</span> <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+    <span class="punctuation bracket">{</span> <span class="property">src</span>: <span class="string">&quot;resources/lib.ts&quot;</span> <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+    <span class="punctuation bracket">{</span> <span class="property">src</span>: <span class="string">&quot;resources/elements.ts&quot;</span><span class="punctuation delimiter">,</span> <span class="property">defer</span>: <span class="constant builtin">true</span> <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">]</span><span class="punctuation delimiter">,</span>
+  <span class="property">body</span>: <span class="function">header</span><span class="punctuation bracket">(</span><span class="variable parameter">args</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">,</span>
+<span class="punctuation bracket">}</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+
+<span class="keyword">export</span> <span class="keyword">default</span> <span class="type">Header</span><span class="punctuation delimiter">;</span>
+</code></pre></article></main><div class="article-rhs-container"><div class="article-rhs"><div class="git-history-table-container"><span class="git-history-table-title">Revisions</span><table class="git-history-table"><thead><tr><th>Date</th><th>Hash</th></tr></thead><tbody><tr><td class="commit-date-tr">2024-11-24</td><td class="commit-link-tr">aaa166b7</td></tr><tr><td class="commit-date-tr">2024-04-21</td><td class="commit-link-tr">5d25245b</td></tr><tr><td class="commit-date-tr">2024-04-17</td><td class="commit-link-tr">40ea5682</td></tr><tr><td class="commit-date-tr">2024-04-14</td><td class="commit-link-tr">cec04733</td></tr><tr><td class="commit-date-tr">2024-04-14</td><td class="commit-link-tr">80c18980</td></tr><tr><td class="commit-date-tr">2024-04-14</td><td class="commit-link-tr">0f27b039</td></tr><tr><td class="commit-date-tr">2024-04-14</td><td class="commit-link-tr">bf02546d</td></tr><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">0c9b2c0e</td></tr><tr><td class="commit-date-tr">2024-04-12</td><td class="commit-link-tr">9d003d1c</td></tr></tbody></table></div><div class="prev-next-up-buttons-container">Navigation<table class="prev-next-up-buttons"><tr><td>Up</td><td><a class="up-button" href="http://localhost:4242/components/Header/index.html">Header</a></td></tr></table></div></div></div></div></body></html>

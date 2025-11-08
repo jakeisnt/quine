@@ -1,4 +1,4 @@
-import { create, runOnDesktop } from "/resources/lib";
+import { create, runOnDesktop } from "../../resources/lib";
 
 // TODO:
 // Go to a specific place to sleep

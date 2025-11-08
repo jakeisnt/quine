@@ -1,4 +1,4 @@
-import { PageSyntax } from "../../src/types/html";
+import { PageSyntax, HtmlAttributes } from "../../src/types/html";
 
 /**
  * Construct a meta tag with a name and content.
@@ -15,10 +15,27 @@ const prop = (key: string, value: string): PageSyntax => {
 };
 
 /**
+ * Construct a script tags with provided options.
+ */
+const script = (src: string, opts?: HtmlAttributes): PageSyntax => {
+  return ["script", { src, id: src, type: "module", ...opts }];
+};
+
+/**
+ * Construct a style tag with provided options and an optional body.
+ */
+const css = (src: string, opts?: HtmlAttributes, body?: string) => {
+  return [
+    "link",
+    { rel: "stylesheet", type: "text/css", href: src, id: src, ...opts },
+    body,
+  ];
+};
+
+/**
  * Provided an icon directory, configure page icons of the front matter.
  */
 const favicons = (iconDir: string) => {
-  return [];
   return [
     [
       "link",
@@ -58,22 +75,22 @@ const theme = (): PageSyntax[] => {
 /**
  * Generate open graph headers for this website
  * @param title the title of this specific page.
- * @param url the root URL that the site will be hosted on
+ * @param rootUrl the root URL that the site will be hosted on
  * @param siteName the name of the website as a whole.
  */
 const openGraphHeaders = ({
   title,
-  url,
+  rootUrl,
   siteName = title,
 }: {
   title: string;
-  url: string;
+  rootUrl: string;
   siteName?: string;
 }): PageSyntax[] => {
   return [
     prop("og:title", title),
     prop("og:type", "website"),
-    prop("og:url", url),
+    prop("og:url", rootUrl),
     prop("og:site_name", siteName),
   ];
 };
@@ -81,40 +98,37 @@ const openGraphHeaders = ({
 // header we can use for every page
 const header = ({
   title,
-  targetDir,
-  url,
+  rootUrl,
   siteName,
-  resourcesDir,
-  faviconsDir,
+  resourcesDir: maybeResource,
+  faviconsDir: maybeFaviconsDir,
 }): PageSyntax => {
+  const resourcesDir = maybeResource ?? "/resources";
+  const faviconsDir = maybeFaviconsDir ?? resourcesDir + "/favicon";
+
   return [
     "head",
     ["meta", { charset: "utf-8" }],
-    [
-      "meta",
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-    ],
     ["title", `${title} / ${siteName}`],
-    openGraphHeaders({ title, url, siteName }),
+    ...openGraphHeaders({ title, rootUrl, siteName }),
     meta("keywords", "jake"),
     meta("author", "Jake Chvatal"),
     meta("robots", "index,follow"),
     meta("description", "hi"),
-    theme(),
-    favicons(faviconsDir),
+    ...theme(),
+    ...(resourcesDir ? favicons(faviconsDir) : []),
+    css("/resources/style.css"),
+    css("/resources/global.css"),
+    script("/resources/lib.js"),
+    css("/resources/elementsstyle.css"),
     // TODO: generate manifest.
-    // ["link", { rel: "manifest", href: "/resources/manifest.json" }],
+    ["link", { rel: "manifest", href: "/resources/manifest.json" }],
+    script("/resources/elements.js", { defer: true }),
   ];
 };
 
 const Header = (args) => ({
-  dependsOn: [
-    { src: "resources/style.scss" },
-    { src: "resources/global.scss" },
-    { src: "resources/elementsstyle.scss" },
-    { src: "resources/lib.ts" },
-    { src: "resources/elements.ts", defer: true },
-  ],
+  dependsOn: [],
   body: header(args),
 });
 

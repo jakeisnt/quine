@@ -1,0 +1,182 @@
+<!DOCTYPE html><html lang="en"><link rel="stylesheet" href="/resources/style.css"></link><link rel="stylesheet" href="/resources/global.css"></link><link rel="stylesheet" href="/resources/elementsstyle.css"></link><script type="module" src="/resources/lib.js"></script><script type="module" defer="true" src="/resources/elements.js"></script><head><meta charset="utf-8"></meta><meta name="viewport" content="width=device-width, initial-scale=1"></meta><title>file.ts / Jake Chvatal</title><meta property="og:title" content="file.ts"></meta><meta property="og:type" content="website"></meta><meta property="og:url" content="http://localhost:4242/"></meta><meta property="og:site_name" content="Jake Chvatal"></meta><meta name="keywords" content="jake"></meta><meta name="author" content="Jake Chvatal"></meta><meta name="robots" content="index,follow"></meta><meta name="description" content="hi"></meta><meta name="theme-color" media="(prefers-color-scheme: light)" content="white"></meta><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#111"></meta></head><body><link rel="stylesheet" href="/components/Sidebar/sidebar.css"></link><div class="sidebar"><div class="url-path"><b>jake.</b><span> / </span><a href="http://localhost:4242//src/index.html">src</a><span> / </span><a href="http://localhost:4242//src/file/index.html">file</a><span> / </span><a href="http://localhost:4242//src/file/classes/index.html">classes</a><span> / </span><b>file.ts</b></div><script type="module" src="/components/ToggleDarkMode/toggle-dark-mode.js"></script><link rel="stylesheet" href="/components/ToggleDarkMode/toggle-dark-mode.css"></link><div class="toggle-dark-mode-container"><button class="toggle-dark-mode"></button></div></div><div class="site-body"><main><article class="wikipage"><h1 class="title-top">file.ts</h1><link rel="stylesheet" href="/components/SourceBlock/source-block.css"></link><script type="module" src="/components/SourceBlock/load-code-blocks.js"></script><pre><code class="language-ts has-raw-code"><span class="keyword">import</span> <span class="punctuation bracket">{</span> <span class="type">Path</span> <span class="punctuation bracket">}</span> <span class="keyword">from</span> <span class="string">&quot;../../utils/path&quot;</span><span class="punctuation delimiter">;</span>
+<span class="keyword">import</span> <span class="keyword">type</span> <span class="punctuation bracket">{</span> <span class="type">PageSettings</span> <span class="punctuation bracket">}</span> <span class="keyword">from</span> <span class="string">&quot;../../types/site&quot;</span><span class="punctuation delimiter">;</span>
+<span class="keyword">import</span> <span class="keyword">type</span> <span class="punctuation bracket">{</span> <span class="type">URL</span> <span class="punctuation bracket">}</span> <span class="keyword">from</span> <span class="string">&quot;../../utils/url&quot;</span><span class="punctuation delimiter">;</span>
+<span class="keyword">import</span> <span class="keyword">type</span> <span class="type">Directory</span> <span class="keyword">from</span> <span class="string">&quot;../filetype/directory&quot;</span><span class="punctuation delimiter">;</span>
+
+<span class="comment">/**</span>
+<span class="comment"> * Any file on the system.</span>
+<span class="comment"> */</span>
+<span class="keyword">class</span> <span class="type">File</span> <span class="punctuation bracket">{</span>
+  <span class="comment">// the full path to the file</span>
+  <span class="keyword">public</span> <span class="property">path</span>: <span class="type">Path</span><span class="punctuation delimiter">;</span>
+
+  <span class="comment">// The page settings config used within this file&#39;s lifetime</span>
+  <span class="keyword">public</span> <span class="property">cachedConfig</span>: <span class="type">PageSettings</span><span class="punctuation delimiter">;</span>
+
+  <span class="comment">// If this file is &#39;pretending&#39; to be another file,</span>
+  <span class="comment">// the file that this was wrapped around is accessible here.</span>
+
+  <span class="comment">// This allows us to pull tricks like asking questions about a</span>
+  <span class="comment">// javascript file when the actual file is written in typescript,</span>
+  <span class="comment">// converting configuration files into others on the fly,</span>
+  <span class="comment">// reading SCSS as CSS, etc.</span>
+  <span class="keyword">public</span> <span class="property">fakeFileOf</span>?: <span class="type">File</span><span class="punctuation delimiter">;</span>
+
+  <span class="comment">// The source file types that this file represents.</span>
+  <span class="keyword">public</span> <span class="keyword">static</span> <span class="property">filetypes</span>: <span class="type builtin">string</span><span class="punctuation bracket">[</span><span class="punctuation bracket">]</span> <span class="operator">=</span> <span class="punctuation bracket">[</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">;</span>
+
+  <span class="comment">// The supported target file types of this file, if any.</span>
+  <span class="comment">// If a file class supports a specific target &lt;t&gt;,</span>
+  <span class="comment">// the file must also have a function &lt;t&gt;() to call</span>
+  <span class="comment">// that produces a file with the type of that target.</span>
+  <span class="keyword">public</span> <span class="keyword">static</span> <span class="property">targets</span>: <span class="type builtin">string</span><span class="punctuation bracket">[</span><span class="punctuation bracket">]</span> <span class="operator">=</span> <span class="punctuation bracket">[</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">;</span>
+
+  <span class="comment">/**</span>
+<span class="comment">   * Construct a file.</span>
+<span class="comment">   */</span>
+  <span class="function method">constructor</span><span class="punctuation bracket">(</span><span class="variable parameter">pathArg</span>: <span class="type">Path</span><span class="punctuation delimiter">,</span> <span class="variable parameter">cfg</span>: <span class="type">PageSettings</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="comment">// Normalize the path when creating a File</span>
+    <span class="keyword">const</span> <span class="variable">filePath</span> <span class="operator">=</span> <span class="type">Path</span><span class="punctuation delimiter">.</span><span class="function method">create</span><span class="punctuation bracket">(</span><span class="variable parameter">pathArg</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">.</span><span class="function method">normalize</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="operator">!</span><span class="variable">filePath</span><span class="punctuation delimiter">.</span><span class="function method">exists</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">Error</span><span class="punctuation bracket">(</span>
+        <span class="string">`from File constructor: File at path &#39;<span class="embedded"><span class="punctuation special">${</span><span class="variable">filePath</span><span class="punctuation special">}</span></span>&#39; does not exist`</span>
+      <span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+
+    <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">path</span> <span class="operator">=</span> <span class="variable">filePath</span><span class="punctuation delimiter">;</span>
+    <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">cachedConfig</span> <span class="operator">=</span> <span class="variable parameter">cfg</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="keyword">static</span> <span class="function method">create</span><span class="punctuation bracket">(</span><span class="variable parameter">path</span>: <span class="type">Path</span><span class="punctuation delimiter">,</span> <span class="variable parameter">cfg</span>: <span class="type">PageSettings</span><span class="punctuation bracket">)</span>: <span class="type">File</span> <span class="operator">|</span> <span class="constant builtin">undefined</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">return</span> <span class="keyword">new</span> <span class="variable builtin">this</span><span class="punctuation bracket">(</span><span class="variable parameter">path</span><span class="punctuation delimiter">,</span> <span class="variable parameter">cfg</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="comment">/**</span>
+<span class="comment">   * Two files are equal if their paths are equal.</span>
+<span class="comment">   */</span>
+  <span class="function method">equals</span><span class="punctuation bracket">(</span><span class="variable parameter">file</span>: <span class="type">File</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">return</span> <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">path</span><span class="punctuation delimiter">.</span><span class="function method">equals</span><span class="punctuation bracket">(</span><span class="variable parameter">file</span><span class="punctuation delimiter">.</span><span class="property">path</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="function method">clone</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span>: <span class="keyword">typeof</span> <span class="variable">this</span> <span class="punctuation bracket">{</span>
+    <span class="comment">// note: `this.constructor` is always callable as a constructor,</span>
+    <span class="comment">// but TypeScript doesn&#39;t seem to have a special notion of a &#39;constructor&#39;</span>
+    <span class="comment">// function that can be invoked like an arbitrary function.</span>
+    <span class="comment">// Not even sure it&#39;s possible with the JS spec.</span>
+    <span class="keyword">return</span> <span class="keyword">new</span> <span class="punctuation bracket">(</span><span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">constructor</span> <span class="keyword">as</span> <span class="type builtin">any</span><span class="punctuation bracket">)</span><span class="punctuation bracket">(</span><span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">path</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="comment">// read the file at the path</span>
+  <span class="function method">read</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">Error</span><span class="punctuation bracket">(</span><span class="string">&quot;File.read() is not implemented&quot;</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="comment">// the title of the file does not</span>
+  <span class="keyword">get</span> <span class="function method">title</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">return</span> <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">path</span><span class="punctuation delimiter">.</span><span class="property">title</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="comment">// the name of a file includes the extension</span>
+  <span class="keyword">get</span> <span class="function method">name</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">return</span> <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">path</span><span class="punctuation delimiter">.</span><span class="property">name</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="comment">// the type of the file is the extension (for now?)</span>
+  <span class="keyword">get</span> <span class="function method">extension</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">return</span> <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">path</span><span class="punctuation delimiter">.</span><span class="property">extension</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="comment">// get the mime type of the file</span>
+  <span class="keyword">get</span> <span class="function method">mimeType</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">return</span> <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">path</span><span class="punctuation delimiter">.</span><span class="property">mimeType</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="comment">/**</span>
+<span class="comment">   * By default, files haven o text.</span>
+<span class="comment">   *</span>
+<span class="comment">   * Maybe I&#39;ll discover a way to render as text at some point.</span>
+<span class="comment">   * This is necessary because overrides for serve() rely on overriding this.text</span>
+<span class="comment">   * so that e.g. an HTML file can return &#39;&#39; for the text</span>
+<span class="comment">   */</span>
+  <span class="function method">text</span><span class="punctuation bracket">(</span><span class="variable parameter">cfg</span>: <span class="type">PageSettings</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">return</span> <span class="string">&quot;&quot;</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="comment">/**</span>
+<span class="comment">   * Determine if the file is a directory.</span>
+<span class="comment">   * Always false here; directory subclass reimplements this.</span>
+<span class="comment">   */</span>
+  <span class="function method">isDirectory</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span>: <span class="variable builtin">this</span> is <span class="type">Directory</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">return</span> <span class="constant builtin">false</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="function method">write</span><span class="punctuation bracket">(</span><span class="variable parameter">config</span>: <span class="type">PageSettings</span><span class="punctuation bracket">)</span>: <span class="keyword">typeof</span> <span class="variable">this</span> <span class="punctuation bracket">{</span>
+    <span class="variable builtin">console</span><span class="punctuation delimiter">.</span><span class="function method">error</span><span class="punctuation bracket">(</span>
+      <span class="string">`file.write() is not implemented for file at &#39;<span class="embedded"><span class="punctuation special">${</span><span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">path</span><span class="punctuation delimiter">.</span><span class="function method">toString</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation special">}</span></span>&#39;`</span>
+    <span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+
+    <span class="keyword">return</span> <span class="variable builtin">this</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="comment">/**</span>
+<span class="comment">   * Get the url to the html page with this file</span>
+<span class="comment">   */</span>
+  <span class="function method">htmlUrl</span><span class="punctuation bracket">(</span><span class="punctuation bracket">{</span> url<span class="punctuation delimiter">,</span> sourceDir <span class="punctuation bracket">}</span>: <span class="punctuation bracket">{</span> <span class="property">url</span>: <span class="type">URL</span><span class="punctuation delimiter">;</span> <span class="property">sourceDir</span>: <span class="type">Path</span> <span class="punctuation bracket">}</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">const</span> <span class="variable">relativeToSource</span> <span class="operator">=</span> <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">path</span><span class="punctuation delimiter">.</span><span class="function method">relativeTo</span><span class="punctuation bracket">(</span><span class="variable">sourceDir</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="keyword">return</span> <span class="string">`<span class="embedded"><span class="punctuation special">${</span><span class="variable">url</span><span class="punctuation delimiter">.</span><span class="function method">toString</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">.</span><span class="function method">slice</span><span class="punctuation bracket">(</span><span class="number">0</span><span class="punctuation delimiter">,</span> <span class="operator">-</span><span class="number">1</span><span class="punctuation bracket">)</span><span class="punctuation special">}</span></span><span class="embedded"><span class="punctuation special">${</span><span class="variable">relativeToSource</span><span class="punctuation delimiter">.</span><span class="function method">addExtension</span><span class="punctuation bracket">(</span></span></span>
+<span class="string"><span class="embedded">      <span class="string">&quot;html&quot;</span></span></span>
+<span class="string"><span class="embedded">    <span class="punctuation bracket">)</span><span class="punctuation special">}</span></span>`</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="keyword">get</span> <span class="function method">repo</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">const</span> <span class="variable">repoAtPath</span> <span class="operator">=</span> <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">path</span><span class="punctuation delimiter">.</span><span class="property">repo</span><span class="punctuation delimiter">;</span>
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="operator">!</span><span class="variable">repoAtPath</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="variable builtin">console</span><span class="punctuation delimiter">.</span><span class="function method">log</span><span class="punctuation bracket">(</span>
+        <span class="string">`From File.repo: File at path &#39;<span class="embedded"><span class="punctuation special">${</span><span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">path</span><span class="punctuation special">}</span></span>&#39; is not in a repo`</span>
+      <span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+      <span class="keyword">return</span> <span class="constant builtin">null</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+
+    <span class="keyword">return</span> <span class="variable">repoAtPath</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="keyword">get</span> <span class="function method">lastLog</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">return</span> <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">repo</span><span class="punctuation delimiter">?.</span><span class="function method">getFile</span><span class="punctuation bracket">(</span><span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">path</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">?.</span><span class="property">lastLog</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="keyword">get</span> <span class="function method">log</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">return</span> <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">repo</span><span class="punctuation delimiter">?.</span><span class="function method">getFile</span><span class="punctuation bracket">(</span><span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">path</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">?.</span><span class="property">log</span> <span class="operator">??</span> <span class="punctuation bracket">[</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="keyword">get</span> <span class="function method">lastTimestamp</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">return</span> <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">repo</span><span class="punctuation delimiter">?.</span><span class="function method">getFile</span><span class="punctuation bracket">(</span><span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">path</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">.</span><span class="property">lastTimestamp</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="comment">// by default, files do not depend on any other files.</span>
+  <span class="function method">dependencies</span><span class="punctuation bracket">(</span><span class="variable parameter">settings</span>: <span class="type">PageSettings</span><span class="punctuation bracket">)</span>: <span class="type">File</span><span class="punctuation bracket">[</span><span class="punctuation bracket">]</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">return</span> <span class="punctuation bracket">[</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="comment">/**</span>
+<span class="comment">   * Serve the file as HTML.</span>
+<span class="comment">   * By default, assume the file has some text output and try to get that.</span>
+<span class="comment">   */</span>
+  <span class="function method">serve</span><span class="punctuation bracket">(</span><span class="variable parameter">args</span>: <span class="type">PageSettings</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">return</span> <span class="punctuation bracket">{</span> <span class="property">contents</span>: <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="function method">text</span><span class="punctuation bracket">(</span><span class="variable parameter">args</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">,</span> <span class="property">mimeType</span>: <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">mimeType</span> <span class="punctuation bracket">}</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="comment">/**</span>
+<span class="comment">   * Watch the file, attaching an event listener to pick up on file events.</span>
+<span class="comment">   */</span>
+  <span class="function method">watch</span><span class="punctuation bracket">(</span><span class="variable parameter">callback</span>: <span class="punctuation bracket">(</span><span class="variable parameter">eventType</span>: <span class="type builtin">string</span><span class="punctuation delimiter">,</span> <span class="variable parameter">file</span>: <span class="type">File</span><span class="punctuation bracket">)</span> <span class="operator">=&gt;</span> <span class="type builtin"><span class="keyword">void</span></span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">const</span> <span class="variable">closeWatcher</span> <span class="operator">=</span> <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">path</span><span class="punctuation delimiter">.</span><span class="function method">watch</span><span class="punctuation bracket">(</span><span class="punctuation bracket">(</span><span class="variable parameter">eventType</span>: <span class="type builtin">string</span><span class="punctuation bracket">)</span> <span class="operator">=&gt;</span> <span class="punctuation bracket">{</span>
+      <span class="variable parameter">callback</span><span class="punctuation bracket">(</span><span class="variable parameter">eventType</span><span class="punctuation delimiter">,</span> <span class="variable builtin">this</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+
+    <span class="keyword">return</span> <span class="variable">closeWatcher</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+<span class="punctuation bracket">}</span>
+
+<span class="keyword">export</span> <span class="keyword">default</span> <span class="type">File</span><span class="punctuation delimiter">;</span>
+</code></pre></article></main><div class="article-rhs-container"><div class="article-rhs"><div class="git-history-table-container"><span class="git-history-table-title">Revisions</span><table class="git-history-table"><thead><tr><th>Date</th><th>Hash</th></tr></thead><tbody><tr><td class="commit-date-tr">2025-11-05</td><td class="commit-link-tr">b71cdc86</td></tr><tr><td class="commit-date-tr">2024-11-17</td><td class="commit-link-tr">b42bcf8b</td></tr><tr><td class="commit-date-tr">2024-04-18</td><td class="commit-link-tr">e091af58</td></tr><tr><td class="commit-date-tr">2024-04-18</td><td class="commit-link-tr">4a3d526d</td></tr><tr><td class="commit-date-tr">2024-04-17</td><td class="commit-link-tr">40ea5682</td></tr><tr><td class="commit-date-tr">2024-04-14</td><td class="commit-link-tr">cec04733</td></tr><tr><td class="commit-date-tr">2024-04-14</td><td class="commit-link-tr">80c18980</td></tr><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">0c9b2c0e</td></tr><tr><td class="commit-date-tr">2024-04-12</td><td class="commit-link-tr">e5f68a85</td></tr><tr><td class="commit-date-tr">2024-04-01</td><td class="commit-link-tr">a3c37e13</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">51ac9ed3</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">02dca1b8</td></tr></tbody></table></div><div class="prev-next-up-buttons-container">Navigation<table class="prev-next-up-buttons"><tr><td>Previous</td><td><a class="prev-button" href="http://localhost:4242/src/file/classes/utils.ts.html">utils.ts</a></td></tr><tr><td>Next</td><td><a class="next-button" href="http://localhost:4242/src/file/classes/index.ts.html">index.ts</a></td></tr><tr><td>Up</td><td><a class="up-button" href="http://localhost:4242/src/file/classes/index.html">classes</a></td></tr></table></div></div></div></div></body></html>

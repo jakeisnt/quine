@@ -1,0 +1,114 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"></meta><title>directoryServer.ts / Jake Chvatal</title><meta property="og:title" content="directoryServer.ts"></meta><meta property="og:type" content="website"></meta><meta property="og:url" content="https://jake.isnt.online"></meta><meta property="og:site_name" content="Jake Chvatal"></meta><meta name="keywords" content="jake"></meta><meta name="author" content="Jake Chvatal"></meta><meta name="robots" content="index,follow"></meta><meta name="description" content="hi"></meta><meta name="theme-color" media="(prefers-color-scheme: light)" content="white"></meta><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#111"></meta><link rel="icon" type="image/x-icon" href="/Users/jake/Documents/personal/site/favicons/favicon.ico"></link><link rel="apple-touch-icon" href="/Users/jake/Documents/personal/site/favicons/apple-touch-icon.png"></link><link rel="stylesheet" type="text/css" href="/resources/style.css" id="/resources/style.css"></link><link rel="stylesheet" type="text/css" href="/resources/global.css" id="/resources/global.css"></link><script src="/resources/lib.js" id="/resources/lib.js" type="module"></script><link rel="stylesheet" type="text/css" href="/resources/elementsstyle.css" id="/resources/elementsstyle.css"></link><link rel="manifest" href="/resources/manifest.json"></link><script src="/resources/elements.js" id="/resources/elements.js" type="module" defer="true"></script></head><body><link rel="stylesheet" href="/components/Sidebar/sidebar.css"></link><div class="sidebar"><div class="url-path"><b>jake.</b><span> / </span><a href="https://jake.isnt.online/src/index.html">src</a><span> / </span><a href="https://jake.isnt.online/src/server/index.html">server</a><span> / </span><b>directoryServer.ts</b></div><script src="/components/ToggleDarkMode/toggle-dark-mode.js" type="module"></script><link rel="stylesheet" href="/components/ToggleDarkMode/toggle-dark-mode.css"></link><div class="toggle-dark-mode-container"><button class="toggle-dark-mode"></button></div></div><div class="site-body"><main><article class="wikipage"><h1 class="title-top">directoryServer.ts</h1><link rel="stylesheet" href="/components/SourceBlock/source-block.css"></link><script src="/components/SourceBlock/load-code-blocks.js" type="module"></script><pre><code class="language-ts has-raw-code"><span class="keyword">import</span> <span class="punctuation bracket">{</span> <span class="type">Path</span> <span class="punctuation bracket">}</span> <span class="keyword">from</span> <span class="string">&quot;../utils/path&quot;</span><span class="punctuation delimiter">;</span>
+
+<span class="keyword">import</span> <span class="variable">log</span> <span class="keyword">from</span> <span class="string">&quot;utils/log&quot;</span><span class="punctuation delimiter">;</span>
+
+<span class="keyword">import</span> <span class="punctuation bracket">{</span> <span class="variable">makeFileResponse</span> <span class="punctuation bracket">}</span> <span class="keyword">from</span> <span class="string">&quot;./utils&quot;</span><span class="punctuation delimiter">;</span>
+<span class="keyword">import</span> <span class="punctuation bracket">{</span> <span class="variable">readFile</span> <span class="punctuation bracket">}</span> <span class="keyword">from</span> <span class="string">&quot;../file&quot;</span><span class="punctuation delimiter">;</span>
+<span class="keyword">import</span> <span class="punctuation bracket">{</span> <span class="variable">createServer</span> <span class="punctuation bracket">}</span> <span class="keyword">from</span> <span class="string">&quot;./createServer&quot;</span><span class="punctuation delimiter">;</span>
+<span class="keyword">import</span> <span class="type">Directory</span> <span class="keyword">from</span> <span class="string">&quot;../file/filetype/directory&quot;</span><span class="punctuation delimiter">;</span>
+<span class="keyword">import</span> <span class="punctuation bracket">{</span> <span class="variable">homePage</span> <span class="punctuation bracket">}</span> <span class="keyword">from</span> <span class="string">&quot;../pages/home&quot;</span><span class="punctuation delimiter">;</span>
+<span class="keyword">import</span> <span class="punctuation bracket">{</span> <span class="variable">getPageSettings</span> <span class="punctuation bracket">}</span> <span class="keyword">from</span> <span class="string">&quot;./utils&quot;</span><span class="punctuation delimiter">;</span>
+
+<span class="comment">/**</span>
+<span class="comment"> * Serve the files in a directory.</span>
+<span class="comment"> * @param {*} absolutePathToDirectory primary directory we should source files from.</span>
+<span class="comment"> * @param {*} fallbackDirPath path to directory we should fall back to serving.</span>
+<span class="comment"> */</span>
+<span class="keyword">const</span> <span class="function">directoryServer</span> <span class="operator">=</span> <span class="punctuation bracket">(</span><span class="punctuation bracket">{</span>
+  absolutePathToDirectory<span class="punctuation delimiter">,</span>
+  fallbackDirPath<span class="punctuation delimiter">,</span>
+  url<span class="punctuation delimiter">,</span>
+  port<span class="punctuation delimiter">,</span>
+  siteName<span class="punctuation delimiter">,</span>
+  websocketPath<span class="punctuation delimiter">,</span>
+<span class="punctuation bracket">}</span>: <span class="punctuation bracket">{</span>
+  <span class="property">absolutePathToDirectory</span>: <span class="type">Path</span><span class="punctuation delimiter">;</span>
+  <span class="property">fallbackDirPath</span>: <span class="type builtin">string</span><span class="punctuation delimiter">;</span>
+  <span class="property">url</span>: <span class="type builtin">string</span><span class="punctuation delimiter">;</span>
+  <span class="property">port</span>: <span class="type builtin">number</span><span class="punctuation delimiter">;</span>
+  <span class="property">siteName</span>: <span class="type builtin">string</span><span class="punctuation delimiter">;</span>
+  <span class="property">websocketPath</span>: <span class="type builtin">string</span><span class="punctuation delimiter">;</span>
+<span class="punctuation bracket">}</span><span class="punctuation bracket">)</span> <span class="operator">=&gt;</span> <span class="punctuation bracket">{</span>
+  <span class="keyword">let</span> <span class="variable">pageSettings</span> <span class="operator">=</span> <span class="function">getPageSettings</span><span class="punctuation bracket">(</span><span class="punctuation bracket">{</span>
+    url<span class="punctuation delimiter">,</span>
+    port<span class="punctuation delimiter">,</span>
+    siteName<span class="punctuation delimiter">,</span>
+    absolutePathToDirectory<span class="punctuation delimiter">,</span>
+    fallbackDirPath<span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">}</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+
+  <span class="keyword">const</span> <span class="variable">dir</span> <span class="operator">=</span> <span class="function">readFile</span><span class="punctuation bracket">(</span>
+    <span class="variable">absolutePathToDirectory</span><span class="punctuation delimiter">,</span>
+    <span class="variable">pageSettings</span>
+  <span class="punctuation bracket">)</span> <span class="keyword">as</span> <span class="type builtin">unknown</span> <span class="keyword">as</span> <span class="type">Directory</span><span class="punctuation delimiter">;</span>
+
+  <span class="keyword">let</span> <span class="variable">fallbackDir</span>: <span class="type">Directory</span><span class="punctuation delimiter">;</span>
+
+  <span class="keyword">try</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="variable">fallbackDirPath</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="variable">fallbackDir</span> <span class="operator">=</span> <span class="function">readFile</span><span class="punctuation bracket">(</span>
+        <span class="variable">fallbackDirPath</span><span class="punctuation delimiter">,</span>
+        <span class="variable">pageSettings</span>
+      <span class="punctuation bracket">)</span> <span class="keyword">as</span> <span class="type builtin">unknown</span> <span class="keyword">as</span> <span class="type">Directory</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+  <span class="punctuation bracket">}</span> <span class="keyword">catch</span> <span class="punctuation bracket">(</span><span class="variable">e</span>: <span class="type builtin">any</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="variable">log</span><span class="punctuation delimiter">.</span><span class="function method">debug</span><span class="punctuation bracket">(</span><span class="string">&quot;Error finding fallback dir:&quot;</span><span class="punctuation delimiter">,</span> <span class="variable">e</span><span class="punctuation delimiter">.</span><span class="property">message</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="operator">!</span><span class="variable">dir</span><span class="punctuation delimiter">.</span><span class="function method">isDirectory</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">Error</span><span class="punctuation bracket">(</span>
+      <span class="string">`Received path &#39;<span class="embedded"><span class="punctuation special">${</span><span class="variable">absolutePathToDirectory</span><span class="punctuation special">}</span></span>&#39; is not a directory`</span>
+    <span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="variable">pageSettings</span> <span class="operator">=</span> <span class="function">getPageSettings</span><span class="punctuation bracket">(</span><span class="punctuation bracket">{</span>
+    url<span class="punctuation delimiter">,</span>
+    port<span class="punctuation delimiter">,</span>
+    siteName<span class="punctuation delimiter">,</span>
+    <span class="property">absolutePathToDirectory</span>: <span class="variable">dir</span><span class="punctuation delimiter">.</span><span class="property">path</span><span class="punctuation delimiter">,</span>
+    fallbackDirPath<span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">}</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+
+  <span class="function">createServer</span><span class="punctuation bracket">(</span><span class="punctuation bracket">{</span>
+    url<span class="punctuation delimiter">,</span>
+    port<span class="punctuation delimiter">,</span>
+    websocketPath<span class="punctuation delimiter">,</span>
+    <span class="function method">onRequest</span>: <span class="punctuation bracket">(</span><span class="punctuation bracket">{</span> path <span class="punctuation bracket">}</span>: <span class="punctuation bracket">{</span> <span class="property">path</span>: <span class="type">Path</span> <span class="punctuation bracket">}</span><span class="punctuation bracket">)</span> <span class="operator">=&gt;</span> <span class="punctuation bracket">{</span>
+      <span class="keyword">let</span> <span class="variable">pathToUse</span> <span class="operator">=</span> <span class="type">Path</span><span class="punctuation delimiter">.</span><span class="function method">create</span><span class="punctuation bracket">(</span><span class="variable">path</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+
+      <span class="comment">// If we request the root, serve up the home page</span>
+      <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="punctuation bracket">[</span><span class="string">&quot;&quot;</span><span class="punctuation delimiter">,</span> <span class="string">&quot;/&quot;</span><span class="punctuation delimiter">,</span> <span class="string">&quot;/index&quot;</span><span class="punctuation delimiter">,</span> <span class="string">&quot;/index.html&quot;</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">.</span><span class="function method">includes</span><span class="punctuation bracket">(</span><span class="variable">pathToUse</span><span class="punctuation delimiter">.</span><span class="function method">toString</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation bracket">)</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+        <span class="keyword">return</span> <span class="function">makeFileResponse</span><span class="punctuation bracket">(</span><span class="function">homePage</span><span class="punctuation bracket">(</span><span class="variable">pageSettings</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">,</span> <span class="punctuation bracket">{</span>
+          ...<span class="variable">pageSettings</span><span class="punctuation delimiter">,</span>
+          websocketPath<span class="punctuation delimiter">,</span>
+        <span class="punctuation bracket">}</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+      <span class="punctuation bracket">}</span>
+
+      <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="variable">path</span><span class="punctuation delimiter">.</span><span class="property">name</span> <span class="operator">===</span> <span class="string">&quot;index.html&quot;</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+        <span class="comment">// if the path is a directory, serve the parent like an html file</span>
+        <span class="variable">pathToUse</span> <span class="operator">=</span> <span class="type">Path</span><span class="punctuation delimiter">.</span><span class="function method">create</span><span class="punctuation bracket">(</span><span class="variable">path</span><span class="punctuation delimiter">.</span><span class="property">parent</span><span class="punctuation delimiter">.</span><span class="function method">toString</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="operator">+</span> <span class="string">&quot;.html&quot;</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+      <span class="punctuation bracket">}</span>
+
+      <span class="comment">// we look for a directory with .html,</span>
+      <span class="comment">// then fall back to types.html</span>
+
+      <span class="keyword">let</span> <span class="variable">file</span> <span class="operator">=</span> <span class="variable">dir</span><span class="punctuation delimiter">.</span><span class="function method">findFile</span><span class="punctuation bracket">(</span><span class="variable">pathToUse</span><span class="punctuation delimiter">,</span> <span class="variable">pageSettings</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+      <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="operator">!</span><span class="variable">file</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+        <span class="comment">// if we can&#39;t find the file, attempt to find it in a fallback directory.</span>
+        <span class="variable">file</span> <span class="operator">=</span> <span class="variable">fallbackDir</span><span class="punctuation delimiter">?.</span><span class="function method">findFile</span><span class="punctuation bracket">(</span><span class="variable">pathToUse</span><span class="punctuation delimiter">,</span> <span class="variable">pageSettings</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+      <span class="punctuation bracket">}</span>
+      <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="operator">!</span><span class="variable">file</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+        <span class="keyword">return</span> <span class="keyword">new</span> <span class="type">Response</span><span class="punctuation bracket">(</span><span class="string">&quot;Not found&quot;</span><span class="punctuation delimiter">,</span> <span class="punctuation bracket">{</span> <span class="property">status</span>: <span class="number">404</span> <span class="punctuation bracket">}</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+      <span class="punctuation bracket">}</span>
+
+      <span class="keyword">return</span> <span class="function">makeFileResponse</span><span class="punctuation bracket">(</span><span class="variable">file</span><span class="punctuation delimiter">,</span> <span class="punctuation bracket">{</span> ...<span class="variable">pageSettings</span><span class="punctuation delimiter">,</span> websocketPath <span class="punctuation bracket">}</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+
+    <span class="function method">onSocketConnected</span>: <span class="punctuation bracket">(</span><span class="variable parameter">ws</span><span class="punctuation bracket">)</span> <span class="operator">=&gt;</span> <span class="punctuation bracket">{</span>
+      <span class="variable">log</span><span class="punctuation delimiter">.</span><span class="function method">hotReload</span><span class="punctuation bracket">(</span><span class="string">&quot;hot reload socket connected&quot;</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">}</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+<span class="punctuation bracket">}</span><span class="punctuation delimiter">;</span>
+
+<span class="keyword">export</span> <span class="punctuation bracket">{</span> <span class="function">directoryServer</span> <span class="punctuation bracket">}</span><span class="punctuation delimiter">;</span>
+</code></pre></article></main><div class="article-rhs-container"><div class="article-rhs"><div class="git-history-table-container"><span class="git-history-table-title">Revisions</span><table class="git-history-table"><thead><tr><th>Date</th><th>Hash</th></tr></thead><tbody><tr><td class="commit-date-tr">2024-04-14</td><td class="commit-link-tr">80c18980</td></tr><tr><td class="commit-date-tr">2024-04-14</td><td class="commit-link-tr">a9a06ace</td></tr><tr><td class="commit-date-tr">2024-04-14</td><td class="commit-link-tr">bb4de2c3</td></tr><tr><td class="commit-date-tr">2024-04-14</td><td class="commit-link-tr">0ccbd8c5</td></tr><tr><td class="commit-date-tr">2024-04-14</td><td class="commit-link-tr">ba53cd93</td></tr><tr><td class="commit-date-tr">2024-04-14</td><td class="commit-link-tr">c16a809d</td></tr><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">0c9b2c0e</td></tr><tr><td class="commit-date-tr">2024-04-12</td><td class="commit-link-tr">e5f68a85</td></tr><tr><td class="commit-date-tr">2024-04-12</td><td class="commit-link-tr">0d786479</td></tr><tr><td class="commit-date-tr">2024-04-12</td><td class="commit-link-tr">c0f6ed5e</td></tr><tr><td class="commit-date-tr">2024-04-01</td><td class="commit-link-tr">a3c37e13</td></tr><tr><td class="commit-date-tr">2024-04-01</td><td class="commit-link-tr">1b80c3b3</td></tr><tr><td class="commit-date-tr">2024-04-01</td><td class="commit-link-tr">bce55469</td></tr><tr><td class="commit-date-tr">2024-04-01</td><td class="commit-link-tr">110e0165</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">02dca1b8</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">aa9958ba</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">b2bdfc1f</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">e70a914e</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">a722035c</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">6c7a5c6e</td></tr></tbody></table></div><div class="prev-next-up-buttons-container">Navigation<table class="prev-next-up-buttons"><tr><td>Next</td><td><a class="next-button" href="https://jake.isnt.online/src/server/utils.ts.html">utils.ts</a></td></tr><tr><td>Up</td><td><a class="up-button" href="/src/server/index.html">server</a></td></tr></table></div></div></div></div></body></html>

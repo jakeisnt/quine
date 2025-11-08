@@ -1,6 +1,5 @@
 import { Path } from "../utils/path";
 
-import type { PageSettings } from "../types/site";
 import log from "utils/log";
 
 import { makeFileResponse } from "./utils";
@@ -8,94 +7,104 @@ import { readFile } from "../file";
 import { createServer } from "./createServer";
 import Directory from "../file/filetype/directory";
 import { homePage } from "../pages/home";
-
-/**
- * Load the specified source files from disk,
- * bootstrapping the source finding process.
- */
-const findSource = (
-  settings: PageSettings
-): {
-  fallbackDir?: Directory;
-  dir: Directory;
-} => {
-  const dir = readFile(settings.sourceDir, settings) as unknown as Directory;
-
-  if (!dir.isDirectory()) {
-    throw new Error(`Received path '${settings.sourceDir}' is not a directory`);
-  }
-
-  return { dir };
-};
-
-/**
- * Is the path the root?
- */
-const isRootPath = (path: Path, settings: PageSettings) => {
-  return (
-    path.equals(settings.sourceDir) ||
-    ["", "/", "/index", "/index.html"].includes(path.toString())
-  );
-};
-
-/**
- * Format the path provided to be a nice + friendly absolute path
- * @param path
- * @param settings
- */
-const formatPath = (path: Path, settings: PageSettings) => {
-  // If path already starts with sourceDir, return as-is
-  if (path.toString().startsWith(settings.sourceDir.toString())) {
-    return path;
-  }
-
-  // If path starts with targetDir, swap targetDir with sourceDir
-  if (path.toString().startsWith(settings.targetDir.toString())) {
-    return Path.create(
-      path
-        .toString()
-        .replace(settings.targetDir.toString(), settings.sourceDir.toString())
-    );
-  }
-
-  // Otherwise, prepend sourceDir
-  return Path.create(settings.sourceDir.toString() + path.toString());
-};
+import { getPageSettings } from "./utils";
 
 /**
  * Serve the files in a directory.
+ * @param {*} absolutePathToDirectory primary directory we should source files from.
+ * @param {*} fallbackDirPath path to directory we should fall back to serving.
  */
-const directoryServer = (settings: PageSettings) => {
-  let pageSettings = settings;
-  const { dir } = findSource(settings);
-  pageSettings = { ...settings, sourceDir: dir.path };
+const directoryServer = ({
+  absolutePathToDirectory,
+  fallbackDirPath,
+  url,
+  port,
+  siteName,
+  websocketPath,
+}: {
+  absolutePathToDirectory: Path;
+  fallbackDirPath: string;
+  url: string;
+  port: number;
+  siteName: string;
+  websocketPath: string;
+}) => {
+  let pageSettings = getPageSettings({
+    url,
+    port,
+    siteName,
+    absolutePathToDirectory,
+    fallbackDirPath,
+  });
+
+  const dir = readFile(
+    absolutePathToDirectory,
+    pageSettings
+  ) as unknown as Directory;
+
+  let fallbackDir: Directory;
+
+  try {
+    if (fallbackDirPath) {
+      fallbackDir = readFile(
+        fallbackDirPath,
+        pageSettings
+      ) as unknown as Directory;
+    }
+  } catch (e: any) {
+    log.debug("Error finding fallback dir:", e.message);
+  }
+
+  if (!dir.isDirectory()) {
+    throw new Error(
+      `Received path '${absolutePathToDirectory}' is not a directory`
+    );
+  }
+
+  pageSettings = getPageSettings({
+    url,
+    port,
+    siteName,
+    absolutePathToDirectory: dir.path,
+    fallbackDirPath,
+  });
 
   createServer({
-    ...settings,
+    url,
+    port,
+    websocketPath,
     onRequest: ({ path }: { path: Path }) => {
-      let pathToUse = path;
+      let pathToUse = Path.create(path);
 
-      // If we request the root, serve up the home page. Hardcoded.
-      if (isRootPath(pathToUse, settings)) {
-        return makeFileResponse(homePage(pageSettings), pageSettings);
+      // If we request the root, serve up the home page
+      if (["", "/", "/index", "/index.html"].includes(pathToUse.toString())) {
+        return makeFileResponse(homePage(pageSettings), {
+          ...pageSettings,
+          websocketPath,
+        });
       }
 
-      pathToUse = formatPath(pathToUse, pageSettings);
-      console.log({
-        path: path.toString(),
-        pth2: pathToUse.toString(),
-      });
+      if (path.name === "index.html") {
+        // if the path is a directory, serve the parent like an html file
+        pathToUse = Path.create(path.parent.toString() + ".html");
+      }
 
-      let file = readFile(pathToUse, pageSettings);
+      // we look for a directory with .html,
+      // then fall back to types.html
 
+      let file = dir.findFile(pathToUse, pageSettings);
+      if (!file) {
+        // if we can't find the file, attempt to find it in a fallback directory.
+        file = fallbackDir?.findFile(pathToUse, pageSettings);
+      }
       if (!file) {
         return new Response("Not found", { status: 404 });
       }
 
-      return makeFileResponse(file, pageSettings);
+      return makeFileResponse(file, { ...pageSettings, websocketPath });
     },
 
-    onSocketConnected: (ws: WebSocket) => {
+    onSocketConnected: (ws) => {
       log.hotReload("hot reload socket connected");
     },
   });

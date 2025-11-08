@@ -1,0 +1,86 @@
+<!DOCTYPE html><html lang="en"><link rel="stylesheet" href="/resources/style.css"></link><link rel="stylesheet" href="/resources/global.css"></link><link rel="stylesheet" href="/resources/elementsstyle.css"></link><script type="module" src="/resources/lib.js"></script><script type="module" defer="true" src="/resources/elements.js"></script><head><meta charset="utf-8"></meta><meta name="viewport" content="width=device-width, initial-scale=1"></meta><title>repo.ts / Jake Chvatal</title><meta property="og:title" content="repo.ts"></meta><meta property="og:type" content="website"></meta><meta property="og:url" content="http://localhost:4242/"></meta><meta property="og:site_name" content="Jake Chvatal"></meta><meta name="keywords" content="jake"></meta><meta name="author" content="Jake Chvatal"></meta><meta name="robots" content="index,follow"></meta><meta name="description" content="hi"></meta><meta name="theme-color" media="(prefers-color-scheme: light)" content="white"></meta><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#111"></meta></head><body><link rel="stylesheet" href="/components/Sidebar/sidebar.css"></link><div class="sidebar"><div class="url-path"><b>jake.</b><span> / </span><a href="http://localhost:4242//src/index.html">src</a><span> / </span><a href="http://localhost:4242//src/utils/index.html">utils</a><span> / </span><a href="http://localhost:4242//src/utils/git/index.html">git</a><span> / </span><b>repo.ts</b></div><script type="module" src="/components/ToggleDarkMode/toggle-dark-mode.js"></script><link rel="stylesheet" href="/components/ToggleDarkMode/toggle-dark-mode.css"></link><div class="toggle-dark-mode-container"><button class="toggle-dark-mode"></button></div></div><div class="site-body"><main><article class="wikipage"><h1 class="title-top">repo.ts</h1><link rel="stylesheet" href="/components/SourceBlock/source-block.css"></link><script type="module" src="/components/SourceBlock/load-code-blocks.js"></script><pre><code class="language-ts has-raw-code"><span class="keyword">import</span> <span class="punctuation bracket">{</span> <span class="variable">execSync</span> <span class="punctuation bracket">}</span> <span class="keyword">from</span> <span class="string">&quot;../cmd&quot;</span><span class="punctuation delimiter">;</span>
+<span class="keyword">import</span> <span class="punctuation bracket">{</span> <span class="type">Path</span> <span class="punctuation bracket">}</span> <span class="keyword">from</span> <span class="string">&quot;../path&quot;</span><span class="punctuation delimiter">;</span>
+<span class="keyword">import</span> <span class="type">RepoFile</span> <span class="keyword">from</span> <span class="string">&quot;./repofile&quot;</span><span class="punctuation delimiter">;</span>
+
+<span class="comment">/**</span>
+<span class="comment"> * a git repository is a directory with a .git subdirectory</span>
+<span class="comment"> * This is basically a git porcelain that keeps the current repo</span>
+<span class="comment"> */</span>
+<span class="keyword">class</span> <span class="type">Repo</span> <span class="punctuation bracket">{</span>
+  <span class="comment">// the full path to the repository</span>
+  <span class="comment">// this is the directory that contains the .git subdirectory</span>
+  <span class="keyword">public</span> <span class="property">path</span>: <span class="type">Path</span><span class="punctuation delimiter">;</span>
+
+  <span class="function method">constructor</span><span class="punctuation bracket">(</span><span class="variable parameter">path</span>: <span class="type">Path</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">path</span> <span class="operator">=</span> <span class="variable parameter">path</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="keyword">static</span> <span class="function method">create</span><span class="punctuation bracket">(</span><span class="variable parameter">sourcePath</span>: <span class="type">Path</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">return</span> <span class="keyword">new</span> <span class="type">Repo</span><span class="punctuation bracket">(</span><span class="variable parameter">sourcePath</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="comment">/**</span>
+<span class="comment">   * Get a reference to the git repo&#39;s file at the provided path.</span>
+<span class="comment">   * @param atPath</span>
+<span class="comment">   * @returns</span>
+<span class="comment">   */</span>
+  <span class="function method">getFile</span><span class="punctuation bracket">(</span><span class="variable parameter">atPath</span>: <span class="type">Path</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="operator">!</span><span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">path</span><span class="punctuation delimiter">.</span><span class="function method">contains</span><span class="punctuation bracket">(</span><span class="variable parameter">atPath</span><span class="punctuation bracket">)</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">Error</span><span class="punctuation bracket">(</span><span class="string">`File <span class="embedded"><span class="punctuation special">${</span><span class="variable parameter">atPath</span><span class="punctuation special">}</span></span> is not in the repository`</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="punctuation bracket">}</span>
+
+    <span class="keyword">return</span> <span class="type">RepoFile</span><span class="punctuation delimiter">.</span><span class="function method">create</span><span class="punctuation bracket">(</span><span class="variable builtin">this</span><span class="punctuation delimiter">,</span> <span class="variable parameter">atPath</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="comment">/**</span>
+<span class="comment">   * Run a command from this git repository&#39;s root.</span>
+<span class="comment">   */</span>
+  <span class="function method">runCmd</span><span class="punctuation bracket">(</span><span class="variable parameter">command</span>: <span class="type builtin">string</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">const</span> <span class="variable">cmdResult</span> <span class="operator">=</span> <span class="function">execSync</span><span class="punctuation bracket">(</span><span class="variable parameter">command</span><span class="punctuation delimiter">,</span> <span class="punctuation bracket">{</span> <span class="property">cwd</span>: <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="property">path</span><span class="punctuation delimiter">.</span><span class="function method">toString</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">}</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="keyword">return</span> <span class="variable">cmdResult</span><span class="punctuation delimiter">.</span><span class="function method">toString</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="function method">checkout</span><span class="punctuation bracket">(</span><span class="variable parameter">branchName</span>: <span class="type builtin">string</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">return</span> <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="function method">runCmd</span><span class="punctuation bracket">(</span><span class="string">`git checkout <span class="embedded"><span class="punctuation special">${</span><span class="variable parameter">branchName</span><span class="punctuation special">}</span></span>`</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="function method">addAll</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="variable builtin">console</span><span class="punctuation delimiter">.</span><span class="function method">log</span><span class="punctuation bracket">(</span><span class="string">&quot;adding all to git&quot;</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="function method">runCmd</span><span class="punctuation bracket">(</span><span class="string">&quot;git add .&quot;</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="function method">commit</span><span class="punctuation bracket">(</span><span class="variable parameter">message</span> <span class="operator">=</span> <span class="string">&quot;robot commit&quot;</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="variable builtin">console</span><span class="punctuation delimiter">.</span><span class="function method">log</span><span class="punctuation bracket">(</span><span class="string">&quot;committing&quot;</span><span class="punctuation delimiter">,</span> <span class="punctuation bracket">{</span> message <span class="punctuation bracket">}</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="function method">runCmd</span><span class="punctuation bracket">(</span><span class="string">`git -c commit.gpgsign=false commit -m &quot;<span class="embedded"><span class="punctuation special">${</span><span class="variable parameter">message</span><span class="punctuation special">}</span></span>&quot;`</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="function method">push</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="function method">runCmd</span><span class="punctuation bracket">(</span><span class="string">&quot;git push&quot;</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="function method">removeUntracked</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="function method">runCmd</span><span class="punctuation bracket">(</span><span class="string">&quot;git clean -fxd&quot;</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="function method">currentBranch</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">const</span> <span class="variable">branch</span> <span class="operator">=</span> <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="function method">runCmd</span><span class="punctuation bracket">(</span><span class="string">&quot;git branch --show-current&quot;</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="variable builtin">console</span><span class="punctuation delimiter">.</span><span class="function method">log</span><span class="punctuation bracket">(</span><span class="string">&quot;current branch&quot;</span><span class="punctuation delimiter">,</span> <span class="variable">branch</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="keyword">return</span> <span class="variable">branch</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="function method">status</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">const</span> <span class="variable">status</span> <span class="operator">=</span> <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="function method">runCmd</span><span class="punctuation bracket">(</span><span class="string">&quot;git status&quot;</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="variable builtin">console</span><span class="punctuation delimiter">.</span><span class="function method">log</span><span class="punctuation bracket">(</span><span class="variable">status</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="function method">stash</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="function method">runCmd</span><span class="punctuation bracket">(</span><span class="string">&quot;git stash&quot;</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="function method">stashPop</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="variable builtin">this</span><span class="punctuation delimiter">.</span><span class="function method">runCmd</span><span class="punctuation bracket">(</span><span class="string">&quot;git stash pop&quot;</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+<span class="punctuation bracket">}</span>
+
+<span class="keyword">export</span> <span class="keyword">default</span> <span class="type">Repo</span><span class="punctuation delimiter">;</span>
+</code></pre></article></main><div class="article-rhs-container"><div class="article-rhs"><div class="git-history-table-container"><span class="git-history-table-title">Revisions</span><table class="git-history-table"><thead><tr><th>Date</th><th>Hash</th></tr></thead><tbody><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">0c9b2c0e</td></tr><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">aaec0997</td></tr><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">b029c988</td></tr><tr><td class="commit-date-tr">2024-04-01</td><td class="commit-link-tr">a3c37e13</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">02dca1b8</td></tr></tbody></table></div><div class="prev-next-up-buttons-container">Navigation<table class="prev-next-up-buttons"><tr><td>Next</td><td><a class="next-button" href="http://localhost:4242/src/utils/git/commit.ts.html">commit.ts</a></td></tr><tr><td>Up</td><td><a class="up-button" href="http://localhost:4242/src/utils/git/index.html">git</a></td></tr></table></div></div></div></div></body></html>

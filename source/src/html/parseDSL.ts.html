@@ -1,0 +1,100 @@
+<!DOCTYPE html><html lang="en"><link rel="stylesheet" href="/resources/style.css"></link><link rel="stylesheet" href="/resources/global.css"></link><link rel="stylesheet" href="/resources/elementsstyle.css"></link><script type="module" src="/resources/lib.js"></script><script type="module" defer="true" src="/resources/elements.js"></script><head><meta charset="utf-8"></meta><meta name="viewport" content="width=device-width, initial-scale=1"></meta><title>parseDSL.ts / Jake Chvatal</title><meta property="og:title" content="parseDSL.ts"></meta><meta property="og:type" content="website"></meta><meta property="og:url" content="http://localhost:4242/"></meta><meta property="og:site_name" content="Jake Chvatal"></meta><meta name="keywords" content="jake"></meta><meta name="author" content="Jake Chvatal"></meta><meta name="robots" content="index,follow"></meta><meta name="description" content="hi"></meta><meta name="theme-color" media="(prefers-color-scheme: light)" content="white"></meta><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#111"></meta></head><body><link rel="stylesheet" href="/components/Sidebar/sidebar.css"></link><div class="sidebar"><div class="url-path"><b>jake.</b><span> / </span><a href="http://localhost:4242//src/index.html">src</a><span> / </span><a href="http://localhost:4242//src/html/index.html">html</a><span> / </span><b>parseDSL.ts</b></div><script type="module" src="/components/ToggleDarkMode/toggle-dark-mode.js"></script><link rel="stylesheet" href="/components/ToggleDarkMode/toggle-dark-mode.css"></link><div class="toggle-dark-mode-container"><button class="toggle-dark-mode"></button></div></div><div class="site-body"><main><article class="wikipage"><h1 class="title-top">parseDSL.ts</h1><link rel="stylesheet" href="/components/SourceBlock/source-block.css"></link><script type="module" src="/components/SourceBlock/load-code-blocks.js"></script><pre><code class="language-ts has-raw-code"><span class="keyword">import</span> <span class="punctuation bracket">{</span> <span class="variable">isObject</span> <span class="punctuation bracket">}</span> <span class="keyword">from</span> <span class="string">&quot;utils/object&quot;</span><span class="punctuation delimiter">;</span>
+<span class="keyword">import</span> <span class="punctuation bracket">{</span> <span class="variable">isArray</span> <span class="punctuation bracket">}</span> <span class="keyword">from</span> <span class="string">&quot;utils/array&quot;</span><span class="punctuation delimiter">;</span>
+<span class="keyword">import</span> <span class="keyword">type</span> <span class="punctuation bracket">{</span>
+  <span class="type">HtmlTag</span><span class="punctuation delimiter">,</span>
+  <span class="type">HtmlNode</span><span class="punctuation delimiter">,</span>
+  <span class="type">HtmlTagNode</span><span class="punctuation delimiter">,</span>
+  <span class="type">PageSyntax</span><span class="punctuation delimiter">,</span>
+  <span class="type">HtmlAttributes</span><span class="punctuation delimiter">,</span>
+<span class="punctuation bracket">}</span> <span class="keyword">from</span> <span class="string">&quot;../types/html&quot;</span><span class="punctuation delimiter">;</span>
+
+<span class="comment">/**</span>
+<span class="comment"> * Is `attrs` a set of HTML attributes`</span>
+<span class="comment"> */</span>
+<span class="keyword">const</span> <span class="function">isHtmlAttributes</span> <span class="operator">=</span> <span class="operator">&lt;</span><span class="type">T</span> <span class="keyword">extends</span> <span class="type">HtmlTag</span><span class="operator">&gt;</span><span class="punctuation bracket">(</span>
+  <span class="variable parameter">attrs</span>: <span class="type builtin">any</span>
+<span class="punctuation bracket">)</span>: <span class="variable parameter">attrs</span> is <span class="type">HtmlAttributes</span><span class="punctuation bracket">&lt;</span><span class="type">T</span><span class="punctuation bracket">&gt;</span> <span class="operator">=&gt;</span> <span class="punctuation bracket">{</span>
+  <span class="keyword">return</span> <span class="function">isObject</span><span class="punctuation bracket">(</span><span class="variable parameter">attrs</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+<span class="punctuation bracket">}</span><span class="punctuation delimiter">;</span>
+
+<span class="comment">// Utilities for parsing the HTML DSL internal to this project.</span>
+
+<span class="comment">/**</span>
+<span class="comment"> * Get the name of a tag.</span>
+<span class="comment"> */</span>
+<span class="keyword">const</span> <span class="function">tagName</span> <span class="operator">=</span> <span class="punctuation bracket">(</span><span class="punctuation bracket">[</span><span class="variable">name</span><span class="punctuation bracket">]</span>: <span class="type">HtmlTagNode</span><span class="punctuation bracket">)</span> <span class="operator">=&gt;</span> <span class="variable">name</span><span class="punctuation delimiter">;</span>
+
+<span class="comment">/**</span>
+<span class="comment"> * Get the attributes object of a tag.</span>
+<span class="comment"> */</span>
+<span class="keyword">const</span> <span class="function">tagAttributes</span> <span class="operator">=</span> <span class="operator">&lt;</span><span class="type">T</span> <span class="keyword">extends</span> <span class="type">HtmlTag</span><span class="operator">&gt;</span><span class="punctuation bracket">(</span><span class="punctuation bracket">[</span><span class="punctuation delimiter">,</span> <span class="variable">attributes</span><span class="punctuation bracket">]</span>: <span class="type">HtmlTagNode</span><span class="punctuation bracket">)</span>:
+  <span class="operator">|</span> <span class="type">HtmlAttributes</span><span class="punctuation bracket">&lt;</span><span class="type">T</span><span class="punctuation bracket">&gt;</span>
+  <span class="operator">|</span> <span class="constant builtin">undefined</span> <span class="operator">=&gt;</span> <span class="punctuation bracket">{</span>
+  <span class="keyword">return</span> <span class="function">isHtmlAttributes</span><span class="punctuation bracket">&lt;</span><span class="type">T</span><span class="punctuation bracket">&gt;</span><span class="punctuation bracket">(</span><span class="variable">attributes</span><span class="punctuation bracket">)</span> ? <span class="variable">attributes</span> : <span class="constant builtin">undefined</span><span class="punctuation delimiter">;</span>
+<span class="punctuation bracket">}</span><span class="punctuation delimiter">;</span>
+
+<span class="comment">/**</span>
+<span class="comment"> * Collect elements from an HTML page that meet the provided predicate.</span>
+<span class="comment"> */</span>
+<span class="keyword">const</span> <span class="function">collectElements</span> <span class="operator">=</span> <span class="punctuation bracket">(</span>
+  <span class="variable parameter">htmlPage</span>: <span class="type">PageSyntax</span><span class="punctuation delimiter">,</span>
+  <span class="variable parameter">predicate</span>: <span class="punctuation bracket">(</span><span class="variable parameter">node</span>: <span class="type">HtmlNode</span><span class="punctuation bracket">)</span> <span class="operator">=&gt;</span> <span class="type builtin">boolean</span>
+<span class="punctuation bracket">)</span>: <span class="type">HtmlNode</span><span class="punctuation bracket">[</span><span class="punctuation bracket">]</span> <span class="operator">=&gt;</span> <span class="punctuation bracket">{</span>
+  <span class="comment">// assume we only look for roots, so we return directly here lol</span>
+  <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="variable parameter">predicate</span><span class="punctuation bracket">(</span><span class="variable parameter">htmlPage</span><span class="punctuation bracket">)</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">return</span> <span class="punctuation bracket">[</span><span class="variable parameter">htmlPage</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span> <span class="keyword">else</span> <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="function">isArray</span><span class="punctuation bracket">(</span><span class="variable parameter">htmlPage</span><span class="punctuation bracket">)</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="comment">// if we can act on the contents:</span>
+    <span class="keyword">const</span> <span class="variable">results</span> <span class="operator">=</span> <span class="variable parameter">htmlPage</span><span class="punctuation delimiter">.</span><span class="function method">flatMap</span><span class="punctuation bracket">(</span><span class="punctuation bracket">(</span><span class="variable parameter">tag</span><span class="punctuation bracket">)</span> <span class="operator">=&gt;</span>
+      <span class="function">collectElements</span><span class="punctuation bracket">(</span><span class="variable parameter">tag</span> <span class="keyword">as</span> <span class="type">HtmlNode</span><span class="punctuation delimiter">,</span> <span class="variable parameter">predicate</span><span class="punctuation bracket">)</span>
+    <span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+    <span class="keyword">return</span> <span class="variable">results</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="keyword">return</span> <span class="punctuation bracket">[</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">;</span>
+<span class="punctuation bracket">}</span><span class="punctuation delimiter">;</span>
+
+<span class="comment">/**</span>
+<span class="comment"> * Find html elements with the given tag names on an html page</span>
+<span class="comment"> */</span>
+<span class="keyword">const</span> <span class="function">findTags</span> <span class="operator">=</span> <span class="punctuation bracket">(</span><span class="variable parameter">htmlPage</span>: <span class="type">PageSyntax</span><span class="punctuation delimiter">,</span> <span class="variable parameter">tags</span>: <span class="type">HtmlTag</span><span class="punctuation bracket">[</span><span class="punctuation bracket">]</span><span class="punctuation bracket">)</span> <span class="operator">=&gt;</span> <span class="punctuation bracket">{</span>
+  <span class="keyword">return</span> <span class="function">collectElements</span><span class="punctuation bracket">(</span>
+    <span class="variable parameter">htmlPage</span><span class="punctuation delimiter">,</span>
+    <span class="punctuation bracket">(</span><span class="variable parameter">tl</span>: <span class="type">HtmlNode</span><span class="punctuation bracket">)</span> <span class="operator">=&gt;</span>
+      <span class="punctuation bracket">(</span><span class="function">isHtmlTagNode</span><span class="punctuation bracket">(</span><span class="variable parameter">tl</span><span class="punctuation bracket">)</span> <span class="operator">&amp;&amp;</span> <span class="variable parameter">tl</span><span class="punctuation delimiter">?.</span><span class="punctuation bracket">[</span><span class="number">0</span><span class="punctuation bracket">]</span> <span class="operator">&amp;&amp;</span> <span class="variable parameter">tags</span><span class="punctuation delimiter">.</span><span class="function method">includes</span><span class="punctuation bracket">(</span><span class="variable parameter">tl</span><span class="punctuation delimiter">?.</span><span class="punctuation bracket">[</span><span class="number">0</span><span class="punctuation bracket">]</span><span class="punctuation bracket">)</span><span class="punctuation bracket">)</span> <span class="operator">||</span> <span class="constant builtin">false</span>
+  <span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+<span class="punctuation bracket">}</span><span class="punctuation delimiter">;</span>
+
+<span class="keyword">const</span> <span class="function">isHtmlTagNode</span> <span class="operator">=</span> <span class="punctuation bracket">(</span><span class="variable parameter">v</span>: <span class="type builtin">any</span><span class="punctuation bracket">)</span>: <span class="variable parameter">v</span> is <span class="type">HtmlTagNode</span> <span class="operator">=&gt;</span> <span class="punctuation bracket">{</span>
+  <span class="keyword">return</span> <span class="function">isArray</span><span class="punctuation bracket">(</span><span class="variable parameter">v</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+<span class="punctuation bracket">}</span><span class="punctuation delimiter">;</span>
+
+<span class="comment">/**</span>
+<span class="comment"> * Get the link(s) embedded in an HTML tag</span>
+<span class="comment"> * for example, the &#39;href&#39; field of an &lt;a&gt; tag,</span>
+<span class="comment"> * the &#39;link&#39; of a &#39;style&#39; tag,</span>
+<span class="comment"> * or the &#39;src&#39; of a &#39;script&#39; tag.</span>
+<span class="comment"> */</span>
+<span class="keyword">const</span> <span class="function">getTagLink</span> <span class="operator">=</span> <span class="punctuation bracket">(</span><span class="variable parameter">tag</span>: <span class="type">HtmlNode</span><span class="punctuation bracket">)</span>: <span class="type builtin">string</span> <span class="operator">|</span> <span class="constant builtin">undefined</span> <span class="operator">=&gt;</span> <span class="punctuation bracket">{</span>
+  <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="operator">!</span><span class="function">isHtmlTagNode</span><span class="punctuation bracket">(</span><span class="variable parameter">tag</span><span class="punctuation bracket">)</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">return</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="keyword">const</span> <span class="variable">name</span> <span class="operator">=</span> <span class="function">tagName</span><span class="punctuation bracket">(</span><span class="variable parameter">tag</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="keyword">const</span> <span class="variable">attrs</span> <span class="operator">=</span> <span class="function">tagAttributes</span><span class="punctuation bracket">(</span><span class="variable parameter">tag</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+
+  <span class="comment">// NOTE: There is a bug here where some attrs to an a tag are null. Not sure why.</span>
+  <span class="keyword">switch</span> <span class="punctuation bracket">(</span><span class="constant builtin">true</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">case</span> <span class="punctuation bracket">[</span><span class="string">&quot;a&quot;</span><span class="punctuation delimiter">,</span> <span class="string">&quot;href&quot;</span><span class="punctuation delimiter">,</span> <span class="string">&quot;link&quot;</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">.</span><span class="function method">includes</span><span class="punctuation bracket">(</span><span class="variable">name</span><span class="punctuation bracket">)</span>:
+      <span class="keyword">return</span> <span class="variable">attrs</span><span class="punctuation delimiter">?.</span><span class="punctuation bracket">[</span><span class="string">&quot;href&quot;</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">;</span>
+    <span class="keyword">case</span> <span class="punctuation bracket">[</span><span class="string">&quot;img&quot;</span><span class="punctuation delimiter">,</span> <span class="string">&quot;script&quot;</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">.</span><span class="function method">includes</span><span class="punctuation bracket">(</span><span class="variable">name</span><span class="punctuation bracket">)</span>:
+      <span class="keyword">return</span> <span class="variable">attrs</span><span class="punctuation delimiter">?.</span><span class="punctuation bracket">[</span><span class="string">&quot;src&quot;</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">;</span>
+    <span class="keyword">default</span>:
+      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">Error</span><span class="punctuation bracket">(</span>
+        <span class="string">`No link found in tag, invalid input to getLinkTag: <span class="embedded"><span class="punctuation special">${</span><span class="variable parameter">tag</span><span class="punctuation delimiter">.</span><span class="function method">toString</span><span class="punctuation bracket">(</span><span class="punctuation bracket">)</span><span class="punctuation special">}</span></span>`</span>
+      <span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+<span class="punctuation bracket">}</span><span class="punctuation delimiter">;</span>
+
+<span class="keyword">export</span> <span class="punctuation bracket">{</span> <span class="function">isHtmlAttributes</span><span class="punctuation delimiter">,</span> <span class="function">findTags</span><span class="punctuation delimiter">,</span> <span class="function">getTagLink</span> <span class="punctuation bracket">}</span><span class="punctuation delimiter">;</span>
+</code></pre></article></main><div class="article-rhs-container"><div class="article-rhs"><div class="git-history-table-container"><span class="git-history-table-title">Revisions</span><table class="git-history-table"><thead><tr><th>Date</th><th>Hash</th></tr></thead><tbody><tr><td class="commit-date-tr">2024-11-17</td><td class="commit-link-tr">16c789e3</td></tr><tr><td class="commit-date-tr">2024-11-17</td><td class="commit-link-tr">831b1d96</td></tr><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">0c9b2c0e</td></tr><tr><td class="commit-date-tr">2024-04-12</td><td class="commit-link-tr">cd584b50</td></tr><tr><td class="commit-date-tr">2024-04-01</td><td class="commit-link-tr">a3c37e13</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">216698d1</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">3a28fba7</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">b53e2351</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">c64fbf31</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">02dca1b8</td></tr></tbody></table></div><div class="prev-next-up-buttons-container">Navigation<table class="prev-next-up-buttons"><tr><td>Next</td><td><a class="next-button" href="http://localhost:4242/src/html/builder.ts.html">builder.ts</a></td></tr><tr><td>Up</td><td><a class="up-button" href="http://localhost:4242/src/html/index.html">html</a></td></tr></table></div></div></div></div></body></html>

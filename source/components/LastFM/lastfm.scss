@@ -1,0 +1,22 @@
+@use 'resources/core';
+
+/* -- LastFM live music -- */
+.lastfm-now-playing-box {
+  @include core.border;
+  align-items: center;
+}
+
+.now-playing {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 8px;
+}
+
+.np-image {
+  margin-right: -24px;
+}
+
+.metadata-table {
+  font-size: 13px;
+}

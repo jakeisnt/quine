@@ -10,9 +10,8 @@ const renderArticle = ({
   children,
   file,
   siteName,
-  url,
+  rootUrl,
   sourceDir,
-  targetDir,
   resourcesDir,
   faviconsDir,
 }: PageSettings & {
@@ -24,11 +23,10 @@ const renderArticle = ({
 
   return [
     "html",
-    { lang: "en" },
-    ["Header", { title, targetDir, url, siteName, resourcesDir, faviconsDir }],
+    ["Header", { title, rootUrl, siteName, resourcesDir, faviconsDir }],
     [
       "body",
-      ["Sidebar", { path: file.path, title, url, sourceDir }],
+      ["Sidebar", { path: file.path, title, rootUrl, sourceDir }],
       [
         "div",
         { class: "site-body" },
@@ -48,7 +46,7 @@ const renderArticle = ({
             "div",
             { class: "article-rhs" },
             ["GitHistoryTable", { file }],
-            ["PrevNextUpButtons", { file, url, sourceDir }],
+            ["PrevNextUpButtons", { file, rootUrl, sourceDir }],
           ],
         ],
       ],

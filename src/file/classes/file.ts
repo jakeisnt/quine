@@ -1,7 +1,7 @@
 import { Path } from "../../utils/path";
+import { readFile } from "file";
+import Directory from "../filetype/directory";
 import type { PageSettings } from "../../types/site";
-import type { URL } from "../../utils/url";
-import type Directory from "../filetype/directory";
 
 /**
  * Any file on the system.
@@ -22,25 +22,15 @@ class File {
   // reading SCSS as CSS, etc.
   public fakeFileOf?: File;
 
-  // The source file types that this file represents.
-  public static filetypes: string[] = [];
-
-  // The supported target file types of this file, if any.
-  // If a file class supports a specific target <t>,
-  // the file must also have a function <t>() to call
-  // that produces a file with the type of that target.
-  public static targets: string[] = [];
-
   /**
    * Construct a file.
    */
   constructor(pathArg: Path, cfg: PageSettings) {
-    // Normalize the path when creating a File
-    const filePath = Path.create(pathArg).normalize();
+    const filePath = Path.create(pathArg);
 
     if (!filePath.exists()) {
       throw new Error(
-        `from File constructor: File at path '${filePath}' does not exist`
+        `from File constructor: File at path '${pathArg}' does not exist`
       );
     }
 
@@ -48,7 +38,7 @@ class File {
     this.cachedConfig = cfg;
   }
 
-  static create(path: Path, cfg: PageSettings): File | undefined {
+  static create(path: Path, cfg: PageSettings) {
     return new this(path, cfg);
   }
 
@@ -74,7 +64,7 @@ class File {
 
   // the title of the file does not
   get title() {
-    return this.path.title;
+    return this.name.split(".")[0];
   }
 
   // the name of a file includes the extension
@@ -104,6 +94,17 @@ class File {
   }
 
   /**
+   * Get the parent directory of this file.
+   */
+  directory(cfg?: PageSettings): Directory {
+    // A `parent` file, by definition, is a directory that contains this one.
+    return readFile(
+      this.path.parent,
+      this.cachedConfig
+    ) as unknown as Directory;
+  }
+
+  /**
    * Determine if the file is a directory.
    * Always false here; directory subclass reimplements this.
    */
@@ -119,14 +120,11 @@ class File {
     return this;
   }
 
-  /**
-   * Get the url to the html page with this file
-   */
-  htmlUrl({ url, sourceDir }: { url: URL; sourceDir: Path }) {
+  // get the url to the html page with this file
+  // if provided a directory, get the url to the directory with index.html postfixed (?)
+  htmlUrl({ rootUrl, sourceDir }: { rootUrl: string; sourceDir: string }) {
     const relativeToSource = this.path.relativeTo(sourceDir);
-    return `${url.toString().slice(0, -1)}${relativeToSource.addExtension(
-      "html"
-    )}`;
+    return rootUrl + relativeToSource.addExtension("html");
   }
 
   get repo() {
@@ -170,9 +168,11 @@ class File {
    * Watch the file, attaching an event listener to pick up on file events.
    */
   watch(callback: (eventType: string, file: File) => void) {
-    const closeWatcher = this.path.watch((eventType: string) => {
-      callback(eventType, this);
-    });
+    const closeWatcher = this.path.watch(
+      (eventType: string, filename: string) => {
+        callback(eventType, this);
+      }
+    );
 
     return closeWatcher;
   }

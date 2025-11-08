@@ -1,0 +1,110 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"></meta><title>global.scss / Jake Chvatal</title><meta property="og:title" content="global.scss"></meta><meta property="og:type" content="website"></meta><meta property="og:url" content="https://jake.isnt.online"></meta><meta property="og:site_name" content="Jake Chvatal"></meta><meta name="keywords" content="jake"></meta><meta name="author" content="Jake Chvatal"></meta><meta name="robots" content="index,follow"></meta><meta name="description" content="hi"></meta><meta name="theme-color" media="(prefers-color-scheme: light)" content="white"></meta><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#111"></meta><link rel="icon" type="image/x-icon" href="/Users/jake/Documents/personal/site/favicons/favicon.ico"></link><link rel="apple-touch-icon" href="/Users/jake/Documents/personal/site/favicons/apple-touch-icon.png"></link><link rel="stylesheet" type="text/css" href="/resources/style.css" id="/resources/style.css"></link><link rel="stylesheet" type="text/css" href="/resources/global.css" id="/resources/global.css"></link><script src="/resources/lib.js" id="/resources/lib.js" type="module"></script><link rel="stylesheet" type="text/css" href="/resources/elementsstyle.css" id="/resources/elementsstyle.css"></link><link rel="manifest" href="/resources/manifest.json"></link><script src="/resources/elements.js" id="/resources/elements.js" type="module" defer="true"></script></head><body><link rel="stylesheet" href="/components/Sidebar/sidebar.css"></link><div class="sidebar"><div class="url-path"><b>jake.</b><span> / </span><a href="https://jake.isnt.online/resources/index.html">resources</a><span> / </span><b>global.scss</b></div><script src="/components/ToggleDarkMode/toggle-dark-mode.js" type="module"></script><link rel="stylesheet" href="/components/ToggleDarkMode/toggle-dark-mode.css"></link><div class="toggle-dark-mode-container"><button class="toggle-dark-mode"></button></div></div><div class="site-body"><main><article class="wikipage"><h1 class="title-top">global.scss</h1><link rel="stylesheet" href="/components/SourceBlock/source-block.css"></link><script src="/components/SourceBlock/load-code-blocks.js" type="module"></script><pre><code class="language-scss has-raw-code">/* Global settings for color scheme and such. */
+@import url(&#x27;https://fonts.googleapis.com/css2?family=Inter&amp;display=swap&#x27;);
+
+/* https://www.nature.com/articles/nmeth.1618 */
+@mixin colors {
+  --black: rgb(0, 0, 0);
+  --orange: rgb(230, 159, 0);
+  --blue: rgb(86, 180, 233);
+  --green: rgb(0, 158, 115);
+  --yellow: rgb(240, 228, 66);
+  --darkblue: rgb(0, 114, 178);
+  --red: rgb(219, 94, 0);
+  --purple: rgb(204, 121, 167);
+}
+
+@mixin light-theme {
+  @include colors;
+  --highlight: #eee8d5;
+  --quote-background: lightgrey;
+  --quote-background-border: #ccc;
+  --quote-background-border-highlighted: #bbb;
+
+  --link: #484848;
+  --text-color: black;
+  --highlight-text: #fff;
+  --subtle-text: darkgrey;
+  --warning-text: yellow;
+
+  --page-background: white;
+  --window-background: white;
+}
+
+@mixin dark-theme {
+  @include colors;
+  --highlight: #4C5669;
+  --quote-background: #222;
+  --quote-background-border: #333;
+  --quote-background-border-highlighted: #444;
+
+  --link: #ccc;
+  --text-color: white;
+  text-color: var(--subtle-text);
+  --highlight-text: #fff;
+  --subtle-text: grey;
+  --warning-text: yellow;
+
+  --page-background: #111;
+  --window-background: #111;
+}
+
+
+:root {
+  /* Inform the browser that color schemes are available. */
+  color-scheme: light dark;
+  @include dark-theme;
+}
+
+.light-theme {
+  @include light-theme;
+}
+
+.dark-theme {
+  @include dark-theme;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    @include light-theme;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    @include dark-theme;
+  }
+}
+
+html {
+  font-size: 16px;
+  line-height: 1.5;
+  font-family: &quot;Inter&quot;, sans-serif;
+  /* For jquery-terminal */
+  --font: &quot;Berkeley Mono&quot;, monospace;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  word-wrap: break-word;
+  hyphens: auto;
+}
+
+body {
+  margin: 0;
+  color: var(--text-color);
+  background-color: var(--page-background);
+}
+
+main {
+  max-width: 40rem;
+}
+
+@media only screen and (max-width: 500px) {
+  body {
+    max-width: 100%;
+  }
+
+  main {
+    max-width: 100%;
+  }
+}
+</code></pre></article></main><div class="article-rhs-container"><div class="article-rhs"><div class="git-history-table-container"><span class="git-history-table-title">Revisions</span><table class="git-history-table"><thead><tr><th>Date</th><th>Hash</th></tr></thead><tbody><tr><td class="commit-date-tr">2024-04-14</td><td class="commit-link-tr">0f27b039</td></tr><tr><td class="commit-date-tr">2024-04-14</td><td class="commit-link-tr">bf02546d</td></tr><tr><td class="commit-date-tr">2024-04-14</td><td class="commit-link-tr">deb88858</td></tr><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">0c9b2c0e</td></tr><tr><td class="commit-date-tr">2024-01-28</td><td class="commit-link-tr">709ef48c</td></tr><tr><td class="commit-date-tr">2023-12-16</td><td class="commit-link-tr">1aec1612</td></tr><tr><td class="commit-date-tr">2023-12-16</td><td class="commit-link-tr">9aeeeccc</td></tr><tr><td class="commit-date-tr">2023-06-02</td><td class="commit-link-tr">509802b7</td></tr><tr><td class="commit-date-tr">2023-06-02</td><td class="commit-link-tr">47ce57d9</td></tr><tr><td class="commit-date-tr">2023-05-31</td><td class="commit-link-tr">aa24e464</td></tr></tbody></table></div><div class="prev-next-up-buttons-container">Navigation<table class="prev-next-up-buttons"><tr><td>Previous</td><td><a class="prev-button" href="/resources/favicon/index.html">favicon</a></td></tr><tr><td>Next</td><td><a class="next-button" href="/resources/filetype/index.html">filetype</a></td></tr><tr><td>Up</td><td><a class="up-button" href="/resources/index.html">resources</a></td></tr></table></div></div></div></div></body></html>

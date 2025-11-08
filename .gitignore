@@ -32,4 +32,4 @@ src/site/.nrepl_port
 
 .direnv/
 !.direnv/.git-keep
-docs/*
+docs/

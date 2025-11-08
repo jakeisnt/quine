@@ -1,11 +1,8 @@
-// NOTE: This function was removed...
-// We will want a sort of 'jquery for html' soon, especially for our DSL.
-// That's what that does!
 import { findTags } from "html";
 
-const makePageMap = ({ articleHtml, file, url, sourceDir }) => {
+const makePageMap = ({ articleHtml, file, rootDir, sourceDir }) => {
   const tags = findTags(articleHtml, ["h1", "h2", "h3", "h4", "h5", "h6"]);
-  const link = file.htmlUrl({ url, sourceDir });
+  const link = file.htmlUrl({ rootDir, sourceDir });
 
   return [
     "div",

@@ -1,16 +1,12 @@
-import type { Path } from "../utils/path";
-import type { URL } from "../utils/url";
-
 type PageSettings = {
+  rootUrl: string;
   siteName: string;
-  sourceDir: Path;
-  targetDir: Path;
-  resourcesDir: Path;
-  faviconsDir: Path;
-  fallbackSourceDir?: Path;
+  sourceDir: string;
+  targetDir: string;
+  resourcesDir: string;
+  faviconsDir: string;
+  fallbackSourceDir?: string;
   ignorePaths?: string[];
-  url: URL;
-  websocketPath: string;
 };
 
 export type { PageSettings };

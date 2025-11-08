@@ -1,16 +1,24 @@
 import { HtmlPage } from "html";
 import { expect, test } from "bun:test";
-import { PAGE_SETTINGS } from "./testConstants";
+
+const PAGE_SETTINGS = {
+  rootUrl: "http://localhost:3000",
+  sourceDir: "/",
+  siteName: "Jake Chvatal",
+  targetDir: "/",
+  resourcesDir: "/",
+  faviconsDir: "/",
+};
 
 test("Create an HtmlPage", () => {
   // create just html
   const page = HtmlPage.create(
-    ["html", { lang: "en" }, ["body", ["h1", "hello world"]]],
+    ["html", ["body", ["h1", "hello world"]]],
     PAGE_SETTINGS
   );
 
   expect(page.toString()).toEqual(
-    `<!DOCTYPE html><html lang="en"><body><h1>hello world</h1></body></html>`
+    "<!DOCTYPE html><html><body><h1>hello world</h1></body></html>"
   );
 });
 
@@ -23,7 +31,10 @@ test("Create an HtmlPage with a table", () => {
         "body",
         [
           "table",
-          ["tr", ["td", ["a", { href: PAGE_SETTINGS.url }, "hello world"]]],
+          [
+            "tr",
+            ["td", ["a", { href: "http://localhost:3000" }, "hello world"]],
+          ],
         ],
       ],
     ],
@@ -31,7 +42,7 @@ test("Create an HtmlPage with a table", () => {
   );
 
   expect(page.toString()).toEqual(
-    `<!DOCTYPE html><html><body><table><tr><td><a href="${PAGE_SETTINGS.url}">hello world</a></td></tr></table></body></html>`
+    '<!DOCTYPE html><html><body><table><tr><td><a href="http://localhost:3000">hello world</a></td></tr></table></body></html>'
   );
 });
 
@@ -44,11 +55,11 @@ test("Create an HtmlPage with a tag, href, etc..", () => {
         "body",
         [
           "a",
-          { href: PAGE_SETTINGS.url },
+          { href: "http://localhost:3000" },
           "hello world",
-          ["img", { src: PAGE_SETTINGS.url }],
-          ["script", { src: PAGE_SETTINGS.url }],
-          ["link", { href: PAGE_SETTINGS.url }],
+          ["img", { src: "http://localhost:3000" }],
+          ["script", { src: "http://localhost:3000" }],
+          ["link", { href: "http://localhost:3000" }],
         ],
       ],
     ],
@@ -56,7 +67,7 @@ test("Create an HtmlPage with a tag, href, etc..", () => {
   );
 
   expect(page.toString()).toEqual(
-    `<!DOCTYPE html><html><body><a href="${PAGE_SETTINGS.url}">hello world<img src="${PAGE_SETTINGS.url}"></img><script src="${PAGE_SETTINGS.url}"></script><link href="${PAGE_SETTINGS.url}"></link></a></body></html>`
+    '<!DOCTYPE html><html><body><a href="http://localhost:3000">hello world<img src="http://localhost:3000"></img><script src="http://localhost:3000"></script><link href="http://localhost:3000"></link></a></body></html>'
   );
 });
 

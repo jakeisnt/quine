@@ -1,0 +1,139 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"></meta><title>act.clj / Jake Chvatal</title><meta property="og:title" content="act.clj"></meta><meta property="og:type" content="website"></meta><meta property="og:url" content="https://jake.isnt.online"></meta><meta property="og:site_name" content="Jake Chvatal"></meta><meta name="keywords" content="jake"></meta><meta name="author" content="Jake Chvatal"></meta><meta name="robots" content="index,follow"></meta><meta name="description" content="hi"></meta><meta name="theme-color" media="(prefers-color-scheme: light)" content="white"></meta><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#111"></meta><link rel="icon" type="image/x-icon" href="/Users/jake/Documents/personal/site/favicons/favicon.ico"></link><link rel="apple-touch-icon" href="/Users/jake/Documents/personal/site/favicons/apple-touch-icon.png"></link><link rel="stylesheet" type="text/css" href="/resources/style.css" id="/resources/style.css"></link><link rel="stylesheet" type="text/css" href="/resources/global.css" id="/resources/global.css"></link><script src="/resources/lib.js" id="/resources/lib.js" type="module"></script><link rel="stylesheet" type="text/css" href="/resources/elementsstyle.css" id="/resources/elementsstyle.css"></link><link rel="manifest" href="/resources/manifest.json"></link><script src="/resources/elements.js" id="/resources/elements.js" type="module" defer="true"></script></head><body><link rel="stylesheet" href="/components/Sidebar/sidebar.css"></link><div class="sidebar"><div class="url-path"><b>jake.</b><span> / </span><a href="https://jake.isnt.online/src/index.html">src</a><span> / </span><a href="https://jake.isnt.online/src/file/index.html">file</a><span> / </span><b>act.clj</b></div><script src="/components/ToggleDarkMode/toggle-dark-mode.js" type="module"></script><link rel="stylesheet" href="/components/ToggleDarkMode/toggle-dark-mode.css"></link><div class="toggle-dark-mode-container"><button class="toggle-dark-mode"></button></div></div><div class="site-body"><main><article class="wikipage"><h1 class="title-top">act.clj</h1><link rel="stylesheet" href="/components/SourceBlock/source-block.css"></link><script src="/components/SourceBlock/load-code-blocks.js" type="module"></script><pre><code class="language-clj has-raw-code">(ns filetype.act
+  (:require
+   file html components
+   [instaparse.core :as insta]
+   [clojure.core.match :refer [match]]))
+
+(defn parse-script [str]
+  (parse str))
+
+(defn include-in-script? [line]
+  (and
+   (not= :NEWLINE (first line))
+   (not= :COMMENT (first line))))
+
+(defn third [v]
+  (nth v 2))
+
+(defn fourth [v]
+  (nth v 3))
+
+(defn script-title [script]
+  [(second (third (first script)))
+   (rest script)])
+
+(defn script-alias [alias]
+  (let [name (second (fourth alias))
+        as (second (second alias))]
+    {:name name :as as}))
+
+(defn script-aliases [script]
+  (let [[aliases rst] (split-with #(= :ALIAS (first %)) script)
+        aliases (map script-alias aliases)]
+    [aliases rst]))
+
+(defn lookup-author [alias aliases]
+  (:name (first (filter #(= (:as %) alias) aliases))))
+
+(defn just-one-message-string [msg]
+  (= (type (first msg)) clojure.lang.Keyword))
+
+(defn script-message [msg]
+  (let [msg (if (just-one-message-string msg) [msg] msg)]
+    (for [line msg]
+      (match line
+        [:STRING s] [:normal s]
+        [:ITALIC [:STRING s]] [:italic s]))))
+
+(defn script-body [script aliases]
+  (for [line script]
+    (match line
+      [:LINE
+       [:ALIAS_NAME author]
+       [:COLON &quot;: &quot;]
+       [:MESSAGE message]
+       [:NEWLINE &quot;\n&quot;]] [:line (lookup-author author aliases) (script-message message)]
+      [:SUBTEXT
+       [:OPEN_PAREN &quot;(&quot;]
+       [:MESSAGE content]
+       [:CLOSE_PAREN &quot;)&quot;]
+       [:NEWLINE &quot;\n&quot;]] [:context (script-message content)])))
+
+(defn -&gt;ast [parsed]
+  (let [script (filter include-in-script? parsed)
+        [title script] (script-title script)
+        [aliases script] (script-aliases script)
+        body (script-body script aliases)]
+    {:title title :aliases aliases :body body}))
+
+(defn character-selector [script]
+  [:div.script-control-menu
+   [:p &quot;You&#x27;re acting as &quot;
+    [:select {:name &quot;characters&quot; :id &quot;characterSelector&quot;}
+     (for [alias (:aliases script)]
+       [:option.character {:value (:name alias)} (:name alias)])]
+    &quot; .&quot;]])
+
+(defn first-author?
+  &quot;Is the author provided the first author of the script?&quot;
+  [script author]
+  (= author (:name (first (:aliases script)))))
+
+(defn message-direction [script author]
+  (if (first-author? script author)
+    &quot;right&quot;
+    &quot;left&quot;))
+
+(defn &gt;2-authors? [script]
+  (&gt; (count (:aliases script)) 2))
+
+(defn render-message [msg]
+  [:span
+   (for [line msg]
+     (match line
+       [:normal s] [:span s]
+       [:italic s] [:i s]))])
+
+(defn render-line [author message script]
+  [:blockquote {:class (str &quot;message &quot; author &quot; &quot; (message-direction script author))}
+   (if (&gt;2-authors? script) [:p.message-sender author] nil)
+   [:div {:class (str &quot;message-body &quot; author &quot; &quot; (message-direction script author))}
+    [:p.message-text (render-message message)]]])
+
+(defn line-&gt;html [line script]
+  (match line
+    [:line author message] (render-line author message script)
+    [:context content] [:p.context (render-message content)]))
+
+(defn -&gt;html
+  &quot;Convert the script to an HTML document.&quot;
+  [script path file files file-list-idx]
+  [:html
+   (html/head path (:title script))
+   [:body
+    (components/component &quot;sidebar&quot; file files file-list-idx nil)
+    [:div.site-body
+     [:main
+      [:div.act-container
+       (html/css &quot;/resources/filetype/act/act.css&quot;)
+       (character-selector script)
+       [:article.conversation
+        (for [line (:body script)]
+          (line-&gt;html line script))]
+       (html/script &quot;/resources/filetype/act/act.js&quot;)]]]]])
+
+(defn contents
+  &quot;Get the file&#x27;s contents as an AST&quot;
+  [file-obj files file-list-idx]
+  (-&gt; (:source-path file-obj)
+      file/read
+      parse-script
+      -&gt;ast
+      (-&gt;html (:target-path file-obj) file-obj files file-list-idx)))
+
+(defn -&gt;string [file-obj]
+  (html/-&gt;string (:contents file-obj)))
+
+(defn -&gt;disk [file-obj]
+  (file/write (-&gt;string file-obj) (:target-path file-obj)))
+</code></pre></article></main><div class="article-rhs-container"><div class="article-rhs"><div class="git-history-table-container"><span class="git-history-table-title">Revisions</span><table class="git-history-table"><thead><tr><th>Date</th><th>Hash</th></tr></thead><tbody><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">0c9b2c0e</td></tr><tr><td class="commit-date-tr">2024-04-01</td><td class="commit-link-tr">110e0165</td></tr><tr><td class="commit-date-tr">2024-01-28</td><td class="commit-link-tr">709ef48c</td></tr><tr><td class="commit-date-tr">2023-10-22</td><td class="commit-link-tr">d33a1264</td></tr><tr><td class="commit-date-tr">2023-10-22</td><td class="commit-link-tr">4539833d</td></tr></tbody></table></div><div class="prev-next-up-buttons-container">Navigation<table class="prev-next-up-buttons"><tr><td>Previous</td><td><a class="prev-button" href="/src/file/filetype/index.html">filetype</a></td></tr><tr><td>Next</td><td><a class="next-button" href="https://jake.isnt.online/src/file/index.ts.html">index.ts</a></td></tr><tr><td>Up</td><td><a class="up-button" href="/src/file/index.html">file</a></td></tr></table></div></div></div></div></body></html>

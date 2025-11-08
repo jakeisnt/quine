@@ -1,6 +1,7 @@
 import { create, all } from "./lib";
 
 /* enhancements to native html elements */
+
 const loadHeadings = () => {
   /* Allow users to copy links from headings */
   const headings = "h1, h2, h3, h4, h5, h6";
@@ -10,7 +11,7 @@ const loadHeadings = () => {
     const btn = create("button", {
       className: "inlineText",
       innerText: "#",
-      onclick: (e: MouseEvent) => {
+      onclick: (e) => {
         console.log(e.target);
         const url = window.location.origin + window.location.pathname;
         const link = `${url}#${headingId}`;

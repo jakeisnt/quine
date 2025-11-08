@@ -1,0 +1,81 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"></meta><title>Sidebar.ts / Jake Chvatal</title><meta property="og:title" content="Sidebar.ts"></meta><meta property="og:type" content="website"></meta><meta property="og:url" content="https://jake.isnt.online"></meta><meta property="og:site_name" content="Jake Chvatal"></meta><meta name="keywords" content="jake"></meta><meta name="author" content="Jake Chvatal"></meta><meta name="robots" content="index,follow"></meta><meta name="description" content="hi"></meta><meta name="theme-color" media="(prefers-color-scheme: light)" content="white"></meta><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#111"></meta><link rel="icon" type="image/x-icon" href="/Users/jake/Documents/personal/site/favicons/favicon.ico"></link><link rel="apple-touch-icon" href="/Users/jake/Documents/personal/site/favicons/apple-touch-icon.png"></link><link rel="stylesheet" type="text/css" href="/resources/style.css" id="/resources/style.css"></link><link rel="stylesheet" type="text/css" href="/resources/global.css" id="/resources/global.css"></link><script src="/resources/lib.js" id="/resources/lib.js" type="module"></script><link rel="stylesheet" type="text/css" href="/resources/elementsstyle.css" id="/resources/elementsstyle.css"></link><link rel="manifest" href="/resources/manifest.json"></link><script src="/resources/elements.js" id="/resources/elements.js" type="module" defer="true"></script></head><body><link rel="stylesheet" href="/components/Sidebar/sidebar.css"></link><div class="sidebar"><div class="url-path"><b>jake.</b><span> / </span><a href="https://jake.isnt.online/components/index.html">components</a><span> / </span><a href="https://jake.isnt.online/components/Sidebar/index.html">Sidebar</a><span> / </span><b>Sidebar.ts</b></div><script src="/components/ToggleDarkMode/toggle-dark-mode.js" type="module"></script><link rel="stylesheet" href="/components/ToggleDarkMode/toggle-dark-mode.css"></link><div class="toggle-dark-mode-container"><button class="toggle-dark-mode"></button></div></div><div class="site-body"><main><article class="wikipage"><h1 class="title-top">Sidebar.ts</h1><link rel="stylesheet" href="/components/SourceBlock/source-block.css"></link><script src="/components/SourceBlock/load-code-blocks.js" type="module"></script><pre><code class="language-ts has-raw-code"><span class="keyword">import</span> <span class="punctuation bracket">{</span> <span class="type">Path</span> <span class="punctuation bracket">}</span> <span class="keyword">from</span> <span class="string">&quot;../../src/utils/path&quot;</span><span class="punctuation delimiter">;</span>
+
+<span class="keyword">const</span> <span class="type">PATH_DELIMITER</span> <span class="operator">=</span> <span class="string">&quot; / &quot;</span><span class="punctuation delimiter">;</span>
+
+<span class="keyword">const</span> <span class="function">collectFolderPaths</span> <span class="operator">=</span> <span class="punctuation bracket">(</span>
+  <span class="variable parameter">pathList</span>: <span class="type builtin">string</span><span class="punctuation bracket">[</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">,</span>
+  <span class="variable parameter">title</span>: <span class="type builtin">string</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">{</span>
+    rootUrl<span class="punctuation delimiter">,</span>
+    sourceDir<span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">}</span>: <span class="punctuation bracket">{</span>
+    <span class="property">rootUrl</span>: <span class="type builtin">string</span><span class="punctuation delimiter">;</span>
+    <span class="property">sourceDir</span>: <span class="type builtin">string</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+  <span class="variable parameter">curPath</span>: <span class="type builtin">string</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span>
+<span class="punctuation bracket">)</span> <span class="operator">=&gt;</span> <span class="punctuation bracket">{</span>
+  <span class="keyword">if</span> <span class="punctuation bracket">(</span><span class="operator">!</span><span class="variable parameter">pathList</span><span class="punctuation delimiter">?.</span><span class="punctuation bracket">[</span><span class="number">1</span><span class="punctuation bracket">]</span><span class="punctuation bracket">)</span> <span class="punctuation bracket">{</span>
+    <span class="keyword">return</span> <span class="punctuation bracket">[</span>
+      <span class="punctuation bracket">[</span><span class="string">&quot;span&quot;</span><span class="punctuation delimiter">,</span> <span class="type">PATH_DELIMITER</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">,</span>
+      <span class="punctuation bracket">[</span><span class="string">&quot;b&quot;</span><span class="punctuation delimiter">,</span> <span class="variable parameter">title</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">,</span>
+    <span class="punctuation bracket">]</span><span class="punctuation delimiter">;</span>
+  <span class="punctuation bracket">}</span>
+
+  <span class="keyword">const</span> <span class="variable">firstPath</span> <span class="operator">=</span> <span class="variable parameter">pathList</span><span class="punctuation bracket">[</span><span class="number">0</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">;</span>
+  <span class="keyword">const</span> <span class="variable">restPaths</span> <span class="operator">=</span> <span class="variable parameter">pathList</span><span class="punctuation delimiter">.</span><span class="function method">slice</span><span class="punctuation bracket">(</span><span class="number">1</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+
+  <span class="keyword">const</span> <span class="variable">nextCurPath</span> <span class="operator">=</span> <span class="variable parameter">curPath</span> <span class="operator">+</span> <span class="string">&quot;/&quot;</span> <span class="operator">+</span> <span class="variable">firstPath</span><span class="punctuation delimiter">;</span>
+
+  <span class="keyword">return</span> <span class="punctuation bracket">[</span>
+    <span class="punctuation bracket">[</span><span class="string">&quot;span&quot;</span><span class="punctuation delimiter">,</span> <span class="type">PATH_DELIMITER</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">,</span>
+    <span class="punctuation bracket">[</span><span class="string">&quot;a&quot;</span><span class="punctuation delimiter">,</span> <span class="punctuation bracket">{</span> <span class="property">href</span>: <span class="string">`<span class="embedded"><span class="punctuation special">${</span><span class="variable">rootUrl</span><span class="punctuation special">}</span></span><span class="embedded"><span class="punctuation special">${</span><span class="variable">nextCurPath</span><span class="punctuation special">}</span></span>/index.html`</span> <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span> <span class="variable">firstPath</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">,</span>
+    ...<span class="function">collectFolderPaths</span><span class="punctuation bracket">(</span>
+      <span class="variable">restPaths</span><span class="punctuation delimiter">,</span>
+      <span class="variable parameter">title</span><span class="punctuation delimiter">,</span>
+      <span class="punctuation bracket">{</span>
+        rootUrl<span class="punctuation delimiter">,</span>
+        sourceDir<span class="punctuation delimiter">,</span>
+      <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+      <span class="variable">nextCurPath</span>
+    <span class="punctuation bracket">)</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">]</span><span class="punctuation delimiter">;</span>
+<span class="punctuation bracket">}</span><span class="punctuation delimiter">;</span>
+
+<span class="keyword">const</span> <span class="function">makeSidebar</span> <span class="operator">=</span> <span class="punctuation bracket">(</span><span class="punctuation bracket">{</span>
+  path<span class="punctuation delimiter">,</span>
+  title<span class="punctuation delimiter">,</span>
+  sourceDir<span class="punctuation delimiter">,</span>
+  rootUrl<span class="punctuation delimiter">,</span>
+<span class="punctuation bracket">}</span>: <span class="punctuation bracket">{</span>
+  <span class="property">path</span>: <span class="type">Path</span><span class="punctuation delimiter">;</span>
+  <span class="property">title</span>: <span class="type builtin">string</span><span class="punctuation delimiter">;</span>
+  <span class="property">sourceDir</span>: <span class="type builtin">string</span><span class="punctuation delimiter">;</span>
+  <span class="property">rootUrl</span>: <span class="type builtin">string</span><span class="punctuation delimiter">;</span>
+<span class="punctuation bracket">}</span><span class="punctuation bracket">)</span> <span class="operator">=&gt;</span> <span class="punctuation bracket">{</span>
+  <span class="keyword">const</span> <span class="variable">pathList</span> <span class="operator">=</span> <span class="variable">path</span><span class="punctuation delimiter">.</span><span class="function method">relativeTo</span><span class="punctuation bracket">(</span><span class="variable">sourceDir</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">.</span><span class="property">relativePathArray</span><span class="punctuation delimiter">;</span>
+
+  <span class="keyword">const</span> <span class="variable">folderPaths</span> <span class="operator">=</span> <span class="function">collectFolderPaths</span><span class="punctuation bracket">(</span><span class="variable">pathList</span><span class="punctuation delimiter">,</span> <span class="variable">title</span><span class="punctuation delimiter">,</span> <span class="punctuation bracket">{</span>
+    rootUrl<span class="punctuation delimiter">,</span>
+    sourceDir<span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">}</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+
+  <span class="keyword">return</span> <span class="punctuation bracket">[</span>
+    <span class="string">&quot;div&quot;</span><span class="punctuation delimiter">,</span>
+    <span class="punctuation bracket">{</span> <span class="property">class</span>: <span class="string">&quot;sidebar&quot;</span> <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+    <span class="punctuation bracket">[</span>
+      <span class="string">&quot;div&quot;</span><span class="punctuation delimiter">,</span>
+      <span class="punctuation bracket">{</span> <span class="property">class</span>: <span class="string">&quot;url-path&quot;</span> <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span>
+      <span class="variable">pathList</span><span class="punctuation delimiter">?.</span><span class="property">length</span> ? <span class="punctuation bracket">[</span><span class="string">&quot;b&quot;</span><span class="punctuation delimiter">,</span> <span class="string">&quot;jake.&quot;</span><span class="punctuation bracket">]</span> : <span class="punctuation bracket">[</span><span class="string">&quot;a&quot;</span><span class="punctuation delimiter">,</span> <span class="punctuation bracket">{</span> <span class="property">href</span>: <span class="string">&quot;/&quot;</span> <span class="punctuation bracket">}</span><span class="punctuation delimiter">,</span> <span class="string">&quot;jake.&quot;</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">,</span>
+      <span class="variable">folderPaths</span><span class="punctuation delimiter">,</span>
+    <span class="punctuation bracket">]</span><span class="punctuation delimiter">,</span>
+    <span class="punctuation bracket">[</span><span class="string">&quot;ToggleDarkMode&quot;</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">,</span>
+  <span class="punctuation bracket">]</span><span class="punctuation delimiter">;</span>
+<span class="punctuation bracket">}</span><span class="punctuation delimiter">;</span>
+
+<span class="keyword">const</span> <span class="type">Sidebar</span> <span class="operator">=</span> <span class="punctuation bracket">(</span><span class="variable parameter">args</span><span class="punctuation bracket">)</span> <span class="operator">=&gt;</span> <span class="punctuation bracket">(</span><span class="punctuation bracket">{</span>
+  <span class="property">dependsOn</span>: <span class="punctuation bracket">[</span><span class="punctuation bracket">{</span> <span class="property">src</span>: <span class="string">&quot;/components/Sidebar/sidebar.css&quot;</span> <span class="punctuation bracket">}</span><span class="punctuation bracket">]</span><span class="punctuation delimiter">,</span>
+  <span class="property">body</span>: <span class="function">makeSidebar</span><span class="punctuation bracket">(</span><span class="variable parameter">args</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">,</span>
+<span class="punctuation bracket">}</span><span class="punctuation bracket">)</span><span class="punctuation delimiter">;</span>
+
+<span class="keyword">export</span> <span class="keyword">default</span> <span class="type">Sidebar</span><span class="punctuation delimiter">;</span>
+</code></pre></article></main><div class="article-rhs-container"><div class="article-rhs"><div class="git-history-table-container"><span class="git-history-table-title">Revisions</span><table class="git-history-table"><thead><tr><th>Date</th><th>Hash</th></tr></thead><tbody><tr><td class="commit-date-tr">2024-04-14</td><td class="commit-link-tr">0f27b039</td></tr><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">5893a94a</td></tr><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">54739125</td></tr><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">3de0cb40</td></tr><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">504425b3</td></tr><tr><td class="commit-date-tr">2024-04-12</td><td class="commit-link-tr">cd584b50</td></tr><tr><td class="commit-date-tr">2024-04-12</td><td class="commit-link-tr">314485dd</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">02dca1b8</td></tr><tr><td class="commit-date-tr">2024-03-31</td><td class="commit-link-tr">9a544393</td></tr></tbody></table></div><div class="prev-next-up-buttons-container">Navigation<table class="prev-next-up-buttons"><tr><td>Up</td><td><a class="up-button" href="/components/Sidebar/index.html">Sidebar</a></td></tr></table></div></div></div></div></body></html>

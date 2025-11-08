@@ -1,0 +1,60 @@
+<!DOCTYPE html><html lang="en"><link rel="stylesheet" href="/resources/style.css"></link><link rel="stylesheet" href="/resources/global.css"></link><link rel="stylesheet" href="/resources/elementsstyle.css"></link><script type="module" src="/resources/lib.js"></script><script type="module" defer="true" src="/resources/elements.js"></script><head><meta charset="utf-8"></meta><meta name="viewport" content="width=device-width, initial-scale=1"></meta><title>sidebar.css / Jake Chvatal</title><meta property="og:title" content="sidebar.css"></meta><meta property="og:type" content="website"></meta><meta property="og:url" content="http://localhost:4242/"></meta><meta property="og:site_name" content="Jake Chvatal"></meta><meta name="keywords" content="jake"></meta><meta name="author" content="Jake Chvatal"></meta><meta name="robots" content="index,follow"></meta><meta name="description" content="hi"></meta><meta name="theme-color" media="(prefers-color-scheme: light)" content="white"></meta><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#111"></meta></head><body><link rel="stylesheet" href="/components/Sidebar/sidebar.css"></link><div class="sidebar"><div class="url-path"><b>jake.</b><span> / </span><a href="http://localhost:4242//components/index.html">components</a><span> / </span><a href="http://localhost:4242//components/Sidebar/index.html">Sidebar</a><span> / </span><b>sidebar.css</b></div><script type="module" src="/components/ToggleDarkMode/toggle-dark-mode.js"></script><link rel="stylesheet" href="/components/ToggleDarkMode/toggle-dark-mode.css"></link><div class="toggle-dark-mode-container"><button class="toggle-dark-mode"></button></div></div><div class="site-body"><main><article class="wikipage"><h1 class="title-top">sidebar.css</h1><link rel="stylesheet" href="/components/SourceBlock/source-block.css"></link><script type="module" src="/components/SourceBlock/load-code-blocks.js"></script><pre><code class="language-css has-raw-code">.<span class="property">sidebar</span> {
+  <span class="property">width</span><span class="punctuation delimiter">:</span> <span class="number">3<span class="type">rem</span></span>;
+  <span class="property">padding</span><span class="punctuation delimiter">:</span> <span class="number">1.5<span class="type">rem</span></span> <span class="number">0.5<span class="type">rem</span></span>;
+  <span class="property">margin</span><span class="punctuation delimiter">:</span> <span class="number">0.5<span class="type">rem</span></span> <span class="number">0.5<span class="type">rem</span></span>;
+
+  <span class="property">padding-left</span><span class="punctuation delimiter">:</span> <span class="number">0</span>;
+  <span class="property">margin-left</span><span class="punctuation delimiter">:</span> <span class="number">0</span>;
+  <span class="property">position</span><span class="punctuation delimiter">:</span> fixed;
+
+  <span class="property">height</span><span class="punctuation delimiter">:</span> <span class="function">calc</span>(<span class="number">100<span class="type">%</span></span> <span class="operator">-</span> <span class="number">4<span class="type">rem</span></span> <span class="operator">-</span> <span class="number">2<span class="type">px</span></span>);
+  <span class="property">top</span><span class="punctuation delimiter">:</span> <span class="number">0</span>;
+
+  <span class="property">display</span><span class="punctuation delimiter">:</span> flex;
+  <span class="property">flex-direction</span><span class="punctuation delimiter">:</span> column;
+  <span class="property">justify-content</span><span class="punctuation delimiter">:</span> space-between;
+  <span class="property">align-items</span><span class="punctuation delimiter">:</span> flex-end;
+  <span class="property">pointer-events</span><span class="punctuation delimiter">:</span> none;
+}
+
+.<span class="property">sidebar</span> <span class="operator">&gt;</span> <span class="tag"><span class="operator">*</span></span> {
+  <span class="property">pointer-events</span><span class="punctuation delimiter">:</span> auto;
+}
+
+.<span class="property">url-path</span> {
+  <span class="property">padding-left</span><span class="punctuation delimiter">:</span> <span class="number">1<span class="type">rem</span></span>;
+  <span class="property">align-self</span><span class="punctuation delimiter">:</span> center; <span class="comment">/* do not flex grow */</span>
+  <span class="property">writing-mode</span><span class="punctuation delimiter">:</span> vertical-rl;
+  <span class="property">text-orientation</span><span class="punctuation delimiter">:</span> sideways;
+  <span class="property">text-align</span><span class="punctuation delimiter">:</span> left;
+  <span class="property">vertical-align</span><span class="punctuation delimiter">:</span> right;
+  <span class="property">line-height</span><span class="punctuation delimiter">:</span> <span class="number">20<span class="type">px</span></span>;
+  <span class="property">font-size</span><span class="punctuation delimiter">:</span> <span class="number">14<span class="type">px</span></span>;
+  <span class="property">font-family</span><span class="punctuation delimiter">:</span> monospace;
+  <span class="property">pointer-events</span><span class="punctuation delimiter">:</span> auto;
+}
+
+.<span class="property">sidebar</span> .<span class="property">current</span> {
+  <span class="property">font-weight</span><span class="punctuation delimiter">:</span> <span class="number">500</span>;
+}
+
+<span class="keyword">@media</span> <span class="operator">only</span> screen <span class="operator">and</span> (<span class="property">max-width</span><span class="punctuation delimiter">:</span> <span class="number">500<span class="type">px</span></span>) {
+  .<span class="property">sidebar</span> {
+    <span class="property">right</span><span class="punctuation delimiter">:</span> <span class="number">0</span>;
+    <span class="property">bottom</span><span class="punctuation delimiter">:</span> <span class="number">0</span>;
+    <span class="property">z-index</span><span class="punctuation delimiter">:</span> <span class="number">2</span>;
+  }
+
+  .<span class="property">url-path</span> {
+    <span class="property">background-color</span><span class="punctuation delimiter">:</span> black;
+    <span class="property">border-radius</span><span class="punctuation delimiter">:</span> <span class="number">28<span class="type">px</span></span>;
+    <span class="property">border</span><span class="punctuation delimiter">:</span> <span class="number">1<span class="type">px</span></span> solid white;
+    <span class="property">padding</span><span class="punctuation delimiter">:</span> <span class="number">15<span class="type">px</span></span> <span class="number">4<span class="type">px</span></span>;
+    <span class="property">opacity</span><span class="punctuation delimiter">:</span> <span class="number">0.5</span>;
+  }
+
+  .<span class="property">url-path</span> <span class="operator">&gt;</span> <span class="tag"><span class="operator">*</span></span> {
+    <span class="property">opacity</span><span class="punctuation delimiter">:</span> <span class="number">1</span>;
+  }
+}
+</code></pre></article></main><div class="article-rhs-container"><div class="article-rhs"><div class="git-history-table-container"><span class="git-history-table-title">Revisions</span><table class="git-history-table"><thead><tr><th>Date</th><th>Hash</th></tr></thead><tbody><tr><td class="commit-date-tr">2024-04-13</td><td class="commit-link-tr">504425b3</td></tr><tr><td class="commit-date-tr">2024-01-28</td><td class="commit-link-tr">709ef48c</td></tr><tr><td class="commit-date-tr">2023-10-25</td><td class="commit-link-tr">c788cdd3</td></tr></tbody></table></div><div class="prev-next-up-buttons-container">Navigation<table class="prev-next-up-buttons"><tr><td>Next</td><td><a class="next-button" href="http://localhost:4242/components/Sidebar/Sidebar.ts.html">Sidebar.ts</a></td></tr><tr><td>Up</td><td><a class="up-button" href="http://localhost:4242/components/Sidebar/index.html">Sidebar</a></td></tr></table></div></div></div></div></body></html>

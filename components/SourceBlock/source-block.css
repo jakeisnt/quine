@@ -1,0 +1,69 @@
+/* appearance of code block */
+pre code {
+  border: 1px solid var(--quote-background-border);
+  border-radius: 3px;
+  position: relative;
+  display: block;
+  padding: 0.5em 0.5em !important;
+  padding-top: 0.4em !important;
+  padding-bottom: 0.8em !important;
+  overflow-x: auto;
+  font-size: 14px;
+  background-color: var(--quote-background) !important;
+  min-height: 36px;
+  min-width: 70ch;
+}
+
+code:hover {
+  border-color: var(--quote-background-border-highlighted);
+  transition: border-color 0.25s ease-in-out;
+}
+
+@media only screen and (max-width: 500px) {
+  pre code {
+    margin-left: -1rem;
+    min-width: calc(100% + 1rem);
+    max-width: calc(100% + 1rem);
+  }
+}
+/** syntax highlighting */
+.keyword {
+  color: var(--purple);
+}
+
+.function {
+  color: var(--blue);
+}
+
+.type {
+  color: var(--darkblue);
+}
+
+.string {
+  color: var(--green);
+}
+
+.number {
+  color: var(--red);
+}
+
+.operator {
+  color: gray;
+}
+
+.comment {
+  color: rgb(72, 72, 72);
+  font-style: italic;
+}
+
+.punctuation {
+  color: var(--darkblue);
+}
+
+.variable {
+  color: var(--red);
+}
+
+.string {
+  color: var(--green);
+}

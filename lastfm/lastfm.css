@@ -1,0 +1,23 @@
+/* -- LastFM live music -- */
+.lastfm-now-playing-box {
+  border: 1px solid var(--quote-background-border);
+  border-radius: 3px;
+  align-items: center;
+}
+
+.now-playing {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 8px;
+}
+
+.np-image {
+  margin-right: -24px;
+}
+
+.metadata-table {
+  font-size: 13px;
+}
+
+/*# sourceMappingURL=lastfm.css.map */
