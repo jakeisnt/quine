@@ -23,7 +23,7 @@ const neko = () => {
   const neko: HTMLElement = document.querySelector(".neko");
   const nekoBed = document.querySelector(".neko-bed");
 
-  const nekoUrl = "/components/neko/assets/";
+  const nekoUrl = "/components/Neko/assets/";
 
   const Neko = {
     yawn: [nekoUrl + "yawn1.png", nekoUrl + "yawn2.png"],

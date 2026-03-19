@@ -1,5 +1,5 @@
 const Neko = () => ({
-  dependsOn: [{ src: './spawnNeko.js' }, { src: './neko.css' }],
+  dependsOn: [{ src: './spawnNeko.js' }, { src: './Neko.css' }],
   body: ["span",
          ["div", { class: "neko-bed" }, ""],
          ["div", { class: "neko" }, ""]],
