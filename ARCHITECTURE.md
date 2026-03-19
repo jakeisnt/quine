@@ -13,17 +13,17 @@ The original build system had a complex deployment workflow:
 
 ### Current Architecture
 
-**Build Output**: `docs/` directory on current branch
+**Build Output**: `dist/` directory
 
 **Build Process** (src/build.ts):
 ```
-1. Generate root index.html → docs/index.html
+1. Generate root index.html → dist/index.html
 2. Read source/index.html as entry point
 3. Recursively process dependencies:
    - Each file determines its own dependencies
    - Build system tracks seen files to prevent cycles
-   - Ignores .git, node_modules, docs directories
-4. Output all processed files to docs/source/
+   - Ignores .git, node_modules, dist directories
+4. Output all processed files to dist/source/
 ```
 
 **File Type Registry** (src/file/index.ts):
@@ -99,35 +99,16 @@ Example flow for an HTML file:
 6. Transpiles to JS and writes as lib.js
 7. Recursively processes lib.ts's dependencies
 
-### Deployment Workflow
+### Deployment
 
-**Old way** (removed):
-```
-1. Stash current changes
-2. Move docs/ to /tmp
-3. Checkout production branch
-4. Remove all files
-5. Move /tmp back to root
-6. Commit and push
-7. Checkout original branch
-8. Unstash
-```
-
-**New way** (src/deploy.ts):
-```
-1. Add all changes (including docs/)
-2. Commit on current branch
-3. Push current branch
-```
-
-Much simpler! Designed for GitHub Pages "publish from /docs folder" option.
+Hosted via Cloudflare Pages. The build produces output in `dist/`.
 
 ### Configuration
 
 All configuration lives in src/main.ts `makeConfig()`:
 - `sourceDir`: `.` (current directory)
-- `targetDir`: `./docs`
-- `ignorePaths`: `.git`, `node_modules`, `docs`
+- `targetDir`: `./dist`
+- `ignorePaths`: `.git`, `node_modules`, `dist`
 - `resourcesDir`: `./resources`
 - `faviconsDir`: `./favicons`
 

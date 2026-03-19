@@ -1,12 +1,12 @@
-# jake.isnt.online
+# quine.jake.kitchen
 
-This is the index of my personal website found [here](https://jake.isnt.online).
+This is the index of my personal website found [here](https://quine.jake.kitchen).
 It can be thought of as a projection of my wiki and github repos!
 100% score on the [Lighthouse audit](https://www.foo.software/lighthouse).
 
 ## Deprecation
 This idea is worth exploring further, but the code - as it stands - isn't useful.
-jake.isnt.online was supposed to be adaptive, but statically first; and once the
+quine.jake.kitchen was supposed to be adaptive, but statically first; and once the
 whole website can be generated statically, as an artifact, then make it more dynamic,
 introduce components, make it *move*.
 
@@ -33,25 +33,22 @@ Dependencies are managed with Bun. Install [Bun](https://bun.sh) to get started.
 # Install dependencies
 bun install
 
-# Build the site (outputs to docs/)
+# Build the site (outputs to dist/)
 bun run main build
 
 # Serve the site locally
 bun run main serve
-
-# Deploy (commits and pushes docs/ on current branch)
-bun run main deploy
 ```
 
 ### Build System
 
-The site builds to the `docs/` folder on the current branch. The build process:
+The site builds to the `dist/` folder. The build process:
 
 1. Reads files from the source directory (current directory)
 2. Processes TypeScript/JavaScript files, compiling TS → JS
 3. Handles various file types (HTML, CSS, Markdown, images, etc.)
-4. Outputs everything to `docs/` directory
-5. Ignores: `.git`, `node_modules`, `docs` (to prevent recursion)
+4. Outputs everything to `dist/` directory
+5. Ignores: `.git`, `node_modules`, `dist` (to prevent recursion)
 
 ### File Type System
 
@@ -63,11 +60,11 @@ The build system uses a dynamic file type registry (src/file/index.ts):
 
 ### Deployment
 
-The `deploy` command (src/deploy.ts):
-- Commits all changes in the `docs/` directory
-- Pushes to the current branch
-- No branch switching - builds stay on the working branch
-- Designed for GitHub Pages serving from `docs/` folder
+Hosted on [Cloudflare Pages](https://pages.cloudflare.com/) at `quine.jake.kitchen`.
+
+Build configuration:
+- **Build command**: `bun run main build`
+- **Build output directory**: `dist`
 
 ## Other principles
 [originally here](https://github.com/jakeisnt/site/issues/71)
@@ -78,5 +75,3 @@ The `deploy` command (src/deploy.ts):
 - creative and streamlined. the site should express lots of carefully chosen and honed details that make it feel perfect.
 
 visualize information; don't store it. the site should never be the source of truth for data. data should come from markup, from clojure, from postgres, from other data sources, and visualized via this site.
-
-To test file generation: `serve ./docs --config ../.serve.json`
