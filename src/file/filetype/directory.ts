@@ -110,10 +110,13 @@ class Directory extends File {
       return this.enumeratedContents;
     }
 
+    const ignorePaths = this.cachedConfig.ignorePaths ?? [];
     const fileContents = this.path
       .readDirectory()
-      // SHORTCUT: Fixes a bug where the site creates itself infinitely
-      .filter((v) => !v.equals(this.cachedConfig.targetDir))
+      .filter((v) => {
+        const pathStr = v.toString();
+        return !ignorePaths.some((ignored) => pathStr.startsWith(ignored));
+      })
       .map((v) => readFile(v, this.cachedConfig))
       .filter((v): v is File => v !== undefined);
 

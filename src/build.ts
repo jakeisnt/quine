@@ -12,8 +12,10 @@ const buildSiteFromFile = (
   settings: PageSettings,
   filesSeenSoFar: Set<string>
 ) => {
-  if (filesSeenSoFar.has(file.path.toString())) return;
-  filesSeenSoFar.add(file.path.toString());
+  const pathStr = file.path.toString();
+  if (filesSeenSoFar.has(pathStr)) return;
+  if ([...filesSeenSoFar].some((seen) => pathStr.startsWith(seen + "/"))) return;
+  filesSeenSoFar.add(pathStr);
 
   file.write(settings);
 
