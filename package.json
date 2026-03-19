@@ -8,14 +8,14 @@
   },
   "dependencies": {
     "mime": "^4.1.0",
-    "ohm-js": "^17.3.0",
-    "sass": "^1.97.3",
+    "ohm-js": "^17.5.0",
+    "sass": "^1.98.0",
     "tree-sitter-highlight": "^1.1.2",
     "typescript": "^5.9.3"
   },
   "devDependencies": {
-    "@types/bun": "^1.3.6",
+    "@types/bun": "^1.3.11",
     "@types/mime": "^4.0.0",
-    "@types/node": "^20.19.30"
+    "@types/node": "^25.5.0"
   }
 }
