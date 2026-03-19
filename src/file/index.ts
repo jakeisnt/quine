@@ -128,9 +128,10 @@ const readFile = (
     const sourceFile = readFile(nextPath, cfg);
 
     // Our custom standardizes on using target extension to index.
-    const res = sourceFile?.hasOwnProperty(targetExtension)
-      ? (sourceFile as any)[targetExtension]?.(cfg)
-      : undefined;
+    const res =
+      typeof (sourceFile as any)[targetExtension] === "function"
+        ? (sourceFile as any)[targetExtension](cfg)
+        : undefined;
 
     if (!res)
       console.warn(

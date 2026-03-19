@@ -4,10 +4,10 @@ import { TextFile } from "../file/classes";
 import type { PageSyntax } from "../types/html";
 import type { PageSettings } from "../types/site";
 
-const makeHomePage = (settings: PageSettings) => {
+const homePageSyntax = (settings: PageSettings): PageSyntax => {
   const { url, sourceDir, siteName, resourcesDir, faviconsDir } = settings;
   const title = "index";
-  const htmlText: PageSyntax = [
+  return [
     "html",
     { lang: "en" },
     ["Header", { title, url, siteName, resourcesDir, faviconsDir }],
@@ -61,16 +61,28 @@ const makeHomePage = (settings: PageSettings) => {
       ],
     ],
   ];
-
-  return HtmlPage.create(htmlText, settings).toString();
 };
 
 class HomePage extends TextFile {
+  private htmlPage?: HtmlPage;
+
+  private getHtmlPage(settings: PageSettings) {
+    if (!this.htmlPage) {
+      this.htmlPage = HtmlPage.create(homePageSyntax(settings), settings);
+      this.htmlPage.toString();
+    }
+    return this.htmlPage;
+  }
+
   serve(settings: PageSettings) {
     return {
-      contents: makeHomePage(settings),
+      contents: this.getHtmlPage(settings).toString(),
       mimeType: "text/html",
     };
+  }
+
+  dependencies(settings: PageSettings) {
+    return this.getHtmlPage(settings).dependencies(settings);
   }
 }
 

@@ -30,9 +30,19 @@ const buildSiteFromFile = (
 const buildFromPath = (settings: PageSettings) => {
   const { sourceDir, targetDir, ignorePaths } = settings;
 
-  // Write the root file
+  // Write the root file and build its asset dependencies (CSS, JS)
+  // to the root dist dir so absolute paths like /resources/style.css resolve
+  const homePageFile = homePage(settings);
   const rootFile = targetDir.join("/index.html");
-  rootFile.writeString(homePage(settings).serve(settings).contents);
+  rootFile.writeString(homePageFile.serve(settings).contents);
+
+  const assetsSeen = new Set<string>();
+  for (const dep of homePageFile.dependencies(settings)) {
+    // Only build asset files (CSS, JS, etc.) — skip HTML page links
+    const ext = dep.extension;
+    if (ext === "html" || ext === "htm" || ext === "dir") continue;
+    buildSiteFromFile(dep, settings, assetsSeen);
+  }
 
   // Read the rest of the repo under `source`.
   const cfg = { ...settings, targetDir: targetDir.join("/source") };
