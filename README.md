@@ -40,16 +40,6 @@ bun run main build
 bun run main serve
 ```
 
-### Build System
-
-The site builds to the `dist/` folder. The build process:
-
-1. Reads files from the source directory (current directory)
-2. Processes TypeScript/JavaScript files, compiling TS → JS
-3. Handles various file types (HTML, CSS, Markdown, images, etc.)
-4. Outputs everything to `dist/` directory
-5. Ignores: `.git`, `node_modules`, `dist` (to prevent recursion)
-
 ### File Type System
 
 The build system uses a dynamic file type registry (src/file/index.ts):
