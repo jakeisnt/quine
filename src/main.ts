@@ -1,6 +1,5 @@
 // entrypoint of the program; this is the cli
 
-import { deploy as siteDeploy } from "./deploy";
 import { cli } from "utils/cli";
 import { buildFromPath } from "./build";
 import { singleFileServer, directoryServer } from "./server";
@@ -13,13 +12,13 @@ const makeConfig = () => {
 
   const websocketPath = "/__devsocket";
   const sourceDir = Path.create("./");
-  const targetDir = sourceDir.join("/docs");
+  const targetDir = sourceDir.join("/dist");
   const fallbackSourceDir = sourceDir;
   const resourcesDir = sourceDir.join("/resources");
   const faviconsDir = sourceDir.join("/favicons");
 
   // paths to ignore by default from the website we build
-  const ignorePaths = [".git", "node_modules", "docs"].map(
+  const ignorePaths = [".git", "node_modules", "dist"].map(
     (p) => sourceDir.toString() + "/" + p
   );
 
@@ -48,25 +47,6 @@ const cfg = makeConfig();
 const build = () => buildFromPath(cfg);
 
 /**
- * Deploy the current website.
- */
-const deploy = () => {
-  const currentRepo = Path.create(".").repo;
-
-  if (!currentRepo) {
-    console.log(
-      "Current path does not have a git repository. Unable to deploy."
-    );
-    return;
-  }
-
-  siteDeploy({
-    currentRepo,
-    targetDir: cfg.targetDir.toString(),
-  });
-};
-
-/**
  * Serve whatever is on the path provided.
  * @param {*} incomingPaths a list of paths to serve from.
  */
@@ -85,9 +65,6 @@ const serve = (incomingPaths?: string[]) => {
 
 const app = cli("site")
   .describe("compiles the website")
-  .option("deploy")
-  .describe("deploy the website")
-  .action(deploy)
   .option("build")
   .describe("build the website")
   .action(build)
