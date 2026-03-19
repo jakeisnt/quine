@@ -39,47 +39,6 @@ class Repo {
     const cmdResult = execSync(command, { cwd: this.path.toString() });
     return cmdResult.toString();
   }
-
-  checkout(branchName: string) {
-    return this.runCmd(`git checkout ${branchName}`);
-  }
-
-  addAll() {
-    console.log("adding all to git");
-    this.runCmd("git add .");
-  }
-
-  commit(message = "robot commit") {
-    console.log("committing", { message });
-    this.runCmd(`git -c commit.gpgsign=false commit -m "${message}"`);
-  }
-
-  push() {
-    this.runCmd("git push");
-  }
-
-  removeUntracked() {
-    this.runCmd("git clean -fxd");
-  }
-
-  currentBranch() {
-    const branch = this.runCmd("git branch --show-current");
-    console.log("current branch", branch);
-    return branch;
-  }
-
-  status() {
-    const status = this.runCmd("git status");
-    console.log(status);
-  }
-
-  stash() {
-    this.runCmd("git stash");
-  }
-
-  stashPop() {
-    this.runCmd("git stash pop");
-  }
 }
 
 export default Repo;
